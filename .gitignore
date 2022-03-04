@@ -52,5 +52,5 @@ Mkfile.old
 dkms.conf
 
 # My Stuff
-copy
-getmd
+./copy
+./getmd
