@@ -1,6 +1,15 @@
 // insert.c
 #include "../myc.h"
 
+/*
+    returns a string with new text inserted into it
+
+    insert( buffer to receive new string,
+            string to receive the inserted text,
+            text to insert,
+            index where to insert the text)
+*/
+
 
 void main() {
 
@@ -31,3 +40,7 @@ void main() {
     puts(mein.str);
     cstr_del(mein);
 }
+
+ /*
+    also see insert_new
+ */

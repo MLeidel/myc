@@ -1,5 +1,5 @@
 /***
-* demo using cary functions from myc.h
+* demo using aros functions from myc.h
 * calculate an average using a column
 * from a 100000 record csv file
 ***/
@@ -10,20 +10,20 @@ int main (int argc, char *argv[]) {
     int counter = 0;
     double accum = 0.0;
 
-    // create structure of type cary and allocate memory to hold fields
-    cary csv = cary_new(12, 64);
+    // create structure of type aros and allocate memory to hold fields
+    aros csv = aros_new(12, 64);
 
     FILE * f = open_for_read("guns.csv");
     while(!feof(f)) {
         fgets(line, 1024, f);
         rtrim(line);
 
-        cary_parse(csv, line, ",");  // parse out the trimmed fields
+        aros_parse(csv, line, ",");  // parse out the trimmed fields
 
         counter++;
         accum += atoi(csv.get[7]);  // use field[7] "age"
 
-        /* Test to open multiple carys
+        /* Test to open multiple aross
         */
         if (counter == 100) {
             char mylist[] = "\"E. Musk, CEO, Founder\",10012,\"Tesla V8\", 89123.44, \"Cincinati, OH\",11,43, 50";
@@ -33,11 +33,11 @@ int main (int argc, char *argv[]) {
 
             printf("%s\n", mylist);
 
-            cary list = cary_new(8, 64);
+            aros list = aros_new(8, 64);
 
-            cary_parse(list, mylist, ",");
+            aros_parse(list, mylist, ",");
 
-            cary_display(list);
+            aros_display(list);
 
             puts("remove double quotes ...");
             for(int x = 0; x < list.nbr_rows; x++) {
@@ -49,13 +49,13 @@ int main (int argc, char *argv[]) {
                 printf("field %d amount: %.2f\n", x, total);
             }
 
-            cary_del(list);
+            aros_del(list);
         }
 
     }
     fclose(f);
 
-    cary_del(csv);  // free array_of_strings memory
+    aros_del(csv);  // free array_of_strings memory
 
     printf("records read: %d\n", counter);
     printf("Avg age to die by gun violence: %0.2f\n", (double)accum/counter);

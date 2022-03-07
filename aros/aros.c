@@ -1,16 +1,16 @@
-/* cary.c
+/* aros.c
 */
 #include "../myc.h"
 
 /***
-* Demo of cary
+* Demo of aros
 ***/
 
 enum sales {CEO,SN,MODEL,PRICE,LOCATION,S1,S2,S3};  // lends to readability
 
 int main(int argc, char const *argv[])
 {
-    /* Test the cary functions on quoted fields in a csv string
+    /* Test the aros functions on quoted fields in a csv string
     */
     #define DELIM ","
     #define COLS 8
@@ -22,24 +22,24 @@ int main(int argc, char const *argv[])
     printf("%s\n", linein);
 
     /***
-    * cary_new establishes a new struct variable
+    * aros_new establishes a new struct variable
     * and allocates memory to the arrray of strings
     * using its args of number and length of items
     ***/
-    cary list = cary_new(COLS, 64);
+    aros list = aros_new(COLS, 64);
 
     /***
-    * cary_parse then supplies content to the array of strings
-    * in the cary struct by parsing out delimited fields.
-    * cary_parse may be called as many times as needed.
+    * aros_parse then supplies content to the array of strings
+    * in the aros struct by parsing out delimited fields.
+    * aros_parse may be called as many times as needed.
     ***/
-    cary_parse(list, linein, DELIM);
+    aros_parse(list, linein, DELIM);
 
-    cary_display(list);  // list the list item values to console
+    aros_display(list);  // list the list item values to console
 
     /***
-    * After each call to cary_parse items from the cary array
-    * may be accessed with list.get[n] where "list" was the cary struct
+    * After each call to aros_parse items from the aros array
+    * may be accessed with list.get[n] where "list" was the aros struct
     * and "n" is the index into each item.
     ***/
     for(int x = S1; x <= S3; x++) {
@@ -48,11 +48,11 @@ int main(int argc, char const *argv[])
     }
 
     /***
-    * cary_del frees memory that was allocated
+    * aros_del frees memory that was allocated
     * to hold the parsed fields. Only call this after
     * your done parsing lines.
     ***/
-    cary_del(list);
+    aros_del(list);
 
     return 0;
 }

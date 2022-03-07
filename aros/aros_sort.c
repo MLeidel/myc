@@ -1,4 +1,4 @@
-// cary_sort.c
+// aros_sort.c
 #include "../myc.h"
 
 
@@ -11,26 +11,26 @@ int main (int argc, char *argv[]) {
 
     puts("========list before sorting=========");
 
-    cary list = cary_new(COLS, 32);
+    aros list = aros_new(COLS, 32);
 
-    cary_parse(list, ary, ",");
+    aros_parse(list, ary, ",");
 
-    cary_display(list);
+    aros_display(list);
 
     puts("========sort and ignore case=========");
 
     ssort(list.get, COLS, true);
 
-    cary_display(list);
+    aros_display(list);
 
     puts("=======sort and case sensitive=======");
 
     ssort(list.get, COLS, false);
 
-    cary_display(list);
+    aros_display(list);
 
 
-    cary_del(list);
+    aros_del(list);
 
     return 0;
 }

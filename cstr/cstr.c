@@ -2,17 +2,18 @@
 
 #include "../myc.h"
 
-/***
+/*
 Dynamic string allocation made easy.
 The "cstr" struct is used for these functions:
-***/
 
-// typedef struct {
-//     size_t length;  // allocated length
-//     char *str;
-// } cstr;
+typedef struct {
+    size_t length;  // allocated length
+    char *str;
+} cstr;
 
-////////////////////////////////////////////////////////////
+*/
+
+
 
 void main() {
 
@@ -35,5 +36,18 @@ ex ea commodo consequat.");
     cstr_del(s2);
     cstr_del(s3);
 
-}
+/*
+    Resize a cstr string
+    cstr_rsz returns a new cstr pointer
+    with reallocated size
+*/
 
+    cstr s = cstr_new(10, '\0');
+    cstr_cpy(s, "Hello");
+    puts(s.str);
+    s = cstr_rsz(s, 20);
+    //cstr_cpy(s, "Hello Universe");
+    strcat(s.str, " Universe");
+    puts(s.str);
+    cstr_del(s);
+}

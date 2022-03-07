@@ -1,23 +1,30 @@
 # myc.h, mydb.h, mynet.h
 
 <a name="top"></a>
-## my\_.h functions
+This document lays out quick help for these header files:
+- myc.h - new string and other utility functions
+- mydb.h - an Sqlite3 c template and three new functions
+- mynet.h - a small Internet library with 4 new functions
+
+Note: myc.h _includes_ most of the common C headers.
 
 **[ String functions (_myc.h_) ](#mycstring)**
 >
-[charat](#charat) &bull; [chomp](#chomp) &bull; [cary_del](#cary_del) &bull; [cary_diaplay](#cary_diaplay)  
-[cary_new](#cary_new) &bull; [cary_parse](#cary_parse) &bull; [concat](#concat) &bull; [contains](#contains)  
-[cstr_new](#cstr_new) &bull; [cstr_cpy](#cstr_cpy) &bull; [cstr_del](#cstr_del)  
+[aros_del](#aros_del) &bull; [aros_diaplay](#aros_diaplay) &bull; [aros_new](#aros_new) &bull; [aros_parse](#aros_parse)  
+[charat](#charat) &bull; [chomp](#chomp) &bull; [concat](#concat) &bull; [contains](#contains)  
+[cstr_cpy](#cstr_cpy) &bull; [cstr_del](#cstr_del) &bull; [cstr_new](#cstr_new) &bull; [cstr_rsz](#cstr_rsz)  
 [deletechar](#deletechar) &bull; [endswith](#endswith) &bull; [equals](#equals) &bull; [equalsignor](#equalsignor)  
-[field](#field) &bull; [indexof](#indexof) &bull; [insert](#insert) &bull; [lastcharat](#lastcharat) &bull; [lastindexof](#lastindexof)  
-[leftof](#leftof) &bull; [lowercase](#lowercase) &bull; [ltrim](#ltrim) &bull; [replace](#replace) &bull; [replacesz](#replacesz)  
+[field](#field) &bull; [indexof](#indexof) &bull; [insert](#insert) &bull; [insert_new](#insert_new)  
+[lastcharat](#lastcharat) &bull; [lastindexof](#lastindexof) &bull; [leftof](#leftof) &bull; [lowercase](#lowercase)  
+[ltrim](#ltrim) &bull; [replace](#replace) &bull; [replace_new](#replace_new) &bull; [replacesz](#replacesz)  
 [rightof](#rightof) &bull; [rtrim](#rtrim) &bull; [startswith](#startswith) &bull; [strrev](#strrev)  
 [strrstr](#strrstr) &bull; [strtype](#strtype) &bull; [substr](#substr) &bull; [trim](#trim)  
 [uppercase](#uppercase) &bull; [urlencode](#urlencode)  
 
+
 **[ File & Path functions (_myc.h_) ](#mycfile)**
 >
-[cary_dir](#cary_dir) &bull; [file_exists](#file_exists) &bull; [filesize](#filesize) &bull; [isfile](#isfile)  
+[aros_dir](#aros_dir) &bull; [file_exists](#file_exists) &bull; [filesize](#filesize) &bull; [isfile](#isfile)  
 [getbasename](#getbasename) &bull; [getbasepath](#getbasepath) &bull; [getfullpath](#getfullpath)  
 [open_for_append](#open_for_append) &bull; [open_for_read](#open_for_read) &bull; [open_for_write](#open_for_write)  
 [readfile](#readfile) &bull; [writefile](#writefile)
@@ -136,7 +143,7 @@ string is broken into substrings, each terminating with a '\0', where the '\0' r
 characters contained in string s2. The first call uses the string to be tokenized as s1;
 subsequent calls use NULL as the first argument. A pointer to the beginning of the
 current token is returned; NULL is returned if there are no more tokens.
-consider using _cary..._ in myc.h.  
+consider using _aros..._ in myc.h.  
 _Warning: this changes the original string!_
 
 ---------------------------------------------------------------------------------------
@@ -188,6 +195,22 @@ all _fill_ character. Uses the _cstr_ struct.
         size_t length;  // allocated length
         char *str;
     } cstr;
+```
+
+<a name="cstr_rsz"></a>
+### cstr cstr_rsz(cstr s, size_t length)
+>Returns a pointer to a new string allocated  
+to size _length_ and initialized with  
+all _fill_ character. Uses the _cstr_ struct.
+
+```c
+    cstr s = cstr_new(10, '\0');
+    cstr_cpy(s, "Hello");
+    puts(s.str);
+    s = cstr_rsz(s, 20);
+    strcat(s.str, " Universe");
+    puts(s.str); // Hello Universe
+    cstr_del(s);
 ```
 
 <a name="cstr_cpy"></a>
@@ -247,7 +270,7 @@ If not found returns -1.
 <a name="insert"></a>
 ### char \*insert(char \*buf, char \*s, char \*ins, size_t index)
 >Inserts a substring into a string at index.  
-Returns the modified string.
+Returns the modified string _buff_.
 
 ```c
     char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
@@ -268,6 +291,11 @@ Returns the modified string.
 
 ```
 
+<a name="insert_new"></a>
+### char \*insert_new(char \*s, char \*ins, size_t index)
+>Inserts a substring into a string at index.  
+Returns a pointer to the new string allocated in the heap.
+
 <a name="lastcharat"></a>
 ### int lastcharat(char* base, char c)
 >Returns the __last__ index of "c" found
@@ -279,7 +307,7 @@ in "base". On failure returns -1.
 a string. If not found returns -1.
 
 <a name="leftof"></a>
-### char \*leftof (char \*out, char \*in, char \*targ, int start)
+### char \*leftof (char \*buf, char \*in, char \*targ, int start)
 >Returns a pointer to a substring to the left of
 some delimiting string.  
 A starting offet may be used or set to 0.
@@ -294,9 +322,14 @@ A starting offet may be used or set to 0.
 removed.
 
 <a name="replace"></a>
-### char \*replace (char \*out, char \*in, char \*target, char \*replacement, int number)
+### char \*replace (char \*buf, char \*in, char \*target, char \*replacement, int number)
 >Replaces substrings within a string. Limit replacements or
 set to 0.
+
+<a name="replace_new"></a>
+### char \*replace_new (char \*in, char \*target, char \*replacement, int number)
+>Replaces substrings within a string. Limit replacements or set to 0.  
+Returns a pointer to the new string allocated in the heap.
 
 <a name="replacechar"></a>
 ### int replacechar (char \*in, char target, char replacement, int number)
@@ -310,7 +343,7 @@ Returns count of replacements made.
 memory allocation size when creating an output buffer for replace.
 
 <a name="rightof"></a>
-### char \*rightof (char \*out, char \*in, char \*delim, int start)
+### char \*rightof (char \*buf, char \*in, char \*delim, int start)
 >Returns a pointer to a substring to the right of
 some delimiting string.  
 Set a starting index or 
@@ -339,7 +372,7 @@ not found. _Versions of string.h
 may or may not have this function._
 
 <a name="strtype"></a>
-### int strtype (char \*buf, int istype)
+### int strtype (char \*s, int istype)
 >functions to detect the type of a string.   
 Compliments ctype.h functions for characters:  
 ```
@@ -359,7 +392,7 @@ Returns int:
 ALPHA .. PUNCT is an enum in that order.
 
 <a name="substr"></a>
-### char \*substr (char \*out, char \*in, int position, int length)
+### char \*substr (char \*buf, char \*in, int position, int length)
 >Returns a substring within a string located by a start
 position and a length.  
 Checks boundaries for overflow.
@@ -379,34 +412,34 @@ trailing whitespace removed.
 conforming to Uniform Resource Locator
 syntax rules.
 
-<a name="cary_new"></a>
+<a name="aros_new"></a>
 ## Parsing to an array _myc.h_ [^](#top 'top')
 
 ```c
-  // struct used for cary functions
-  typedef struct cary {
+  // struct used for aros functions
+  typedef struct aros {
     int nbr_rows;  // maximum rows (columns, fields)
     int len_rows; // maximum length of one row (col, field)
     char ** get; // array of strings (fields)
-  } cary;
+  } aros;
 ```
 
-### cary cary_new (int _nbr\_rows_, int _len\_rows_)
->Returns a *cary* structure pointer with memory
+### aros aros_new (int _nbr\_rows_, int _len\_rows_)
+>Returns a *aros* structure pointer with memory
 allocated to hold an array of strings (fields).  
 
 ```c
-  cary a = cary_new(20, 65);
+  aros a = aros_new(20, 65);
 ```
-<a name="cary_parse"></a>
-### int cary\_parse (cary \*a, char \*str, char \*delim)
+<a name="aros_parse"></a>
+### int aros\_parse (aros \*a, char \*str, char \*delim)
 >Splits a delimited string into an array of strings (fields.)  
 Returns _int_ of actual number parsed.  
-_cary\_init_ must used prior to this function.
+_aros\_init_ must used prior to this function.
 
 ```c
-  cary a = cary_new(20, 65);
-  int n = cary_parse(a, line, ",");
+  aros a = aros_new(20, 65);
+  int n = aros_parse(a, line, ",");
 ```
 >Individual fields can now be accessed like:
 
@@ -421,17 +454,17 @@ When delimiter is " " (space) consecutive spaces
 are treated as one delimiter. The input string is distroyed 
 in the process.
 
-<a name="cary_del"></a>
-### void cary\_del(cary a)
+<a name="aros_del"></a>
+### void aros\_del(aros a)
 >Frees memory allocated by
-cary_new function.
+aros_new function.
 
 ```c
-  cary_del(a);
+  aros_del(a);
 ```
 
-<a name="cary_diaplay"></a>
-### void cary\_diaplay (cary a)
+<a name="aros_diaplay"></a>
+### void aros\_diaplay (aros a)
 >Prints out column numbers and values
 to the console.
 
@@ -497,21 +530,21 @@ returns -1 if unsuccessful.
 returns -1 if unsuccessful.  
 Appends to file if _append_ is true.
 
-<a name="cary_dir"></a>
-### cary cary_dir(const char *path, int dtype, bool sort)
->Returns a cary struct filled with file and/or directory
+<a name="aros_dir"></a>
+### aros aros_dir(const char *path, int dtype, bool sort)
+>Returns a aros struct filled with file and/or directory
 names for _path_. If _sort_ is "true" then the names
 will be sorted in ascending order.  
 _dtype_ must be set to:  
   dir = 0 files and directories  
   dir = 1 just files  
   dir = 2 just directories  
-Note: cary\_dir makes use of the cary struct.
+Note: aros\_dir makes use of the aros struct.
 
 ```c
-    cary d = cary_dir("/home/user/", 1, true);
-    cary_display(d);
-    cary_del(d);
+    aros d = aros_dir("/home/user/", 1, true);
+    aros_display(d);
+    aros_del(d);
 
 ```
 

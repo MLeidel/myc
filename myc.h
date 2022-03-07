@@ -32,10 +32,12 @@ char* concat(char*, int, ...);
 char* deletechar(char*, char*, char, int);
 char* field(char*, char*, char, int, bool);
 char* insert(char*, char*, char*, size_t);
+char* insert_new(char*, char*, size_t);
 char* lowercase(char*);
 char* leftof(char*, char*, char*, int);
 char* ltrim(char*);
 char* replace (char*, char*, char*, char*, int);
+char* replacenew (char*, char*, char*, int);
 char* rightof(char*, char*, char*, int);
 char* rtrim(char*);
 char* strrev(char*);
@@ -63,22 +65,23 @@ typedef struct {
 bool cstr_cpy(cstr, char*);
 void cstr_del(cstr);
 cstr cstr_new(size_t, char);
+cstr cstr_rsz(cstr, size_t);
 
 // ARRAY FUNCTIONS
 
     // ARRSIZE(x) THIS IS A MACRO
 
-typedef struct cary {
+typedef struct aros {
     int nbr_rows;  // maximum records (columns, fields)
     int len_rows; // maximum length of one record (col, field)
     char** get;  // array of fields (char arrays or strings)
-} cary;
+} aros;
 
-cary cary_new(int, int);
-cary cary_dir(const char*, int, bool);
-int cary_parse(cary, char*, char*);
-void cary_display(cary);
-void cary_del(cary);
+aros aros_new(int, int);
+aros aros_dir(const char*, int, bool);
+int aros_parse(aros, char*, char*);
+void aros_display(aros);
+void aros_del(aros);
 
 // FILE & PATH FUNCTIONS
 bool file_exists (char*);
@@ -178,6 +181,16 @@ cstr cstr_new(size_t length, char fill) {
     s.length = length;
     memset(s.str, fill, s.length);
     return s;
+}
+
+cstr cstr_rsz(cstr p, size_t length) {
+    cstr z = p;
+    z.str = realloc(p.str, length * sizeof(char));
+    if (z.str == NULL) {
+        ERRMSG(errno, true, "cstr_rsz realloc error");
+    }
+    z.length = length;
+    return z;
 }
 
 bool cstr_cpy(cstr s, char *data) {
@@ -287,6 +300,7 @@ int replacesz(char *base, char *target, char *replacement, int nbr) {
 *   c: replacement string
 *   number: number of replacements to make (0 means replace all)
 * NOTE: buf must be big enough to hold new string with replacements.
+* ALSO: see 'replace_new'
 ***/
 char * replace (char *buf, char *a, char *b, char *c, int number) {
     int count = 0;
@@ -296,6 +310,45 @@ char * replace (char *buf, char *a, char *b, char *c, int number) {
     char *p;
     char *bfa = calloc(strlen(a)+1, sizeof(char));
     // or char *bfa = strdup(a);
+
+    strcpy(bfa, a);
+    *buf = '\0';  // initalize return string
+
+    s = ap = bfa;
+
+    while(1) {
+        p = strstr(s, b);
+        if (p == NULL) {
+            break;
+        }
+        *p = '\0';
+        strcat(buf, ap);  // building output buffer
+        strcat(buf, c);  // with leading string and 1st replacement
+        ap = p + lenb;  // increment pointer past the target string
+        s = ap;  // s becomes ap
+        count++;
+        if (number != 0 && count >= number) {
+            break;
+        }
+    }
+
+    strcat(buf, ap);  // concatenate final segment
+    free(bfa);
+    bfa = NULL;
+    return buf;
+}
+
+char * replace_new (char *a, char *b, char *c, int number) {
+    int count = 0;
+    int lenb = strlen(b);  // length of string to be replaced
+    char *s = 0;
+    char *ap;
+    char *p;
+    char *bfa = calloc(strlen(a)+1, sizeof(char));
+    // or char *bfa = strdup(a);
+
+    int newlen = replacesz(a, b, c, number);
+    char *buf = calloc(newlen, sizeof(char));
 
     strcpy(bfa, a);
     *buf = '\0';  // initalize return string
@@ -343,7 +396,7 @@ int replacechar(char *a, char b, char c, int number) {
 }
 
 
-/*  cary: Parses out values from a csv string
+/*  aros: Parses out values from a csv string
     that may use double quotes for explicit text.
     Delimiters inside double quoted fields are
     ignored.
@@ -351,26 +404,26 @@ int replacechar(char *a, char b, char c, int number) {
 example:
 
 char * line; // some input csv string
-cary list = cary_new(5, 64);
-cary_parse(list, line, ",");  // returns nbr of cols found
+aros list = aros_new(5, 64);
+aros_parse(list, line, ",");  // returns nbr of cols found
     list.get[0] would be the first field
-cary_del(list);  // free dynamic memory
+aros_del(list);  // free dynamic memory
 
 NOTE: the supplied input csv string is destroyed in the parsing
 NOTE: to get a single field from a csv string see the field function
 */
 
-// typedef struct cary {
+// typedef struct aros {
 //     int nbr_rows;  // maximum records (columns, fields)
 //     int len_rows; // maximum length of one record (col, field)
 //     char ** get; // array of fields (array of strings)
-// } cary;
+// } aros;
 
-cary cary_new(int col, int len) {
+aros aros_new(int col, int len) {
      /* Initialize variables and allocate memory
-        Return pointer to cary struct
+        Return pointer to aros struct
      */
-    cary csvf;
+    aros csvf;
     csvf.len_rows = len;
     csvf.nbr_rows = col;
     csvf.get = calloc(csvf.nbr_rows, sizeof(char*));  // pointers
@@ -412,7 +465,7 @@ char * qmark(char * str, char delim) {
 int qunmark(char **str, int sz, char delim) {
     /* Un-hides the delimiters found within dbl quotes
        of fields now residing in the fields array/list.
-       Called from cary.
+       Called from aros.
     */
     char **p = str;
     char *t;
@@ -431,14 +484,14 @@ int qunmark(char **str, int sz, char delim) {
     return count;
 }
 
-int cary_parse(cary csvf, char *str, char *delim) {
+int aros_parse(aros csvf, char *str, char *delim) {
     /*  parse the csv fields into the array elements
     */
     int finx = 0;
     char * found;
 
     if (strlen(delim) != 1) {
-        ERRMSG(99, true, "cary_parse delimiter must be length of 1");
+        ERRMSG(99, true, "aros_parse delimiter must be length of 1");
     }
 
     qmark(str, delim[0]);  // hide quoted delimiters
@@ -455,14 +508,14 @@ int cary_parse(cary csvf, char *str, char *delim) {
     return finx;
 }
 
-void cary_display(cary csvf) {
+void aros_display(aros csvf) {
     int x;
     for(x=0; x < csvf.nbr_rows; x++) {
         printf("%03d - [%s] \n", x, csvf.get[x]);
     }
 }
 
-void cary_del(cary csvf) {
+void aros_del(aros csvf) {
     /* free each column's data then free the column pointer's
     */
     for(int col=0; col < csvf.nbr_rows; col++) {
@@ -472,7 +525,7 @@ void cary_del(cary csvf) {
     free(csvf.get);
     csvf.get = NULL;
 }
-/*================= END cary .. etc. ====================*/
+/*================= END aros .. etc. ====================*/
 
 
 int qunmark1(char *str, char delim) {
@@ -602,7 +655,7 @@ int pathsize(const char *path, int dtype) {
     return count;
 }
 
-cary cary_dir(const char *path, int dtype, bool sort) {
+aros aros_dir(const char *path, int dtype, bool sort) {
     /*
      dir = 0 files and directories
      dir = 1 just files
@@ -611,12 +664,12 @@ cary cary_dir(const char *path, int dtype, bool sort) {
     struct dirent *de;
     int n = 0;
 
-    cary plst = cary_new(pathsize(path, dtype), 256);
+    aros plst = aros_new(pathsize(path, dtype), 256);
     DIR *dr = opendir(path);
     char fpath[256];
 
     if (dr == NULL)  {
-        ERRMSG(errno, true, "invalid path for cary_dir");
+        ERRMSG(errno, true, "invalid path for aros_dir");
     }
     while ((de = readdir(dr)) != NULL)
         if (strlen(de->d_name) < plst.len_rows) {
@@ -634,7 +687,7 @@ cary cary_dir(const char *path, int dtype, bool sort) {
                 }
             }
         } else {
-            ERRMSG(99, true, "path > 256 for cary_dir");
+            ERRMSG(99, true, "path > 256 for aros_dir");
         }
 
     closedir(dr);
@@ -1042,16 +1095,27 @@ char* urlencode(char* dest, char* urltext) {
 
 
 char *insert(char *buf, char *s, char *ins, size_t inx) {
-    size_t actual = strlen(s + inx);
-    size_t new = strlen(ins);
+    size_t actual = strlen(s + inx); // length of insertion point to end
+    size_t new = strlen(ins); // length of insertion text
     char *str = calloc(strlen(s) + strlen(ins) + 1, sizeof(char));
     strcpy(str, s);
     char *p = str + inx; // point of insertion
-    memmove(p + new, p, actual + 1);
-    memcpy(p, ins, new);
+    memmove(p + new, p, actual + 1); // move over -> text-after-insertion
+    memcpy(p, ins, new); // move in text to insert
     strcpy(buf, str);
     free(str);
     return buf;
+}
+
+char *insert_new(char *s, char *ins, size_t inx) {
+    size_t actual = strlen(s + inx); // length of insertion point to end
+    size_t new = strlen(ins); // length of insertion text
+    char *str = calloc(strlen(s) + strlen(ins) + 1, sizeof(char));
+    strcpy(str, s);
+    char *p = str + inx; // point of insertion
+    memmove(p + new, p, actual + 1); // move over -> text-after-insertion
+    memcpy(p, ins, new); // move in text to insert
+    return str;
 }
 
 

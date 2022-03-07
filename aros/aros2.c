@@ -1,10 +1,10 @@
-/* cary.c
+/* aros.c
 */
 #include "../myc.h"
 
 /***
 *
-* cary also handles spaces as delimiter
+* aros also handles spaces as delimiter
 * Consecutive ' ' treated as single dilimiter
 *
 ***/
@@ -23,15 +23,15 @@ int main()
 
     printf("%s\n", linein);
 
-    cary list = cary_new(COLS, 64);
+    aros list = aros_new(COLS, 64);
 
-    cary_parse(list, linein, DELIM);
+    aros_parse(list, linein, DELIM);
 
-    cary_display(list);  // list the list item values to console
+    aros_display(list);  // list the list item values to console
 
     printf("field 1 with no quotes: [%s]\n", deletechar(out, list.get[1], '\"', 0));
 
-    cary_del(list);
+    aros_del(list);
 
     return 0;
 }
