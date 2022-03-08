@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <limits.h>
+#include <locale.h>
 
 
   // DECLARATIONS
@@ -56,12 +57,12 @@ int replacesz(char *, char *, char *, int);
 int strtype(char*, int);
 
 // NUMBER TO STRING CONVERSIONS
-char* intstr(char*, int);
-char* instr_new(int);
-char* lngstr(char*, long);
-char* lngstr_new(long);
-char* dblstr(char*, double, int);
-char* dblstr_new(double, int);
+char* intstr(char*, int, bool);
+char* instr_new(int, bool);
+char* lngstr(char*, long, bool);
+char* lngstr_new(long, bool);
+char* dblstr(char*, double, int, bool);
+char* dblstr_new(double, int, bool);
 
 // STRING ALLOCATION
 typedef struct {
@@ -1218,62 +1219,98 @@ int strtype(char *buf, int istype) {
     return count;  // will be > -1 and less than len
 }
 
+/***
+* converting numbers to strings
+* for both automatic and dynamic memory variables
+* counter parts for:
+*   atoi, atol, atof
+*
+* with decimal precision and thousands separator options
+*
+* intstr and intstr_new
+* lngstr and lngstr_new
+* dblstr and dblstr_new
+***/
 
 /*
-    convert integer to string using static memory
+    convert integer to string using automatic memory
 */
-char *intstr(char *buf, int n) {
-    sprintf(buf, "%d", n);
+char *intstr(char *buf, int n, bool separator) {
+    if(separator) {
+        setlocale(LC_NUMERIC, "");
+        sprintf(buf, "%'d", n);
+    } else
+        sprintf(buf, "%d", n);
     return buf;
 }
 
 /*
     convert inteter to string using dynamic memory
 */
-char *intstr_new(int n) {
+char *intstr_new(int n, bool separator) {
     int len = snprintf( NULL, 0, "%d", n );
     char* buf = malloc( len + 1 );
-    sprintf(buf, "%d", n);
+    if(separator) {
+        setlocale(LC_NUMERIC, "");
+        sprintf(buf, "%'d", n);
+    } else
+        sprintf(buf, "%d", n);
     return buf;
 }
 
 /*
-    convert long to string using static memory
+    convert long to string using automatic memory
 */
-char *lngstr(char *buf, long n) {
-    sprintf(buf, "%ld", n);
+char *lngstr(char *buf, long n, bool separator) {
+    if(separator) {
+        setlocale(LC_NUMERIC, "");
+        sprintf(buf, "%'ld", n);
+    } else
+        sprintf(buf, "%ld", n);
     return buf;
 }
 
 /*
     convert long to string using dynamic memory
 */
-char *lngstr_new(long n) {
+char *lngstr_new(long n, bool separator) {
     int len = snprintf( NULL, 0, "%ld", n );
     char* buf = malloc( len + 1 );
-    sprintf(buf, "%ld", n);
+    if(separator) {
+        setlocale(LC_NUMERIC, "");
+        sprintf(buf, "%'ld", n);
+    } else
+        sprintf(buf, "%ld", n);
     return buf;
 }
 
 /*
-    convert double to string using static memory
+    convert double to string using automatic memory
 */
-char *dblstr(char *buf, double n, int decimal) {
+char *dblstr(char *buf, double n, int decimal, bool separator) {
     char fmt[32];
-    sprintf(fmt, "%s%d%s", "%.0", decimal, "f");
-    sprintf(buf, fmt, n);
+    sprintf(fmt, "%s%d%s", "%.0", decimal, "lf");
+    if(separator) {
+        setlocale(LC_NUMERIC, "");
+        sprintf(buf, "%'lf", n);
+    } else
+        sprintf(buf, "%lf", n);
     return buf;
 }
 
 /*
     convert double to string using dynamic memory
 */
-char *dblstr_new(double n, int decimal) {
+char *dblstr_new(double n, int decimal, bool separator) {
     char fmt[32];
-    sprintf(fmt, "%s%d%s", "%.0", decimal, "f");
+    sprintf(fmt, "%s%d%s", "%.0", decimal, "lf");
     int len = snprintf( NULL, 0, fmt, n );
     char* buf = malloc( len + 1 );
-    sprintf(buf, fmt, n);
+    if(separator) {
+        setlocale(LC_NUMERIC, "");
+        sprintf(buf, "%'lf", n);
+    } else
+        sprintf(buf, "%lf", n);
     return buf;
 }
 

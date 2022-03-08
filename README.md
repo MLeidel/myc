@@ -1,3 +1,6 @@
+**_ This is still a work in progress/process  
+daily changes will break your compiles _**
+
 # Documentation
 # myc.h, mydb.h, mynet.h
 
@@ -55,8 +58,8 @@ Note: myc.h also _includes_ most of the common C headers.
 
 **[ Number to String functions (_myc.h_) ](#myntos)**
 >
-[instr](#instr 'char *intstr(char *buf, int n)') &bull;
-[instr_new](#instr_new 'char *intstr_new(int n)') &bull;
+[instr](#intstr 'char *intstr(char *buf, int n)') &bull;
+[instr_new](#intstr_new 'char *intstr_new(int n)') &bull;
 [lngstr](#lngstr 'char *lngstr(char *buf, long n)') &bull;
 [lngstr_new](#lngstr_new 'char *lngstr_new(long n)') &bull;
 [dblstr](#dblstr 'char *dblstr(char *buf, double n, int decimal)') &bull;
@@ -472,33 +475,34 @@ syntax rules.
 
 <a name="myntos"></a>
 ## Number to string functions _myc.h_ [^](#top 'top')
-Static and Dynamic memory versions.
+Static and Dynamic memory versions.  
+Thousands separator optional for all.
 
 <a name="intstr"></a>
-### char \*intstr(char \*buf, int n)
+### char \*intstr(char \*buf, int n, bool separator)
 >Returns an integer as a string.
 
 <a name="intstr_new"></a>
-### char \*intstr_new(int n)
+### char \*intstr_new(int n, bool separator)
 >Returns a new pointer to a string of an integer.  
 (Dynamic)
 
 <a name="lngstr"></a>
-### char \*lngstr(char \*buf, long n)
+### char \*lngstr(char \*buf, long n, bool separator)
 >Returns a long value as a string.
 
 <a name="lngstr_new"></a>
-### char \*lngstr_new(long n)
+### char \*lngstr_new(long n, bool separator)
 >Returns a new pointer to a string of a long value.  
 (Dynamic)
 
 <a name="dblstr"></a>
-### char \*dblstr(char \*buf, double n, int decimal)
+### char \*dblstr(char \*buf, double n, int decimal, bool separator)
 >Returns a double value as a string.  
 Requires a values for decimal places.
 
 <a name="dblstr_new"></a>
-### char \*dblstr_new(double n, int decimal)
+### char \*dblstr_new(double n, int decimal, bool separator)
 >Returns a new pointer to a string of a double value.  
 Requires a values for decimal places.  
 (Dynamic)

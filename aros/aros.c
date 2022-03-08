@@ -4,6 +4,13 @@
 
 /***
 * Demo of aros
+* Using an enum to identify fields
+*
+* typedef struct aros {
+*   int nbr_rows;  // maximum rows (columns, fields)
+*   int len_rows; // maximum length of one row (col, field)
+*   char ** get; // array of strings (fields)
+* } aros;
 ***/
 
 enum sales {CEO,SN,MODEL,PRICE,LOCATION,S1,S2,S3};  // lends to readability
