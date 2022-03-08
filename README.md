@@ -1,3 +1,4 @@
+# Documentation
 # myc.h, mydb.h, mynet.h
 
 <a name="top"></a>
@@ -6,42 +7,99 @@ This document lays out quick help for these header files:
 - mydb.h - an Sqlite3 c template and three new functions
 - mynet.h - a small Internet library with 4 new functions
 
-Note: myc.h _includes_ most of the common C headers.
+Note: myc.h also _includes_ most of the common C headers.
 
 **[ String functions (_myc.h_) ](#mycstring)**
 >
-[aros_del](#aros_del) &bull; [aros_diaplay](#aros_diaplay) &bull; [aros_new](#aros_new) &bull; [aros_parse](#aros_parse)  
-[charat](#charat) &bull; [chomp](#chomp) &bull; [concat](#concat) &bull; [contains](#contains)  
-[cstr_cpy](#cstr_cpy) &bull; [cstr_del](#cstr_del) &bull; [cstr_new](#cstr_new) &bull; [cstr_rsz](#cstr_rsz)  
-[deletechar](#deletechar) &bull; [endswith](#endswith) &bull; [equals](#equals) &bull; [equalsignor](#equalsignor)  
-[field](#field) &bull; [indexof](#indexof) &bull; [insert](#insert) &bull; [insert_new](#insert_new)  
-[lastcharat](#lastcharat) &bull; [lastindexof](#lastindexof) &bull; [leftof](#leftof) &bull; [lowercase](#lowercase)  
-[ltrim](#ltrim) &bull; [replace](#replace) &bull; [replace_new](#replace_new) &bull; [replacesz](#replacesz)  
-[rightof](#rightof) &bull; [rtrim](#rtrim) &bull; [startswith](#startswith) &bull; [strrev](#strrev)  
-[strrstr](#strrstr) &bull; [strtype](#strtype) &bull; [substr](#substr) &bull; [trim](#trim)  
-[uppercase](#uppercase) &bull; [urlencode](#urlencode)  
+[charat](#charat 'int charat(char *str, char c)') &bull;
+[chomp](#chomp 'char *chomp(char *str)') &bull;
+[concat](#concat 'char *concat(char *dest, int num, ...)') &bull;
+[contains](#contains 'int contains(char *str, char *subs)') &bull;
+[cstr_cpy](#cstr_cpy 'bool cstr_cpy(cstr s, char *data)') &bull;
+[cstr_del](#cstr_del 'void cstr_del(cstr s)') &bull;
+[cstr_new](#cstr_new 'cstr cstr_new(size_t length, char fill)') &bull;
+[cstr_rsz](#cstr_rsz 'cstr cstr_rsz(cstr s, size_t length)') &bull;
+[deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, int number)') &bull;
+[endswith](#endswith 'bool endswith (char* str, char* subs)') &bull;
+[equals](#equals 'bool equals(char *str1, char *str2)') &bull;
+[equalsignor](#equalsignor 'bool equalsignor(char *str1, char *str2)') &bull;
+[field](#field 'char *field(char *fld, char *str, char delimiter, int column, bool strip)') &bull;
+[indexof](#indexof 'int indexof (char* base, char* str)') &bull;
+[insert](#insert 'char *insert(char *buf, char *s, char *ins, size_t index)') &bull;
+[insert_new](#insert_new 'char *insert_new(char *s, char *ins, size_t index)') &bull;
+[lastcharat](#lastcharat 'int lastcharat(char* base, char c)') &bull;
+[lastindexof](#lastindexof 'int lastindexof (char* base, char* str)') &bull;
+[leftof](#leftof 'char *leftof (char *buf, char *in, char *targ, int start)') &bull;
+[lowercase](#lowercase 'char *lowercase (char *str)') &bull;
+[ltrim](#ltrim 'char *ltrim (char *str)') &bull;
+[replace](#replace 'char *replace (char *buf, char *in, char *target, char *replacement, int number)') &bull;
+[replace_new](#replace_new 'char *replace_new (char *in, char *target, char *replacement, int number)') &bull;
+[replacesz](#replacesz 'int replacesz(char *in, char *target, char *replacement, int number)') &bull;
+[rightof](#rightof 'char *rightof (char *buf, char *in, char *delim, int start)') &bull;
+[rtrim](#rtrim 'char *rtrim (char *str)') &bull;
+[startswith](#startswith 'bool startswith (char* str, char* subs)') &bull;
+[strrev](#strrev 'char *strrev (char *str)') &bull;
+[strrstr](#strrstr 'char *strrstr (char *str, char *subs)') &bull;
+[strtype](#strtype 'int strtype (char *s, int istype)') &bull;
+[substr](#substr 'char *substr (char *buf, char *in, int position, int length)') &bull;
+[trim](#trim 'char *trim (char *str)') &bull;
+[uppercase](#uppercase 'char *uppercase (char *str)') &bull;
+[urlencode](#urlencode 'char *urlencode (char *buf, char *str)')
 
+**[ Array of strings (_myc.h_) ](#aros_new)**
+>
+[aros_del](#aros_del 'void aros_del(aros a)') &bull;
+[aros_diaplay](#aros_diaplay 'void aros_diaplay (aros a)') &bull;
+[aros_new](#aros_new 'aros aros_new (int nbr_rows, int len_rows)') &bull;
+[aros_parse](#aros_parse 'int aros_parse (aros *a, char *str, char *delim)')
+
+**[ Number to String functions (_myc.h_) ](#myntos)**
+>
+[instr](#instr 'char *intstr(char *buf, int n)') &bull;
+[instr_new](#instr_new 'char *intstr_new(int n)') &bull;
+[lngstr](#lngstr 'char *lngstr(char *buf, long n)') &bull;
+[lngstr_new](#lngstr_new 'char *lngstr_new(long n)') &bull;
+[dblstr](#dblstr 'char *dblstr(char *buf, double n, int decimal)') &bull;
+[dblstr_new](#dblstr_new 'char *dblstr_new(double n, int decimal)')
 
 **[ File & Path functions (_myc.h_) ](#mycfile)**
 >
-[aros_dir](#aros_dir) &bull; [file_exists](#file_exists) &bull; [filesize](#filesize) &bull; [isfile](#isfile)  
-[getbasename](#getbasename) &bull; [getbasepath](#getbasepath) &bull; [getfullpath](#getfullpath)  
-[open_for_append](#open_for_append) &bull; [open_for_read](#open_for_read) &bull; [open_for_write](#open_for_write)  
-[readfile](#readfile) &bull; [writefile](#writefile)
+[aros_dir](#aros_dir 'aros aros_dir(const char *path, int dtype, bool sort)') &bull;
+[file_exists](#file_exists 'bool file_exists (char *filename)') &bull;
+[filesize](#filesize 'long filesize(const char *filename)') &bull;
+[isfile](#isfile 'int isfile(const char* name)') &bull;
+[getbasename](#getbasename 'char *getbasename(char *fn, bool withext)') &bull;
+[getbasepath](#getbasepath 'char *getbasepath(char *fn, char *buff)') &bull;
+[getfullpath](#getfullpath 'char *getfullpath(char *fn, char *buff)') &bull;
+[open_for_append](#open_for_append 'FILE * open_for_append (char *fname)') &bull;
+[open_for_read](#open_for_read 'FILE * open_for_read (char *fname)') &bull;
+[open_for_write](#open_for_write 'FILE * open_for_write (char *fname)') &bull;
+[readfile](#readfile 'int readfile (char *buffer, const char *filename)') &bull;
+[writefile](#writefile 'int writefile (char *buffer, const char *filename, bool append)')
 
 **[ Utility & Miscellaneous (_myc.h_) ](#mycother)**
 >
-[ARRSIZE](#ARRSIZE) &bull; 
-[date](#date) &bull; [timeout](#timeout) &bull; [multifree](#multifree) &bull; [ERRMSG](#ERRMSG)  
-[isort](#isort) &bull; [dsort](#dsort) &bull; [ssort](#ssort)  
+[ARRSIZE](#ARRSIZE 'ARRSIZE(x)') &bull;
+[date](#date 'char *date (char *format)') &bull;
+[timeout](#timeout 'void timeout (int sec, function)') &bull;
+[multifree](#multifree 'void multifree(int num, ...)') &bull;
+[ERRMSG](#ERRMSG 'ERRMSG(a, b, c) (errmsg(a, b, c, LINE))') &bull;
+[isort](#isort 'void isort (int values[], int n)') &bull;
+[dsort](#dsort 'void dsort (double values[], int n)') &bull;
+[ssort](#ssort 'void ssort (const char* arr[], int n, bool case)')
 
 **[ Database Sqlite3 functions _mydb.h_ ](#mydb)**
 >
-[mydb_count](#mydb_count) &bull; [mydb_names](#mydb_names) &bull; [mydb_open](#mydb_open)
+[mydb_count](#mydb_count 'int mydb_count(char *tablename, char *where)') &bull;
+[mydb_names](#mydb_names 'int mydb_names(char *tablename)') &bull;
+[mydb_open](#mydb_open 'void mydb_open(char * dbname)')
 
 **[ Net/Web functions _mynet.h_ ](#mynet)**
 >
-[webbrowser](#webbrowser) &bull; [webget](#webget) &bull; [webpage](#webpage) &bull; [webpost](#webpost)
+[webbrowser](#webbrowser 'bool webbrowser(const char *url)') &bull;
+[webget](#webget 'bool webget(char *request)') &bull;
+[webpage](#webpage 'bool webpage(char *mybuffer, int sz, char *url)') &bull;
+[webpost](#webpost 'bool webpost(char *url, char *vp_data)')
 
 ---
 
@@ -412,8 +470,41 @@ trailing whitespace removed.
 conforming to Uniform Resource Locator
 syntax rules.
 
+<a name="myntos"></a>
+## Number to string functions _myc.h_ [^](#top 'top')
+Static and Dynamic memory versions.
+
+<a name="intstr"></a>
+### char \*intstr(char \*buf, int n)
+>Returns an integer as a string.
+
+<a name="intstr_new"></a>
+### char \*intstr_new(int n)
+>Returns a new pointer to a string of an integer.  
+(Dynamic)
+
+<a name="lngstr"></a>
+### char \*lngstr(char \*buf, long n)
+>Returns a long value as a string.
+
+<a name="lngstr_new"></a>
+### char \*lngstr_new(long n)
+>Returns a new pointer to a string of a long value.  
+(Dynamic)
+
+<a name="dblstr"></a>
+### char \*dblstr(char \*buf, double n, int decimal)
+>Returns a double value as a string.  
+Requires a values for decimal places.
+
+<a name="dblstr_new"></a>
+### char \*dblstr_new(double n, int decimal)
+>Returns a new pointer to a string of a double value.  
+Requires a values for decimal places.  
+(Dynamic)
+
 <a name="aros_new"></a>
-## Parsing to an array _myc.h_ [^](#top 'top')
+## Parsing to an array of strings _myc.h_ [^](#top 'top')
 
 ```c
   // struct used for aros functions

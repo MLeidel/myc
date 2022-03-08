@@ -55,6 +55,13 @@ int replacechar(char*, char, char, int);
 int replacesz(char *, char *, char *, int);
 int strtype(char*, int);
 
+// NUMBER TO STRING CONVERSIONS
+char* intstr(char*, int);
+char* instr_new(int);
+char* lngstr(char*, long);
+char* lngstr_new(long);
+char* dblstr(char*, double, int);
+char* dblstr_new(double, int);
 
 // STRING ALLOCATION
 typedef struct {
@@ -1209,6 +1216,65 @@ int strtype(char *buf, int istype) {
     }
     if (count == len) return -1;  // entire alpha
     return count;  // will be > -1 and less than len
+}
+
+
+/*
+    convert integer to string using static memory
+*/
+char *intstr(char *buf, int n) {
+    sprintf(buf, "%d", n);
+    return buf;
+}
+
+/*
+    convert inteter to string using dynamic memory
+*/
+char *intstr_new(int n) {
+    int len = snprintf( NULL, 0, "%d", n );
+    char* buf = malloc( len + 1 );
+    sprintf(buf, "%d", n);
+    return buf;
+}
+
+/*
+    convert long to string using static memory
+*/
+char *lngstr(char *buf, long n) {
+    sprintf(buf, "%ld", n);
+    return buf;
+}
+
+/*
+    convert long to string using dynamic memory
+*/
+char *lngstr_new(long n) {
+    int len = snprintf( NULL, 0, "%ld", n );
+    char* buf = malloc( len + 1 );
+    sprintf(buf, "%ld", n);
+    return buf;
+}
+
+/*
+    convert double to string using static memory
+*/
+char *dblstr(char *buf, double n, int decimal) {
+    char fmt[32];
+    sprintf(fmt, "%s%d%s", "%.0", decimal, "f");
+    sprintf(buf, fmt, n);
+    return buf;
+}
+
+/*
+    convert double to string using dynamic memory
+*/
+char *dblstr_new(double n, int decimal) {
+    char fmt[32];
+    sprintf(fmt, "%s%d%s", "%.0", decimal, "f");
+    int len = snprintf( NULL, 0, fmt, n );
+    char* buf = malloc( len + 1 );
+    sprintf(buf, fmt, n);
+    return buf;
 }
 
 #endif
