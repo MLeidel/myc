@@ -2,7 +2,7 @@
 #include "../myc.h"
 
 
-int main (int argc, char *argv[]) {
+int main () {
 
     char line1[] = "pariatur.\n";
     char line2[] = "Pariatur.\n";
@@ -12,11 +12,11 @@ int main (int argc, char *argv[]) {
     if (equals(line1, line2)) {
         puts("yup!");
     } else {
-        puts("nope!");
+        puts("nope!");  // this
     }
 
-    if (equalsignorecase(line1, line2)) {
-        puts("yup!");
+    if (equalsignore(line1, line2)) {
+        puts("yup!");  // this
     } else {
         puts("nope!");
     }

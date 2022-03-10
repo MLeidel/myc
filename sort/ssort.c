@@ -19,8 +19,6 @@ void printout(int s) {
 
 int main() {
 
-  printout(ARRSIZE(strings));
-
   ssort(strings, ARRSIZE(strings), false);
 
   printout(ARRSIZE(strings));
@@ -29,5 +27,24 @@ int main() {
 
   printout(ARRSIZE(strings));
 
+/*
+    OUTPUT:
+
+    Alex
+    Bill
+    Celine
+    Dexter
+    Forest
+    Zorro
+    decimal man
+
+    Alex
+    Bill
+    Celine
+    decimal man
+    Dexter
+    Forest
+    Zorro
+*/
 }
 

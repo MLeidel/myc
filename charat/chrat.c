@@ -1,21 +1,13 @@
 #include "../myc.h"
 
 
-int main()
+void main()
 {
     char * s = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
 
+    printf("index of 'm' found at: %li\n", strchr(s, 'm') - s);  // index of 'm' found at: 4
 
-    char *p;
+    // find index of 'm' with charat
+    printf("index of 'm' found at: %i\n", charat(s, 'm'));  //  index of 'm' found at: 4
 
-
-    p = strchr(s, 'm');
-
-    printf("s found at: %p\n", s);
-    printf("first 'm' found at: %p\n", p);
-    printf("index of 'm' found at: %li\n", p - s);
-
-    printf("charat of 'm' fount at: %i\n", charat(s, 'm'));
-
-    return 0;
 }

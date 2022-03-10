@@ -25,7 +25,7 @@ Note: myc.h also _includes_ most of the common C headers.
 [deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, int number)') &bull;
 [endswith](#endswith 'bool endswith (char* str, char* subs)') &bull;
 [equals](#equals 'bool equals(char *str1, char *str2)') &bull;
-[equalsignor](#equalsignor 'bool equalsignor(char *str1, char *str2)') &bull;
+[equalsignore](#equalsignor 'bool equalsignore(char *str1, char *str2)') &bull;
 [field](#field 'char *field(char *fld, char *str, char delimiter, int column, bool strip)') &bull;
 [indexof](#indexof 'int indexof (char* base, char* str)') &bull;
 [insert](#insert 'char *insert(char *buf, char *s, char *ins, size_t index)') &bull;
@@ -220,7 +220,17 @@ The goal here is to extend (and simplify) string manipulation in C._**
 <a name="charat"></a>
 ### int charat(char \*str, char c)
 >Finds and returns the index of a character.
-On failure returns -1.
+On failure returns -1.  
+
+```c
+  char * s = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+  
+  printf("index of 'm' found at: %li\n", strchr(s, 'm') - s);  // index of 'm' found at: 4
+  
+  // find index of 'm' with charat
+  printf("index of 'm' found at: %i\n", charat(s, 'm'));  //  index of 'm' found at: 4
+
+```
 
 <a name="chomp"></a>
 ### char \*chomp(char \*str)
@@ -244,6 +254,13 @@ On failure returns -1.
 ### int contains(char \*str, char \*subs)
 >Returns a count of the number of substrings found.  
 Returns 0 if none found.
+
+```c
+  char line[] = "sed do eiusmod tempor incididunt ut labore";
+
+    printf("%d\n", contains(line, "id"));   // 2
+    printf("%d\n", contains(line, "e"));  // 4
+```
 
 <a name="cstr_new"></a>
 ### cstr cstr_new(size_t length, char fill)
@@ -292,12 +309,12 @@ boundary checking.
 with cstr_new.
 
 <a name="deletechar"></a>
-### char \*deletechar(char\* out, char\* in, char target, int number)
+### char \*deletechar(char \*buf, char \*in, char target, int number)
 >Removes characters from a string.  
-Limit replacements or 0 means all.
+Limit deletions or 0 means all.
 
 <a name="endswith"></a>
-### bool endswith (char\* str, char\* subs)
+### bool endswith (char \*str, char \*subs)
 >Returns true if string ends with specified substring,
 otherwise returns false.
 
@@ -307,7 +324,7 @@ otherwise returns false.
 otherwise returns false.
 
 <a name="equalsignor"></a>
-### bool equalsignor(char \*str1, char \*str2)
+### bool equalsignore(char \*str1, char \*str2)
 >Returns true if strings are equal
 reguardless of any case differences,
 otherwise returns false.
@@ -315,13 +332,43 @@ otherwise returns false.
 <a name="field"></a>
 ### char \*field(char \*fld, char \*str, char delimiter, int column, bool strip)
 >Returns a substring at column n within a delimited string.
-When _delimiter_ is a ' ' consecutive spaces they act as a single
+When _delimiter_ is a ' ' consecutive spaces act as a single
 delimiter. When _strip_ is _true_ leading and trailing
 whitespace is removed. Delimiters are ignored inside of
 double quotes. Double quotes are NOT REMOVED in the result.
 See _deletechar_ function to remove quote characters.
-The original string is preserved. Returns NULL if
-_column_ is out of bounds.
+The original string is preserved.  
+Returns NULL for an invalid column index.
+
+```c
+char rec[] = "Author, \"Edgar, Allan, Poe\",   American";
+char data[100];
+
+void main() {
+
+   for (int x=0; x < 3; x++) {
+      printf("field %d: [%s]\n", x, 
+                        field(data, rec, ',', x, true));
+   }
+   /* output:
+      field 0: [Author]
+      field 1: ["Edgar, Allan, Poe"]
+      field 2: [American]
+
+   */
+
+   for (int x=0; x < 3; x++) {
+      printf("field %d: [%s]\n", x, 
+                        field(data, rec, ' ', x, true));
+   }
+   /* output:
+      field 0: [Author,]
+      field 1: ["Edgar, Allan, Poe",]
+      field 2: [American]
+   */
+}
+
+```
 
 <a name="indexof"></a>
 ### int indexof (char\* base, char\* str)
@@ -349,7 +396,6 @@ Returns the modified string _buff_.
 
     puts(insert(buf, text, " appended.", strlen(text))); //
         // Lorem ipsum dolor sit amet, consectetur adipiscing elit appended.
-
 ```
 
 <a name="insert_new"></a>
@@ -373,6 +419,20 @@ a string. If not found returns -1.
 some delimiting string.  
 A starting offet may be used or set to 0.
 
+```c
+char buf[MAX_L];
+char *line = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+
+void main () {
+
+    leftof(buf, line, "amet, ", 0);  // [Lorem ipsum dolor sit ]
+    printf("[%s]\n", buf);
+
+    printf("[%s]\n", rightof(buf, line, "amet, ", 0));  
+                                // [consectetur adipiscing elit]
+}
+```
+
 <a name="lowercase"></a>
 ### char \*lowercase (char \*str)
 >Returns the string in lower case.
@@ -391,6 +451,19 @@ set to 0.
 ### char \*replace_new (char \*in, char \*target, char \*replacement, int number)
 >Replaces substrings within a string. Limit replacements or set to 0.  
 Returns a pointer to the new string allocated in the heap.
+
+```c
+    char mystr[32] = "Lorem ipsum dolor sit amet";
+
+    char * newstr = replace_new(mystr,
+                                "dolor",
+                                "labore et dolore magna",
+                                0);
+    printf("[%s] %ld\n", newstr, strlen(newstr));
+    // [Lorem ipsum labore et dolore magna sit amet] 43
+
+    free(newstr);
+```
 
 <a name="replacechar"></a>
 ### int replacechar (char \*in, char target, char replacement, int number)
@@ -458,6 +531,18 @@ ALPHA .. PUNCT is an enum in that order.
 position and a length.  
 Checks boundaries for overflow.
 
+```c
+   char s[64] = "Hello Sublime Text";
+   char data[64];
+
+   printf("\n%s\n", substr(data, s, 6, 0));  // Sublime Text
+
+   printf("%s\n", substr(data, s, 6, 7));   // Sublime
+
+   substr(data, s, 0, 13);
+   printf("%s\n", data); // Hello Sublime
+```
+
 <a name="trim"></a>
 ### char \*trim (char \*str)
 >Returns the string with both leading and
@@ -504,8 +589,17 @@ Requires a values for decimal places.
 <a name="dblstr_new"></a>
 ### char \*dblstr_new(double n, int decimal, bool separator)
 >Returns a new pointer to a string of a double value.  
-Requires a values for decimal places.  
-(Dynamic)
+Requires a values for decimal places. (Dynamic)  
+
+```c
+    puts(dblstr(snum, 321321321.321 / 3, 2, true));  // automatic memory
+    // 107,107,107.11
+
+    double n_dbl = 123456789.101 / 3;
+    char *rnum = dblstr_new(n_dbl, 4, false);  // dynamic memory
+    puts(rnum);  // 41152263.0337
+    free(rnum);
+```
 
 <a name="aros_new"></a>
 ## Parsing to an array of strings _myc.h_ [^](#top 'top')
@@ -661,6 +755,44 @@ Note: aros\_dir makes use of the aros struct.
 ### void ssort (const char\* arr[], int n, bool case)
 >Sorts an array of n strings. if _case_ is "true" the
 sort will be case-insensitive.
+
+```c
+char *strings[] = { "Zorro",
+                    "Alex",
+                    "Celine",
+                    "Bill",
+                    "Forest",
+                    "Dexter",
+                    "decimal man"};
+. . .
+  ssort(strings, ARRSIZE(strings), false);
+
+  printout(ARRSIZE(strings));
+
+  ssort(strings, ARRSIZE(strings), true);
+
+  printout(ARRSIZE(strings));
+
+/*
+    OUTPUT:
+
+    Alex
+    Bill
+    Celine
+    Dexter
+    Forest
+    Zorro
+    decimal man
+
+    Alex
+    Bill
+    Celine
+    decimal man
+    Dexter
+    Forest
+    Zorro
+*/
+```
 
 <a name="dsort"></a>
 ### void dsort (double values[], int n)

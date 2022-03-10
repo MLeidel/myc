@@ -13,12 +13,9 @@
 * dblstr and dblstr_new
 ***/
 
-double n_dbl = 12323423342.123 / 3;
 long n_lng = 23432343;
 int n_int = 1232;
 char snum[128]; // buffer to hold some results
-
-
 
 void main (int argc, char *argv[]) {
 
@@ -34,10 +31,13 @@ void main (int argc, char *argv[]) {
     puts(qnum);
     free(qnum);
 
-    puts(dblstr(snum, n_dbl, 2, true));  // automatic memory
 
-    char *rnum = dblstr_new(n_dbl, 3, false);  // dynamic memory
-    puts(rnum);
+    puts(dblstr(snum, 321321321.321 / 3, 2, true));  // automatic memory
+    // 107,107,107.11
+
+    double n_dbl = 123456789.101 / 3;
+    char *rnum = dblstr_new(n_dbl, 4, false);  // dynamic memory
+    puts(rnum);  // 41152263.0337
     free(rnum);
 
 }

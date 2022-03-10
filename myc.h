@@ -26,7 +26,7 @@
 // STRING FUNCTIONS
 bool endswith (char*, char*);
 bool equals(char*, char*);
-bool equalsignorecase(char*, char*);
+bool equalsignore(char*, char*);
 bool startswith (char*, char*);
 char* chomp(char*);
 char* concat(char*, int, ...);
@@ -185,7 +185,13 @@ void ssort(char* arr[], int n, bool ignorecase) {
 
 cstr cstr_new(size_t length, char fill) {
     cstr s;
+    if (length == 0) {
+        ERRMSG(99, true, "cstr_new malloc error 0 length");
+    }
     s.str = malloc(length * sizeof(char));
+    if (s.str == NULL) {
+        ERRMSG(errno, true, "cstr_new malloc error");
+    }
     s.length = length;
     memset(s.str, fill, s.length);
     return s;
@@ -193,6 +199,9 @@ cstr cstr_new(size_t length, char fill) {
 
 cstr cstr_rsz(cstr p, size_t length) {
     cstr z = p;
+    if (length == 0) {
+        ERRMSG(99, true, "cstr_rsz realloc error 0 length");
+    }
     z.str = realloc(p.str, length * sizeof(char));
     if (z.str == NULL) {
         ERRMSG(errno, true, "cstr_rsz realloc error");
@@ -1076,7 +1085,7 @@ bool equals(char *str1, char *str2) {
 }
 
 
-bool equalsignorecase(char *str1, char *str2) {
+bool equalsignore(char *str1, char *str2) {
     return (strcasecmp(str1, str2) == 0);
 }
 
@@ -1289,12 +1298,13 @@ char *lngstr_new(long n, bool separator) {
 */
 char *dblstr(char *buf, double n, int decimal, bool separator) {
     char fmt[32];
-    sprintf(fmt, "%s%d%s", "%.0", decimal, "lf");
     if(separator) {
         setlocale(LC_NUMERIC, "");
-        sprintf(buf, "%'lf", n);
-    } else
-        sprintf(buf, "%lf", n);
+        sprintf(fmt, "%s%d%s", "%'.0", decimal, "lf");
+    } else {
+        sprintf(fmt, "%s%d%s", "%.0", decimal, "lf");
+    }
+    sprintf(buf, fmt, n);
     return buf;
 }
 
@@ -1308,9 +1318,11 @@ char *dblstr_new(double n, int decimal, bool separator) {
     char* buf = malloc( len + 1 );
     if(separator) {
         setlocale(LC_NUMERIC, "");
-        sprintf(buf, "%'lf", n);
-    } else
-        sprintf(buf, "%lf", n);
+        sprintf(fmt, "%s%d%s", "%'.0", decimal, "lf");
+    } else {
+        sprintf(fmt, "%s%d%s", "%.0", decimal, "lf");
+    }
+    sprintf(buf, fmt, n);
     return buf;
 }
 
