@@ -22,6 +22,7 @@ Note: myc.h also _includes_ most of the common C headers.
 [cstr_del](#cstr_del 'void cstr_del(cstr s)') &bull;
 [cstr_new](#cstr_new 'cstr cstr_new(size_t length, char fill)') &bull;
 [cstr_rsz](#cstr_rsz 'cstr cstr_rsz(cstr s, size_t length)') &bull;
+[cstr_wrp](#cstr_wrp 'cstr cstr_wrp(char *in, size_t length, char sep)') &bull;
 [deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, size_t start, size_t number)') &bull;
 [endswith](#endswith 'bool endswith (char* str, char* subs)') &bull;
 [equals](#equals 'bool equals(char *str1, char *str2)') &bull;
@@ -307,6 +308,34 @@ boundary checking.
 ### void cstr_del(cstr s)
 >Frees memory for a string allocated  
 with cstr_new.
+
+<a name="cstr_wrp"></a>
+### cstr cstr_wrp(char \*in, size_t length, char sep)
+>Reformats lines of text to all have a new line width  
+where lines are separated on word boundaries.  
+Returns a new cstr with memory allocated to hold  
+the new block of text (string.)
+
+```c
+    char lines[] = "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do . . .";
+
+    cstr wrapped = cstr_wrp(lines, 30, '\n');
+    puts(wrapped.str);
+    printf("allocated: %ld\n", wrapped.length);
+    cstr_del(wrapped);
+    
+    OUTPUT:
+Lorem ipsum dolor sit amet,
+consectetur adipiscing elit,
+sed do eiusmod tempor
+incididunt ut labore et dolore
+magna aliqua. Ut enim ad minim
+veniam, quis nostrud
+exercitation ullamco laboris
+nisi ut aliquip ex ea commodo
+consequat.
+allocated: 255
+```
 
 <a name="deletechar"></a>
 ### char \*deletechar(char \*buf, char \*in, char \*target, size_t start size_t number)

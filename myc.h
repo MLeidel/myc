@@ -74,6 +74,8 @@ bool cstr_cpy(cstr, char*);
 void cstr_del(cstr);
 cstr cstr_new(size_t, char);
 cstr cstr_rsz(cstr, size_t);
+cstr cstr_wrp(char*, size_t, char);
+
 
 // ARRAY FUNCTIONS
 
@@ -225,6 +227,29 @@ void cstr_del(cstr s) {
     free(s.str);
     s.str = NULL;
     s.length = 0;
+}
+
+cstr cstr_wrp(char *in, size_t length, char sep) {
+    int pos = 0, cinx = 0, linx = 0;
+    int textsize = strlen(in);
+    int newsize = ((textsize / length) + 1) * 3; // space + newline of 1 or 2 chars
+
+    cstr cout = cstr_new(textsize + newsize, '\0');
+
+    replacechar(in, sep, ' ', 0); // remove existing newlines
+
+    while( in[pos] != '\0') {
+
+        if(++linx > length) {
+            while( in[pos] != ' ') { pos--; cinx--; }
+            linx = 0;
+            cout.str[cinx++] = sep;
+            pos++;
+        } else {
+            cout.str[cinx++] = in[pos++];
+        }
+    }
+    return cout;
 }
 
 
@@ -1332,6 +1357,33 @@ char *dblstr_new(double n, int decimal, bool separator) {
     }
     sprintf(buf, fmt, n);
     return buf;
+}
+
+/*
+    wraplines reformats lines of text to all have a new line width
+    where lines are separated on word boundaries
+*/
+cstr wraplines(char *in, size_t length, char sep) {
+    int pos = 0, cinx = 0, linx = 0;
+    int textsize = strlen(in);
+    int newsize = ((textsize / length) + 1) * 3; // space + newline of 1 or 2 chars
+
+    cstr cout = cstr_new(textsize + newsize, '\0');
+
+    replacechar(in, sep, ' ', 0); // remove existing newlines
+
+    while( in[pos] != '\0') {
+
+        if(++linx > length) {
+            while( in[pos] != ' ') { pos--; cinx--; }
+            linx = 0;
+            cout.str[cinx++] = sep;
+            pos++;
+        } else {
+            cout.str[cinx++] = in[pos++];
+        }
+    }
+    return cout;
 }
 
 #endif
