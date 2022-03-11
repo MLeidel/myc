@@ -1,6 +1,7 @@
 // deletechar.c routime
 #include "../myc.h"
 
+
 void main() {
 
    char rec[] = "\"Edgar\",  Allan , Poe,, \"American Author\"";
@@ -9,14 +10,14 @@ void main() {
    printf("\noriginal: %s\n", rec);
    puts("=========================");
 
-   printf("%s\n", deletechar(data, rec, '\"', 2));
-                  // "Edgar,  Allan , Poe,, American Author"
-   printf("%s\n", deletechar(data, rec, '\"', 0));
-                  // Edgar,  Allan , Poe,, American Author
-   deletechar(data, data, 'a', 0);
-   puts(data);    // Edgr,  Alln , Poe,, Americn Author
-   deletechar(data, data, 'o', 0);
-   puts(data);    // Edgr,  Alln , Pe,, Americn Authr
+   printf("%s\n", deletechar(data, rec, "\"", 12, 2));
+                  // "Edgar",  Allan , Poe,, American Author
+   printf("%s\n", deletechar(data, rec, "\"", 0, 2));
+                  // Edgar,  Allan , Poe,, "American Author"
+   deletechar(data, data, "Aaeiou\"", 0, 0);
+   puts(data);    // Edgr,  lln , P,, mrcn thr
+   deletechar(data, data, "Edgr, ", 0, 0);
+   puts(data);    // llnPmcnth
 
 
    puts("=========================");

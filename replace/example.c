@@ -9,7 +9,8 @@ void main () {
     char * newstr = replace_new(mystr,
                                 "dolor",
                                 "labore et dolore magna",
-                                0);
+                                0,  // start
+                                0); // how many
     printf("[%s] %ld\n", newstr, strlen(newstr));
     // [Lorem ipsum labore et dolore magna sit amet] 43
 

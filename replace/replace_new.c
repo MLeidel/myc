@@ -1,4 +1,4 @@
-// replace.c
+// replace_new.c
 #include "../myc.h"
 
 
@@ -14,15 +14,15 @@
 
 int main () {
 
-    char mystr[64] = "Hello XXX \"and\" XXX Mike";
+    char mystr[64] = "Hello XXX \"and\" XXX Joe";
 
     printf("original: %s\n\n", mystr);
 
-    char * newstr = replace_new(mystr, "X", "YY", 0);
-    puts(newstr);  // Hello YYYYYY "and" YYYYYY Mike
+    char * newstr = replace_new(mystr, "X", "YY", 0, 0);
+    puts(newstr);  // Hello YYYYYY "and" YYYYYY Joe
 
-    char * nw2str = replace_new(newstr, "YYY", "ABCDEFGHIJKLMNOPQRST", 1);
-    puts(nw2str);  // Hello ABCDEFGHIJKLMNOPQRSTYYY "and" YYYYYY Mike
+    char * nw2str = replace_new(newstr, "YYY", "ABCDEFGHIJ ", 12, 1);
+    puts(nw2str);  // Hello YYYYYY "and" ABCDEFGHIJ YYY Joe
 
     free(newstr);
     free(nw2str);

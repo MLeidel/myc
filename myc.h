@@ -30,15 +30,15 @@ bool equalsignore(char*, char*);
 bool startswith (char*, char*);
 char* chomp(char*);
 char* concat(char*, int, ...);
-char* deletechar(char*, char*, char, int);
+char* deletechar(char*, char*, char*, size_t, size_t);
 char* field(char*, char*, char, int, bool);
 char* insert(char*, char*, char*, size_t);
 char* insert_new(char*, char*, size_t);
 char* lowercase(char*);
 char* leftof(char*, char*, char*, int);
 char* ltrim(char*);
-char* replace (char*, char*, char*, char*, int);
-char* replacenew (char*, char*, char*, int);
+char* replace(char*, char*, char*, char*, size_t, size_t);
+char* replace_new (char*, char*, char*, size_t, size_t);
 char* rightof(char*, char*, char*, int);
 char* rtrim(char*);
 char* strrev(char*);
@@ -52,7 +52,7 @@ int contains(char*, char*);
 int indexof (char*, char*);
 int lastcharat(char*, char);
 int lastindexof (char*, char*);
-int replacechar(char*, char, char, int);
+int replacechar(char*, char, char, size_t);
 int replacesz(char *, char *, char *, int);
 int strtype(char*, int);
 
@@ -319,7 +319,7 @@ int replacesz(char *base, char *target, char *replacement, int nbr) {
 * NOTE: buf must be big enough to hold new string with replacements.
 * ALSO: see 'replace_new'
 ***/
-char * replace (char *buf, char *a, char *b, char *c, int number) {
+char * replace (char *buf, char *a, char *b, char *c, size_t start, size_t number) {
     int count = 0;
     int lenb = strlen(b);  // length of string to be replaced
     char *s = 0;
@@ -332,6 +332,7 @@ char * replace (char *buf, char *a, char *b, char *c, int number) {
     *buf = '\0';  // initalize return string
 
     s = ap = bfa;
+    s += start;
 
     while(1) {
         p = strstr(s, b);
@@ -355,7 +356,7 @@ char * replace (char *buf, char *a, char *b, char *c, int number) {
     return buf;
 }
 
-char * replace_new (char *a, char *b, char *c, int number) {
+char * replace_new (char *a, char *b, char *c, size_t start, size_t number) {
     int count = 0;
     int lenb = strlen(b);  // length of string to be replaced
     char *s = 0;
@@ -371,6 +372,7 @@ char * replace_new (char *a, char *b, char *c, int number) {
     *buf = '\0';  // initalize return string
 
     s = ap = bfa;
+    s += start;
 
     while(1) {
         p = strstr(s, b);
@@ -395,7 +397,7 @@ char * replace_new (char *a, char *b, char *c, int number) {
 }
 
 
-int replacechar(char *a, char b, char c, int number) {
+int replacechar(char *a, char b, char c, size_t number) {
     char *p;
     int count = 0;
 
@@ -878,15 +880,21 @@ char *concat(char *dest, int num, ...) {
 }
 
 
-char * deletechar(char *s, char *in, char targ, int number) {
+char * deletechar(char *s, char *in, char *targ, size_t start, size_t number) {
    char *t = s;
    char *p = in;
    int len = strlen(p);
    int newlen = len;
-   int count = 0;
+   int count = 0, x = 0;
 
-   for(int x=0; x < len; x++) {
-      if (*p == targ) {
+   for(x=0; x < start; x++) {
+      *t = *p;  // copy char before start index, if any
+      t++;
+      p++;
+   }
+
+   for(x = start; x < len; x++) {
+      if (strchr(targ, *p)) {
         if ( number == 0 || (number > 0 && ++count <= number) ) {
            p++;
            newlen--;

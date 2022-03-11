@@ -35,12 +35,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n sed do eiusmod tempor
     // replacesz can help ...
     char *bigbuf = malloc( replacesz(bigtext, "amet", "--", 0) );
 
-    replace(bigbuf, bigtext, "amet", "--", 0);
+    replace(bigbuf, bigtext, "amet", "--", 0, 0);
 
     puts(bigbuf);
 
     bigbuf = realloc(bigbuf, replacesz(bigtext, "sit", "X X X X X X", 0) );
-    replace(bigbuf, bigtext, "sit", "X X X X X X", 0);
+    replace(bigbuf, bigtext, "sit", "X X X X X X", 0, 0);
 
     puts(bigbuf);
 
