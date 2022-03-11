@@ -324,17 +324,18 @@ the new block of text (string.)
     printf("allocated: %ld\n", wrapped.length);
     cstr_del(wrapped);
     
-    OUTPUT:
-Lorem ipsum dolor sit amet,
-consectetur adipiscing elit,
-sed do eiusmod tempor
-incididunt ut labore et dolore
-magna aliqua. Ut enim ad minim
-veniam, quis nostrud
-exercitation ullamco laboris
-nisi ut aliquip ex ea commodo
-consequat.
-allocated: 255
+/*    OUTPUT:
+  Lorem ipsum dolor sit amet,
+  consectetur adipiscing elit,
+  sed do eiusmod tempor
+  incididunt ut labore et dolore
+  magna aliqua. Ut enim ad minim
+  veniam, quis nostrud
+  exercitation ullamco laboris
+  nisi ut aliquip ex ea commodo
+  consequat.
+  allocated: 255
+*/
 ```
 
 <a name="deletechar"></a>
