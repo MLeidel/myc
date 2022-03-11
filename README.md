@@ -22,7 +22,7 @@ Note: myc.h also _includes_ most of the common C headers.
 [cstr_del](#cstr_del 'void cstr_del(cstr s)') &bull;
 [cstr_new](#cstr_new 'cstr cstr_new(size_t length, char fill)') &bull;
 [cstr_rsz](#cstr_rsz 'cstr cstr_rsz(cstr s, size_t length)') &bull;
-[deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, int number)') &bull;
+[deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, size_t start, size_t number)') &bull;
 [endswith](#endswith 'bool endswith (char* str, char* subs)') &bull;
 [equals](#equals 'bool equals(char *str1, char *str2)') &bull;
 [equalsignore](#equalsignor 'bool equalsignore(char *str1, char *str2)') &bull;
@@ -37,7 +37,7 @@ Note: myc.h also _includes_ most of the common C headers.
 [ltrim](#ltrim 'char *ltrim (char *str)') &bull;
 [replace](#replace 'char *replace (char *buf, char *in, char *target, char *replacement, int number)') &bull;
 [replace_new](#replace_new 'char *replace_new (char *in, char *target, char *replacement, int number)') &bull;
-[replacesz](#replacesz 'int replacesz(char *in, char *target, char *replacement, int number)') &bull;
+[replacechar](#replacechar 'int replacechar(char *a, char b, char c, int number)') &bull;
 [rightof](#rightof 'char *rightof (char *buf, char *in, char *delim, int start)') &bull;
 [rtrim](#rtrim 'char *rtrim (char *str)') &bull;
 [startswith](#startswith 'bool startswith (char* str, char* subs)') &bull;
@@ -309,9 +309,24 @@ boundary checking.
 with cstr_new.
 
 <a name="deletechar"></a>
-### char \*deletechar(char \*buf, char \*in, char target, int number)
->Removes characters from a string.  
-Limit deletions or 0 means all.
+### char \*deletechar(char \*buf, char \*in, char \*target, size_t start size_t number)
+>Removes all target characters from a string.  
+Set starting index.  
+Limit deletions or 0 means no limit.  
+
+```c
+   char rec[] = "\"Edgar\",  Allan , Poe,, \"American Author\"";
+   char data[100];
+
+   printf("%s\n", deletechar(data, rec, "\"", 12, 2));
+                  // "Edgar",  Allan , Poe,, American Author
+   printf("%s\n", deletechar(data, rec, "\"", 0, 2));
+                  // Edgar,  Allan , Poe,, "American Author"
+   deletechar(data, data, "Aaeiou\"", 0, 0);
+   puts(data);    // Edgr,  lln , P,, mrcn thr
+   deletechar(data, data, "Edgr, ", 0, 0);
+   puts(data);    // llnPmcnth
+```
 
 <a name="endswith"></a>
 ### bool endswith (char \*str, char \*subs)
@@ -443,12 +458,23 @@ void main () {
 removed.
 
 <a name="replace"></a>
-### char \*replace (char \*buf, char \*in, char \*target, char \*replacement, int number)
->Replaces substrings within a string. Limit replacements or
-set to 0.
+### char \*replace (char \*buf, char \*in, char \*target, char \*replacement, size_t start, size_t number)
+>Replaces substrings within a string.  
+Set starting index and limit replacements or set to 0, no limit.
+
+```c
+    char mystr[64] = "The long and winding road.";
+    char newstr[128];
+
+    puts(replace(newstr, mystr, " ", ", ", 8, 1));
+    // The long, and winding road.
+
+    replace(newstr, newstr, "and ", "", 0, 0);
+    puts(newstr);  // The long, winding road.
+```
 
 <a name="replace_new"></a>
-### char \*replace_new (char \*in, char \*target, char \*replacement, int number)
+### char \*replace_new (char \*in, char \*target, char \*replacement, size_t start, size_t number)
 >Replaces substrings within a string. Limit replacements or set to 0.  
 Returns a pointer to the new string allocated in the heap.
 
@@ -458,7 +484,8 @@ Returns a pointer to the new string allocated in the heap.
     char * newstr = replace_new(mystr,
                                 "dolor",
                                 "labore et dolore magna",
-                                0);
+                                0,  // start
+                                0); // how many
     printf("[%s] %ld\n", newstr, strlen(newstr));
     // [Lorem ipsum labore et dolore magna sit amet] 43
 
@@ -470,6 +497,17 @@ Returns a pointer to the new string allocated in the heap.
 >Replaces characters within a string. Limit replacements or
 set to 0.  
 Returns count of replacements made.
+
+```c
+    int c = 0;
+    char line[] = "abcd abcd abcd";
+
+    c = replacechar(line, 'a', 'A', 0);
+    puts(line);  // Abcd Abcd Abcd
+
+    c = replacechar(line+5, 'd', '7', 1);
+    puts(line);  // Abcd Abc7 Abcd
+```
 
 <a name="replacesz"></a>
 ### int replacesz(char \*in, char \*target, char \*replacement, int number)
