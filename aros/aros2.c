@@ -29,7 +29,7 @@ int main()
 
     aros_display(list);  // list the list item values to console
 
-    printf("field 1 with no quotes: [%s]\n", deletechar(out, list.get[1], '\"', 0));
+    printf("field 1 with no quotes: [%s]\n", deletechar(out, list.item[1], "\"", 0, 0));
 
     aros_del(list);
 

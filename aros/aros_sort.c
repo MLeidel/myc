@@ -19,13 +19,13 @@ int main (int argc, char *argv[]) {
 
     puts("========sort and ignore case=========");
 
-    ssort(list.get, COLS, true);
+    ssort(list.item, COLS, true);
 
     aros_display(list);
 
     puts("=======sort and case sensitive=======");
 
-    ssort(list.get, COLS, false);
+    ssort(list.item, COLS, false);
 
     aros_display(list);
 

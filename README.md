@@ -450,7 +450,7 @@ Returns a pointer to the new string allocated in the heap.
 
 <a name="lastcharat"></a>
 ### int lastcharat(char* base, char c)
->Returns the __las indext__ of some character
+>Returns the __last index__ of some character
 in a string.  
 If not found returns -1.
 
@@ -551,8 +551,8 @@ memory allocation size when creating an output buffer for replace.
 ### char \*rightof (char \*buf, char \*in, char \*delim, int start)
 >Returns a pointer to a substring to the right of
 some delimiting string.  
-Set a starting index or 
-set to 0.
+Set a starting index or set to 0.  
+See [leftof](#leftof "leftof function").
 
 <a name="rtrim"></a>
 ### char \*rtrim (char \*str)
@@ -580,21 +580,37 @@ _replaces missing strrstr function_
 ### int strtype (char \*s, int istype)
 >functions to detect the type of a string.   
 Compliments ctype.h functions for characters:  
-```
-isalpha => strtype(buf, ALPHA)  
-isalnum => strtype(buf, ALNUM)  
-isdigit => strtype(buf, DIGIT)  
-isprint => strtype(buf, PRINT)  
-isspace => strtype(buf, SPACE)  
-isupper => strtype(buf, UPPER)  
-islower => strtype(buf, LOWER)  
-ispunct => strtype(buf, PUNCT)  
+
+```c
+/*
+ALPHA .. PUNCT is an enum in that order.
 Returns int:  
 -  0 = none found  
 -  N = number found  
 - -1 = all found  
+*/
+    char string[] = "Amount: 123.21";
+
+    printf("   ALPHA = %d\n", strtype(string, ALPHA));
+    printf("   ALNUM = %d\n", strtype(string, ALNUM));
+    printf("   DIGIT = %d\n", strtype(string, DIGIT));
+    printf("   PUNCT = %d\n", strtype(string, PUNCT));
+    printf("   PRINT = %d\n", strtype(string, PRINT));
+    printf("   SPACE = %d\n", strtype(string, SPACE));
+    printf("   UPPER = %d\n", strtype(string, UPPER));
+    printf("   LOWER = %d\n", strtype(string, LOWER));
+
+/* output:
+   ALPHA = 6
+   ALNUM = 11
+   DIGIT = 5
+   PUNCT = 2
+   PRINT = -1
+   SPACE = 1
+   UPPER = 1
+   LOWER = 5
+*/
 ```
-ALPHA .. PUNCT is an enum in that order.
 
 <a name="substr"></a>
 ### char \*substr (char \*buf, char \*in, int position, int length)
@@ -628,6 +644,16 @@ trailing whitespace removed.
 >Returns the string with all characters
 conforming to Uniform Resource Locator
 syntax rules.
+
+```c
+   char querystring[] = "?key=value;client=First Middle Last";
+   char encoded[64] = {'\0'};
+
+   urlencode(encoded, querystring);
+
+   puts(encoded);
+   // output: %3fkey%3dvalue%3bclient%3dFirst%20Middle%20Last
+```
 
 <a name="myntos"></a>
 ## Number to string functions _myc.h_ [^](#top 'top')

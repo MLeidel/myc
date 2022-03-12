@@ -84,7 +84,7 @@ cstr cstr_wrp(char*, size_t, char);
 typedef struct aros {
     int nbr_rows;  // maximum records (columns, fields)
     int len_rows; // maximum length of one record (col, field)
-    char** get;  // array of fields (char arrays or strings)
+    char** item;  // array of fields (char arrays or strings)
 } aros;
 
 aros aros_new(int, int);
@@ -440,6 +440,17 @@ int replacechar(char *a, char b, char c, size_t number) {
 }
 
 
+/***
+* Demo of aros
+* Using an enum to identify fields
+*
+* typedef struct aros {
+*   int nbr_rows;  // maximum rows (columns, fields)
+*   int len_rows; // maximum length of one row (col, field)
+*   char ** get; // array of strings (fields)
+* } aros;
+***/
+
 /*  aros: Parses out values from a csv string
     that may use double quotes for explicit text.
     Delimiters inside double quoted fields are
@@ -450,17 +461,17 @@ example:
 char * line; // some input csv string
 aros list = aros_new(5, 64);
 aros_parse(list, line, ",");  // returns nbr of cols found
-    list.get[0] would be the first field
+    list.item[0] would be the first field
 aros_del(list);  // free dynamic memory
 
 NOTE: the supplied input csv string is destroyed in the parsing
-NOTE: to get a single field from a csv string see the field function
+NOTE: to extract a single field from a csv string see the field function
 */
 
 // typedef struct aros {
 //     int nbr_rows;  // maximum records (columns, fields)
 //     int len_rows; // maximum length of one record (col, field)
-//     char ** get; // array of fields (array of strings)
+//     char ** item; // array of fields (array of strings)
 // } aros;
 
 aros aros_new(int col, int len) {
@@ -470,9 +481,9 @@ aros aros_new(int col, int len) {
     aros csvf;
     csvf.len_rows = len;
     csvf.nbr_rows = col;
-    csvf.get = calloc(csvf.nbr_rows, sizeof(char*));  // pointers
+    csvf.item = calloc(csvf.nbr_rows, sizeof(char*));  // pointers
     for(int x=0; x < csvf.nbr_rows; x++) {
-        csvf.get[x] = calloc(csvf.len_rows, sizeof(char));
+        csvf.item[x] = calloc(csvf.len_rows, sizeof(char));
     }
     return csvf;
 }
@@ -544,10 +555,10 @@ int aros_parse(aros csvf, char *str, char *delim) {
         if( delim[0] == ' ' && *found == '\0' ) {  // handle ' ' delimiter
             continue;  // handle consecutive space as one delimiter
         }
-        strcpy(csvf.get[finx++], trim(found));
+        strcpy(csvf.item[finx++], trim(found));
     }
 
-    qunmark(csvf.get, finx, delim[0]);  // put back hidden delimiters
+    qunmark(csvf.item, finx, delim[0]);  // put back hidden delimiters
 
     return finx;
 }
@@ -555,7 +566,7 @@ int aros_parse(aros csvf, char *str, char *delim) {
 void aros_display(aros csvf) {
     int x;
     for(x=0; x < csvf.nbr_rows; x++) {
-        printf("%03d - [%s] \n", x, csvf.get[x]);
+        printf("%03d - [%s] \n", x, csvf.item[x]);
     }
 }
 
@@ -563,14 +574,13 @@ void aros_del(aros csvf) {
     /* free each column's data then free the column pointer's
     */
     for(int col=0; col < csvf.nbr_rows; col++) {
-        free(csvf.get[col]);
-        csvf.get[col] = NULL;
+        free(csvf.item[col]);
+        csvf.item[col] = NULL;
     }
-    free(csvf.get);
-    csvf.get = NULL;
+    free(csvf.item);
+    csvf.item = NULL;
 }
 /*================= END aros .. etc. ====================*/
-
 
 int qunmark1(char *str, char delim) {
     /*  1d array version of qunmark
@@ -721,11 +731,11 @@ aros aros_dir(const char *path, int dtype, bool sort) {
                 strcpy(fpath, path);
                 strcat(fpath, de->d_name);
                 if (dtype == 0) {
-                    strcpy(plst.get[n++], de->d_name);
+                    strcpy(plst.item[n++], de->d_name);
                 } else if (dtype == 1 && isfile(fpath)) {
-                    strcpy(plst.get[n++], de->d_name);
+                    strcpy(plst.item[n++], de->d_name);
                 } else if (dtype == 2 && !isfile(fpath)) {
-                    strcpy(plst.get[n++], de->d_name);
+                    strcpy(plst.item[n++], de->d_name);
                 } else {
                     continue;
                 }
@@ -737,7 +747,7 @@ aros aros_dir(const char *path, int dtype, bool sort) {
     closedir(dr);
     if (sort) {
         printf("%d\n", plst.nbr_rows);
-        ssort(plst.get, plst.nbr_rows, true);
+        ssort(plst.item, plst.nbr_rows, true);
     }
     return plst;
 }

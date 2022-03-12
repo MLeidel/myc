@@ -2,16 +2,12 @@
 */
 #include "../myc.h"
 
-/***
-* Demo of aros
-* Using an enum to identify fields
-*
-* typedef struct aros {
-*   int nbr_rows;  // maximum rows (columns, fields)
-*   int len_rows; // maximum length of one row (col, field)
-*   char ** get; // array of strings (fields)
-* } aros;
-***/
+// typedef struct aros {
+//     int nbr_rows;  // maximum records (columns, fields)
+//     int len_rows; // maximum length of one record (col, field)
+//     char ** item; // array of fields (array of strings)
+// } aros;
+
 
 enum sales {CEO,SN,MODEL,PRICE,LOCATION,S1,S2,S3};  // lends to readability
 
@@ -46,11 +42,11 @@ int main(int argc, char const *argv[])
 
     /***
     * After each call to aros_parse items from the aros array
-    * may be accessed with list.get[n] where "list" was the aros struct
+    * may be accessed with list.item[n] where "list" was the aros struct
     * and "n" is the index into each item.
     ***/
     for(int x = S1; x <= S3; x++) {
-        total = strtod(list.get[PRICE], &eptr) * atoi(list.get[x]);
+        total = strtod(list.item[PRICE], &eptr) * atoi(list.item[x]);
         printf("field %d amount: %.2f\n", x, total);
     }
 
