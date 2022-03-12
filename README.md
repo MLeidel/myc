@@ -706,7 +706,7 @@ Requires a values for decimal places. (Dynamic)
   typedef struct aros {
     int nbr_rows;  // maximum rows (columns, fields)
     int len_rows; // maximum length of one row (col, field)
-    char ** get; // array of strings (fields)
+    char ** item; // array of strings (fields)
   } aros;
 ```
 
@@ -730,7 +730,7 @@ _aros\_init_ must used prior to this function.
 >Individual fields can now be accessed like:
 
 ```c
-  a.get[n]  // where n is the row (field) number
+  a.item[n]  // where n is the row (field) number
 ```
 
 >Delimiters are ignored inside double quotes.
