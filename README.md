@@ -1,5 +1,5 @@
-**_ This is still a work in progress/process  
-daily changes will break your compiles _**
+**_This is still a work in progress/process  
+daily changes will break your compiles_**
 
 # Documentation
 # myc.h, mydb.h, mynet.h
@@ -33,6 +33,7 @@ Note: myc.h also _includes_ most of the common C headers.
 [insert_new](#insert_new 'char *insert_new(char *s, char *ins, size_t index)') &bull;
 [lastcharat](#lastcharat 'int lastcharat(char* base, char c)') &bull;
 [lastindexof](#lastindexof 'int lastindexof (char* base, char* str)') &bull;
+[lastsub](#lastsub 'char *lastsub (char *str, char *subs)') &bull;
 [leftof](#leftof 'char *leftof (char *buf, char *in, char *targ, int start)') &bull;
 [lowercase](#lowercase 'char *lowercase (char *str)') &bull;
 [ltrim](#ltrim 'char *ltrim (char *str)') &bull;
@@ -43,7 +44,6 @@ Note: myc.h also _includes_ most of the common C headers.
 [rtrim](#rtrim 'char *rtrim (char *str)') &bull;
 [startswith](#startswith 'bool startswith (char* str, char* subs)') &bull;
 [strrev](#strrev 'char *strrev (char *str)') &bull;
-[strrstr](#strrstr 'char *strrstr (char *str, char *subs)') &bull;
 [strtype](#strtype 'int strtype (char *s, int istype)') &bull;
 [substr](#substr 'char *substr (char *buf, char *in, int position, int length)') &bull;
 [trim](#trim 'char *trim (char *str)') &bull;
@@ -59,8 +59,8 @@ Note: myc.h also _includes_ most of the common C headers.
 
 **[ Number to String functions (_myc.h_) ](#myntos)**
 >
-[instr](#intstr 'char *intstr(char *buf, int n)') &bull;
-[instr_new](#intstr_new 'char *intstr_new(int n)') &bull;
+[intstr](#intstr 'char *intstr(char *buf, int n)') &bull;
+[intstr_new](#intstr_new 'char *intstr_new(int n)') &bull;
 [lngstr](#lngstr 'char *lngstr(char *buf, long n)') &bull;
 [lngstr_new](#lngstr_new 'char *lngstr_new(long n)') &bull;
 [dblstr](#dblstr 'char *dblstr(char *buf, double n, int decimal)') &bull;
@@ -307,7 +307,7 @@ boundary checking.
 <a name="cstr_del"></a>
 ### void cstr_del(cstr s)
 >Frees memory for a string allocated  
-with cstr_new.
+with cstr_new or cstr_wrp.
 
 <a name="cstr_wrp"></a>
 ### cstr cstr_wrp(char \*in, size_t length, char sep)
@@ -339,7 +339,7 @@ the new block of text (string.)
 ```
 
 <a name="deletechar"></a>
-### char \*deletechar(char \*buf, char \*in, char \*target, size_t start size_t number)
+### char \*deletechar(char \*buf, char \*in, char \*target, size_t start, size_t number)
 >Removes all target characters from a string.  
 Set starting index.  
 Limit deletions or 0 means no limit.  
@@ -450,13 +450,15 @@ Returns a pointer to the new string allocated in the heap.
 
 <a name="lastcharat"></a>
 ### int lastcharat(char* base, char c)
->Returns the __last__ index of "c" found
-in "base". On failure returns -1.
+>Returns the __las indext__ of some character
+in a string.  
+If not found returns -1.
 
 <a name="lastindexof"></a>
 ### int lastindexof (char\* base, char\* str)
->Returns the __last__ index of a substring within
-a string. If not found returns -1.
+>Returns the __last index__ of a substring within
+a string.  
+If not found returns -1.
 
 <a name="leftof"></a>
 ### char \*leftof (char \*buf, char \*in, char \*targ, int start)
@@ -505,7 +507,8 @@ Set starting index and limit replacements or set to 0, no limit.
 
 <a name="replace_new"></a>
 ### char \*replace_new (char \*in, char \*target, char \*replacement, size_t start, size_t number)
->Replaces substrings within a string. Limit replacements or set to 0.  
+>Replaces substrings within a string.  
+Limit replacements or set to 0, no limit.  
 Returns a pointer to the new string allocated in the heap.
 
 ```c
@@ -524,8 +527,8 @@ Returns a pointer to the new string allocated in the heap.
 
 <a name="replacechar"></a>
 ### int replacechar (char \*in, char target, char replacement, int number)
->Replaces characters within a string. Limit replacements or
-set to 0.  
+>Replaces characters within a string.  
+Limit replacements or set to 0, no limit.  
 Returns count of replacements made.
 
 ```c
@@ -541,7 +544,7 @@ Returns count of replacements made.
 
 <a name="replacesz"></a>
 ### int replacesz(char \*in, char \*target, char \*replacement, int number)
->Returns a calculated new string length for a more accurate
+>Returns a calculated new string length for a more accurate  
 memory allocation size when creating an output buffer for replace.
 
 <a name="rightof"></a>
@@ -566,12 +569,12 @@ otherwise returns false.
 >Returns a string with the character
 sequence reversed.
 
-<a name="strrstr"></a>
-### char \*strrstr (char \*str, char \*subs)
->Returns a pointer to the last occurrence
-of some substring within a string. Returns NULL if
-not found. _Versions of string.h
-may or may not have this function._
+<a name="lastsub"></a>
+### char \*lastsub (char \*str, char \*subs)
+>Returns a pointer to the last occurrence  
+of some substring within a string.  
+Returns NULL if not found.  
+_replaces missing strrstr function_
 
 <a name="strtype"></a>
 ### int strtype (char \*s, int istype)

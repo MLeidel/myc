@@ -34,6 +34,7 @@ char* deletechar(char*, char*, char*, size_t, size_t);
 char* field(char*, char*, char, int, bool);
 char* insert(char*, char*, char*, size_t);
 char* insert_new(char*, char*, size_t);
+char* lastsub(char*, char*);
 char* lowercase(char*);
 char* leftof(char*, char*, char*, int);
 char* ltrim(char*);
@@ -42,7 +43,6 @@ char* replace_new (char*, char*, char*, size_t, size_t);
 char* rightof(char*, char*, char*, int);
 char* rtrim(char*);
 char* strrev(char*);
-char* strrstr(char*, char*);
 char* substr(char*, char*, int, int);
 char* trim(char*);
 char* uppercase(char*);
@@ -1004,8 +1004,8 @@ int contains(char *s, char *targ) {
 }
 
 
-char * strrstr(char *s, char *t) {
-    // does not come with gcc as far as I know
+char * lastsub(char *s, char *t) {
+    // strrstr does not come with gcc as far as I know
     char *r;
     char *i = NULL;
 
@@ -1036,7 +1036,7 @@ int indexof(char* base, char* str) {
 int lastindexof (char* base, char* str) {
     // find the last 'index' of a string in a string
     char *p;
-    p = strrstr(base, str);
+    p = lastsub(base, str);
     if (p == NULL) {
         return -1;
     } else {
@@ -1076,10 +1076,8 @@ char *substr(char *p, char *string, int position, int length) {
         ERRMSG(99, true, "substr inputs out of bounds");
 
    if (length == 0) {  // from position to end of string
-
       strcpy(p, string + position);
       return p;
-
    }
 
    for (c = 0; c < length; c++) {  // return position for length
