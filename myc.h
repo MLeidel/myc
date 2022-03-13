@@ -71,6 +71,7 @@ typedef struct {
 } cstr;
 
 bool cstr_cpy(cstr, char*);
+cstr cstr_def(const char*);
 void cstr_del(cstr);
 cstr cstr_new(size_t, char);
 cstr cstr_rsz(cstr, size_t);
@@ -137,11 +138,17 @@ char *getenv(const char *name)
 #define ERRMSG(a, b, c) (errmsg(a, b, c, __LINE__))
 
 void errmsg(int rc, bool quit, char *msg, int line) {
+    char em[64];
+    if( rc == -1 ) {
+        strcpy(em, "application defined");
+    } else {
+        strcpy(em, strerror(rc));
+    }
     fprintf(stderr,
         "ERRMSG near line: %d, errno: %d %s\n%s\n",
         line,
         rc,
-        strerror(rc),
+        em,
         msg
         );
     if (quit) {  // print additional line and terminate program
@@ -184,11 +191,25 @@ void ssort(char* arr[], int n, bool ignorecase) {
         STRINGS
 */
 
+cstr cstr_def(const char *str) {
+    cstr s;
+    int length = strlen(str);
+    if (length == 0) {
+        ERRMSG(-1, true, "cstr_def malloc error 0 length");
+    }
+    s.str = malloc((length + 1) * sizeof(char));
+    if (s.str == NULL) {
+        ERRMSG(errno, true, "cstr_def malloc error");
+    }
+    strcpy(s.str, str);
+    s.length = length;
+    return s;
+}
 
 cstr cstr_new(size_t length, char fill) {
     cstr s;
     if (length == 0) {
-        ERRMSG(99, true, "cstr_new malloc error 0 length");
+        ERRMSG(-1, true, "cstr_new malloc error 0 length");
     }
     s.str = malloc(length * sizeof(char));
     if (s.str == NULL) {
@@ -202,7 +223,7 @@ cstr cstr_new(size_t length, char fill) {
 cstr cstr_rsz(cstr p, size_t length) {
     cstr z = p;
     if (length == 0) {
-        ERRMSG(99, true, "cstr_rsz realloc error 0 length");
+        ERRMSG(-1, true, "cstr_rsz realloc error 0 length");
     }
     z.str = realloc(p.str, length * sizeof(char));
     if (z.str == NULL) {
@@ -546,7 +567,7 @@ int aros_parse(aros csvf, char *str, char *delim) {
     char * found;
 
     if (strlen(delim) != 1) {
-        ERRMSG(99, true, "aros_parse delimiter must be length of 1");
+        ERRMSG(-1, true, "aros_parse delimiter must be length of 1");
     }
 
     qmark(str, delim[0]);  // hide quoted delimiters
@@ -741,7 +762,7 @@ aros aros_dir(const char *path, int dtype, bool sort) {
                 }
             }
         } else {
-            ERRMSG(99, true, "path > 256 for aros_dir");
+            ERRMSG(-1, true, "path > 256 for aros_dir");
         }
 
     closedir(dr);
@@ -1083,7 +1104,7 @@ char *substr(char *p, char *string, int position, int length) {
    int len = strlen(string);
 
    if (!(position + length < len))
-        ERRMSG(99, true, "substr inputs out of bounds");
+        ERRMSG(-1, true, "substr inputs out of bounds");
 
    if (length == 0) {  // from position to end of string
       strcpy(p, string + position);
@@ -1263,7 +1284,7 @@ int strtype(char *buf, int istype) {
             }
             break;
         default:
-            ERRMSG(99, true, "invalid strtype enum value");
+            ERRMSG(-1, true, "invalid strtype enum value");
     }
     if (count == len) return -1;  // entire alpha
     return count;  // will be > -1 and less than len

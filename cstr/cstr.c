@@ -13,8 +13,6 @@ typedef struct {
 
 */
 
-
-
 void main() {
 
     cstr s1 = cstr_new(255, '0');
@@ -49,5 +47,18 @@ ex ea commodo consequat.");
     //cstr_cpy(s, "Hello Universe");
     strcat(s.str, " Universe");
     puts(s.str);
+    //cstr_del(s);
+
+/*
+    create a new dyamic string
+*/
+
+    cstr newstring = cstr_def("Hello World!");
+    printf("%s - %ld\n", newstring.str, newstring.length);
+
+    puts(s.str);
+
     cstr_del(s);
+    cstr_del(newstring);
+
 }

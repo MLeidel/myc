@@ -19,6 +19,7 @@ Note: myc.h also _includes_ most of the common C headers.
 [concat](#concat 'char *concat(char *dest, int num, ...)') &bull;
 [contains](#contains 'int contains(char *str, char *subs)') &bull;
 [cstr_cpy](#cstr_cpy 'bool cstr_cpy(cstr s, char *data)') &bull;
+[cstr_def](#cstr_def 'cstr cstr_def(const char *str)') &bull;
 [cstr_del](#cstr_del 'void cstr_del(cstr s)') &bull;
 [cstr_new](#cstr_new 'cstr cstr_new(size_t length, char fill)') &bull;
 [cstr_rsz](#cstr_rsz 'cstr cstr_rsz(cstr s, size_t length)') &bull;
@@ -274,6 +275,17 @@ all _fill_ character. Uses the _cstr_ struct.
         size_t length;  // allocated length
         char *str;
     } cstr;
+```
+
+<a name="cstr_def"></a>
+### cstr cstr_def(const char *str)
+>Returns a pointer to a new string allocated  
+to its size. Uses the _cstr_ struct.
+
+```c
+    cstr newstring = cstr_def("Hello World!");
+    printf("%s - %ld\n", newstring.str, newstring.length);
+    cstr_del(newstring);
 ```
 
 <a name="cstr_rsz"></a>
