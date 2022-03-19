@@ -1,5 +1,5 @@
 //filesize.c
-#include <myc.h>
+#include "../myc.h"
 
 // long filesize(const char *filename) {
 //     FILE *f;
@@ -17,12 +17,12 @@
 void main (int argc, char *argv[]) {
 
     long fs;
-    fs = filesize("filesize");
+    fs = filesize("textfile.txt");
     printf("%ld\n\n", fs);
 
 
     // example:
-    cstr f = cstr_new(filesize("textfile.txt"), '\0');
+    cstr f = cstr_def(filesize("textfile.txt"), '\0');
     int r = readfile(f.str, "textfile.txt");
     puts(f.str);
     cstr_del(f);

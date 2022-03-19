@@ -15,9 +15,9 @@ typedef struct {
 
 void main() {
 
-    cstr s1 = cstr_new(255, '0');
-    cstr s2 = cstr_new(255, '\0');
-    cstr s3 = cstr_new(500, '\0');
+    cstr s1 = cstr_def(255, '0');
+    cstr s2 = cstr_def(255, '\0');
+    cstr s3 = cstr_def(500, '\0');
 
     cstr_cpy(s1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, \
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim \
@@ -40,7 +40,7 @@ ex ea commodo consequat.");
     with reallocated size
 */
 
-    cstr s = cstr_new(10, '\0');
+    cstr s = cstr_def(10, '\0');
     cstr_cpy(s, "Hello");
     puts(s.str);
     s = cstr_rsz(s, 20);
@@ -53,7 +53,7 @@ ex ea commodo consequat.");
     create a new dyamic string
 */
 
-    cstr newstring = cstr_def("Hello World!");
+    cstr newstring = cstr_new("Hello World!");
     printf("%s - %ld\n", newstring.str, newstring.length);
 
     puts(s.str);

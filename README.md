@@ -19,9 +19,9 @@ Note: myc.h also _includes_ most of the common C headers.
 [concat](#concat 'char *concat(char *dest, int num, ...)') &bull;
 [contains](#contains 'int contains(char *str, char *subs)') &bull;
 [cstr_cpy](#cstr_cpy 'bool cstr_cpy(cstr s, char *data)') &bull;
-[cstr_def](#cstr_def 'cstr cstr_def(const char *str)') &bull;
+[cstr_new](#cstr_new 'cstr cstr_new(const char *str)') &bull;
 [cstr_del](#cstr_del 'void cstr_del(cstr s)') &bull;
-[cstr_new](#cstr_new 'cstr cstr_new(size_t length, char fill)') &bull;
+[cstr_def](#cstr_def 'cstr cstr_def(size_t length, char fill)') &bull;
 [cstr_rsz](#cstr_rsz 'cstr cstr_rsz(cstr s, size_t length)') &bull;
 [cstr_wrp](#cstr_wrp 'cstr cstr_wrp(char *in, size_t length, char sep)') &bull;
 [deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, size_t start, size_t number)') &bull;
@@ -54,7 +54,7 @@ Note: myc.h also _includes_ most of the common C headers.
 **[ Array of strings (_myc.h_) ](#aros_new)**
 >
 [aros_del](#aros_del 'void aros_del(aros a)') &bull;
-[aros_diaplay](#aros_diaplay 'void aros_diaplay (aros a)') &bull;
+[aros_display](#aros_display 'void aros_display (aros a)') &bull;
 [aros_new](#aros_new 'aros aros_new (int nbr_rows, int len_rows)') &bull;
 [aros_parse](#aros_parse 'int aros_parse (aros *a, char *str, char *delim)')
 
@@ -264,8 +264,8 @@ Returns 0 if none found.
     printf("%d\n", contains(line, "e"));  // 4
 ```
 
-<a name="cstr_new"></a>
-### cstr cstr_new(size_t length, char fill)
+<a name="cstr_def"></a>
+### cstr cstr_def(size_t length, char fill)
 >Returns a pointer to a new string allocated  
 to size _length_ and initialized with  
 all _fill_ character. Uses the _cstr_ struct.
@@ -277,13 +277,13 @@ all _fill_ character. Uses the _cstr_ struct.
     } cstr;
 ```
 
-<a name="cstr_def"></a>
-### cstr cstr_def(const char *str)
+<a name="cstr_new"></a>
+### cstr cstr_new(const char *str)
 >Returns a pointer to a new string allocated  
 to its size. Uses the _cstr_ struct.
 
 ```c
-    cstr newstring = cstr_def("Hello World!");
+    cstr newstring = cstr_new("Hello World!");
     printf("%s - %ld\n", newstring.str, newstring.length);
     cstr_del(newstring);
 ```
@@ -295,7 +295,7 @@ to size _length_ and initialized with
 all _fill_ character. Uses the _cstr_ struct.
 
 ```c
-    cstr s = cstr_new(10, '\0');
+    cstr s = cstr_def(10, '\0');
     cstr_cpy(s, "Hello");
     puts(s.str);
     s = cstr_rsz(s, 20);
@@ -310,7 +310,7 @@ all _fill_ character. Uses the _cstr_ struct.
 boundary checking.
 
 ```c
-    cstr my = cstr_new(255, '\0');
+    cstr my = cstr_def(255, '\0');
     cstr_cpy(my, "Hello World");
     puts(my.str);
     cstr_del(my);
@@ -761,8 +761,8 @@ aros_new function.
   aros_del(a);
 ```
 
-<a name="aros_diaplay"></a>
-### void aros\_diaplay (aros a)
+<a name="aros_display"></a>
+### void aros\_display (aros a)
 >Prints out column numbers and values
 to the console.
 

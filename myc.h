@@ -53,7 +53,7 @@ int indexof (char*, char*);
 int lastcharat(char*, char);
 int lastindexof (char*, char*);
 int replacechar(char*, char, char, size_t);
-int replacesz(char *, char *, char *, int);
+int replacesz(char*, char*, char*, int);
 int strtype(char*, int);
 
 // NUMBER TO STRING CONVERSIONS
@@ -71,9 +71,9 @@ typedef struct {
 } cstr;
 
 bool cstr_cpy(cstr, char*);
-cstr cstr_def(const char*);
+cstr cstr_def(size_t, char);
 void cstr_del(cstr);
-cstr cstr_new(size_t, char);
+cstr cstr_new(const char*);
 cstr cstr_rsz(cstr, size_t);
 cstr cstr_wrp(char*, size_t, char);
 
@@ -191,13 +191,14 @@ void ssort(char* arr[], int n, bool ignorecase) {
         STRINGS
 */
 
-cstr cstr_def(const char *str) {
+// create a new dynamic string (cstr pointer) from a string literal
+cstr cstr_new(const char *str) {
     cstr s;
     int length = strlen(str);
     if (length == 0) {
         ERRMSG(-1, true, "cstr_def malloc error 0 length");
     }
-    s.str = malloc((length + 1) * sizeof(char));
+    s.str = malloc(length + 1);
     if (s.str == NULL) {
         ERRMSG(errno, true, "cstr_def malloc error");
     }
@@ -206,12 +207,13 @@ cstr cstr_def(const char *str) {
     return s;
 }
 
-cstr cstr_new(size_t length, char fill) {
+// create a new dynamic string (cstr pointer) of length and fill char
+cstr cstr_def(size_t length, char fill) {
     cstr s;
     if (length == 0) {
         ERRMSG(-1, true, "cstr_new malloc error 0 length");
     }
-    s.str = malloc(length * sizeof(char));
+    s.str = malloc(length + 1);
     if (s.str == NULL) {
         ERRMSG(errno, true, "cstr_new malloc error");
     }
@@ -225,7 +227,7 @@ cstr cstr_rsz(cstr p, size_t length) {
     if (length == 0) {
         ERRMSG(-1, true, "cstr_rsz realloc error 0 length");
     }
-    z.str = realloc(p.str, length * sizeof(char));
+    z.str = realloc(p.str, length);
     if (z.str == NULL) {
         ERRMSG(errno, true, "cstr_rsz realloc error");
     }
@@ -255,7 +257,7 @@ cstr cstr_wrp(char *in, size_t length, char sep) {
     int textsize = strlen(in);
     int newsize = ((textsize / length) + 1) * 3; // space + newline of 1 or 2 chars
 
-    cstr cout = cstr_new(textsize + newsize, '\0');
+    cstr cout = cstr_def(textsize + newsize, '\0');
 
     replacechar(in, sep, ' ', 0); // remove existing newlines
 
@@ -371,7 +373,7 @@ char * replace (char *buf, char *a, char *b, char *c, size_t start, size_t numbe
     char *s = 0;
     char *ap;
     char *p;
-    char *bfa = calloc(strlen(a)+1, sizeof(char));
+    char *bfa = calloc(strlen(a)+1, 1);
     // or char *bfa = strdup(a);
 
     strcpy(bfa, a);
@@ -1397,7 +1399,7 @@ cstr wraplines(char *in, size_t length, char sep) {
     int textsize = strlen(in);
     int newsize = ((textsize / length) + 1) * 3; // space + newline of 1 or 2 chars
 
-    cstr cout = cstr_new(textsize + newsize, '\0');
+    cstr cout = cstr_def(textsize + newsize, '\0');
 
     replacechar(in, sep, ' ', 0); // remove existing newlines
 

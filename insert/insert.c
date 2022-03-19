@@ -35,7 +35,7 @@ void main() {
 
 
     // replace 'buf' with a dynamic string
-    cstr mein = cstr_new(1028, '\0');
+    cstr mein = cstr_def(1028, '\0');
     insert(mein.str, text, " AMOR", 26);
     puts(mein.str);
     cstr_del(mein);
