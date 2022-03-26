@@ -13,8 +13,8 @@
 
 void main() {
 
+    char buf[50] = {'\0'};
     char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
-    char buf[120];
 
     puts(text);
 

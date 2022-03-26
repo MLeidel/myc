@@ -3,7 +3,7 @@
 
 void main () {
 
-    char wrk[64];
+    char wrk[14];
     char *w1 = "one one one ";
     char *w2 = "two two two";
 

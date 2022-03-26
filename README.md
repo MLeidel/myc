@@ -1,8 +1,9 @@
 **_This is still a work in progress/process  
-daily changes will break your compiles_**
+daily changes could break your compiles_**
 
 # Documentation
 # myc.h, mydb.h, mynet.h
+### _making C a little more friendly_
 
 <a name="top"></a>
 This document lays out quick help for these header files:
@@ -10,12 +11,13 @@ This document lays out quick help for these header files:
 - mydb.h - an Sqlite3 c template and three new functions
 - mynet.h - a small Internet library with 4 new functions
 
-Note: myc.h also _includes_ most of the common C headers.
+Warning: myc.h also _includes_ most of the common C headers.
 
 **[ String functions (_myc.h_) ](#mycstring)**
 >
 [charat](#charat 'int charat(char *str, char c)') &bull;
 [chomp](#chomp 'char *chomp(char *str)') &bull;
+[compare](#compare 'bool compare(char *s1, char *op, char *s2) ') &bull;
 [concat](#concat 'char *concat(char *dest, int num, ...)') &bull;
 [contains](#contains 'int contains(char *str, char *subs)') &bull;
 [cstr_cpy](#cstr_cpy 'bool cstr_cpy(cstr s, char *data)') &bull;
@@ -50,6 +52,7 @@ Note: myc.h also _includes_ most of the common C headers.
 [trim](#trim 'char *trim (char *str)') &bull;
 [uppercase](#uppercase 'char *uppercase (char *str)') &bull;
 [urlencode](#urlencode 'char *urlencode (char *buf, char *str)')
+
 
 **[ Array of strings (_myc.h_) ](#aros_new)**
 >
@@ -227,7 +230,7 @@ On failure returns -1.
 ```c
   char * s = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
   
-  printf("index of 'm' found at: %li\n", strchr(s, 'm') - s);  // index of 'm' found at: 4
+  printf("index of 'm' found at: %li\n", strchr(s, 'm') - s);  // using string.h function
   
   // find index of 'm' with charat
   printf("index of 'm' found at: %i\n", charat(s, 'm'));  //  index of 'm' found at: 4
@@ -237,6 +240,20 @@ On failure returns -1.
 <a name="chomp"></a>
 ### char \*chomp(char \*str)
 >Removes record separators from the end of a string.
+
+
+<a name="compare"></a>
+### bool compare(char \*s1, char \*op, char \*s2)
+>Returns _true_ or _false_ given two strings  
+and a conditional operator __> | < | >= | <= | ==__
+
+```c
+    if (compare("Dogs", ">=", "Cats"))
+        puts("Dogs are >= Cats is TRUE");
+    
+    // it is true!
+```
+
 
 <a name="concat"></a>
 ### char \*concat(char \*dest, int num, ...)
@@ -974,7 +991,7 @@ use ERRMSG with three arguments:
 */
 
 ```
-
+Use -1 in 1st argument for non-stock error message.
 
 -------------------------------------------------------------------------------------------------------
 

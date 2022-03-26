@@ -1,7 +1,6 @@
 // equals.c
 #include "../myc.h"
 
-
 int main () {
 
     char line1[] = "pariatur.\n";

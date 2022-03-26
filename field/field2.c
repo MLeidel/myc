@@ -1,13 +1,12 @@
 /***
-* getfield function parsing for SPACE delimeter ' '
-* vs parsing for non-space character (like ',')
-* Consecutive ' ' characters treated as ONE delimiter
-*
+* field function
+* consecutive space treated as one delimiter
 ***/
 #include "../myc.h"
 
- ///////////////////////////////////////////////////////////////////
-/* TEST CASES */
+/*
+   Return field number x using space(s) as field delimiter
+*/
 
 #define DELIM ' '
 #define COLS 3

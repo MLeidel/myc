@@ -14,7 +14,7 @@ void main() {
 
    for (int x=0; x < 3; x++) {
       printf("field %d: [%s]\n", x,
-                        field(data, rec, ',', x, true));
+                        field(data, rec, ',', x, true)); // comma delimiter
    }
    /* output:
       field 0: [Author]
@@ -25,7 +25,7 @@ void main() {
 
    for (int x=0; x < 3; x++) {
       printf("field %d: [%s]\n", x,
-                        field(data, rec, ' ', x, true));
+                        field(data, rec, ' ', x, true)); // space delimiter
    }
    /* output:
       field 0: [Author,]

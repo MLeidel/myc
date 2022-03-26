@@ -15,13 +15,9 @@ int main()
 
     #define COLS 3
     char linein[] = "Author: \"Edgar, Allan, Poe\"   American";
-    char noquo[64];
-    char out[256];
+    char out[64];
 
-    // #define COLS 6
-    // char linein[] = "Author: Edgar , Allan,  Poe    American";
-
-    printf("%s\n", linein);
+    printf("%s\n\n", linein);
 
     aros list = aros_new(COLS, 64);
 
@@ -33,5 +29,6 @@ int main()
 
     aros_del(list);
 
+    puts("");
     return 0;
 }

@@ -24,10 +24,11 @@
   // DECLARATIONS
 
 // STRING FUNCTIONS
-bool endswith (char*, char*);
+bool compare(char*, char*, char*);
+bool endswith(char*, char*);
 bool equals(char*, char*);
 bool equalsignore(char*, char*);
-bool startswith (char*, char*);
+bool startswith(char*, char*);
 char* chomp(char*);
 char* concat(char*, int, ...);
 char* deletechar(char*, char*, char*, size_t, size_t);
@@ -49,9 +50,9 @@ char* uppercase(char*);
 char* urlencode(char*, char*);
 int charat(char*, char);
 int contains(char*, char*);
-int indexof (char*, char*);
+int indexof(char*, char*);
 int lastcharat(char*, char);
-int lastindexof (char*, char*);
+int lastindexof(char*, char*);
 int replacechar(char*, char, char, size_t);
 int replacesz(char*, char*, char*, int);
 int strtype(char*, int);
@@ -410,7 +411,7 @@ char * replace_new (char *a, char *b, char *c, size_t start, size_t number) {
     char *s = 0;
     char *ap;
     char *p;
-    char *bfa = calloc(strlen(a)+1, sizeof(char));
+    char *bfa = calloc(strlen(a)+1, 1);
     // or char *bfa = strdup(a);
 
     int newlen = replacesz(a, b, c, number);
@@ -1089,7 +1090,7 @@ int charat(char* base, char c) {
     }
 }
 
-
+// return index to last c in a string
 int lastcharat(char* base, char c) {
     char *p;
     p = strrchr(base, c);
@@ -1154,6 +1155,42 @@ bool equalsignore(char *str1, char *str2) {
 }
 
 
+bool compare(char *f1, char *op, char *f2) {
+    int r = strcmp(f1, f2);
+
+    if(strcmp(op, "==") == 0) {
+        if (r == 0)
+            return true;
+        else
+            return false;
+    }
+    if(strcmp(op, ">") == 0) {
+        if (r > 0)
+            return true;
+        else
+            return false;
+    }
+    if(strcmp(op, "<") == 0) {
+        if (r < 0)
+            return true;
+        else
+            return false;
+    }
+    if(strcmp(op, "<=") == 0) {
+        if (r <= 0)
+            return true;
+        else
+            return false;
+    }
+    if(strcmp(op, ">=") == 0) {
+        if (r >= 0)
+            return true;
+        else
+            return false;
+    }
+}
+
+
 char* urlencode(char* dest, char* urltext) {
     char *pout = dest;
     char *hex = "0123456789abcdef";
@@ -1178,7 +1215,7 @@ char* urlencode(char* dest, char* urltext) {
 char *insert(char *buf, char *s, char *ins, size_t inx) {
     size_t actual = strlen(s + inx); // length of insertion point to end
     size_t new = strlen(ins); // length of insertion text
-    char *str = calloc(strlen(s) + strlen(ins) + 1, sizeof(char));
+    char *str = calloc(strlen(s) + strlen(ins) + 1, 1);
     strcpy(str, s);
     char *p = str + inx; // point of insertion
     memmove(p + new, p, actual + 1); // move over -> text-after-insertion
