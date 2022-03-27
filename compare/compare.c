@@ -5,12 +5,16 @@
 * string "compare" function
 *
 * compare(STRING1, IS, STRING2)
-*                 ">"
-*                 "<"
-*                 ">="
-*                 "<="
-*                 "=="
-*         returns true or false
+*
+* Where "IS" may be any of the following:
+*
+*         ">"   |  GT  |  GreaterThan
+*         "<"   |  LT  |  LessThan
+*         ">="  |  GTE |  GreaterThanOrEqual
+*         "<="  |  LTE |  LessThanOrEqual
+*         "=="  |  EQ  |  Equal
+*         "!="  |  NEQ |  NotEqual
+*   returns true or false
 ***/
 
 void main (int argc, char *argv[]) {
@@ -20,15 +24,14 @@ void main (int argc, char *argv[]) {
        exit(EXIT_FAILURE);
     }
 
-    printf("%s  %s  %s is %s\n",
-            argv[1], argv[2], argv[3],
-            compare(argv[1], argv[2], argv[3]) ? "true" : "false");
-
+    // here must use "==,>,<,>=,..." symbols only !
+    // because "argv" will not be expanded from macros
     if (compare(argv[1], argv[2], argv[3]))
         puts("used in an 'if' statement = TRUE");
     else
         puts("used in an 'if' statement = FALSE");
 
-    if (compare("Dogs", ">=", "Cats"))
-        puts("Dogs are >= Cats is TRUE");
+    // here the macro expands into ">="
+    if (compare("Dogs", GreaterThanOrEqual, "Cats"))
+        puts("\nDogs are >= Cats is TRUE");
 }

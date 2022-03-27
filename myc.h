@@ -24,7 +24,7 @@
   // DECLARATIONS
 
 // STRING FUNCTIONS
-bool compare(char*, char*, char*);
+bool compare(char*, const char*, char*);
 bool endswith(char*, char*);
 bool equals(char*, char*);
 bool equalsignore(char*, char*);
@@ -136,9 +136,24 @@ char *getenv(const char *name)
 */
 #define MAX_L 4096  // used a lot for default string lengths
 #define ARRSIZE(x)  (sizeof(x) / sizeof((x)[0]))
-#define ERRMSG(a, b, c) (errmsg(a, b, c, __LINE__))
+#define ERRMSG(a, b, c) (errmsg(a, b, c, __LINE__, __FILE__))
 
-void errmsg(int rc, bool quit, char *msg, int line) {
+// compare
+#define GT ">"
+#define GreaterThan ">"
+#define LT "<"
+#define LessThan "<"
+#define GTE ">="
+#define GreaterThanOrEqual ">="
+#define LTE "<="
+#define LessThanOrEqual "<="
+#define EQ "=="
+#define Equal "=="
+#define NEQ "!="
+#define NotEqual "!="
+
+
+void errmsg(int rc, bool quit, char *msg, int line, char *filename) {
     char em[64];
     if( rc == -1 ) {
         strcpy(em, "application defined");
@@ -146,7 +161,8 @@ void errmsg(int rc, bool quit, char *msg, int line) {
         strcpy(em, strerror(rc));
     }
     fprintf(stderr,
-        "ERRMSG near line: %d, errno: %d %s\n%s\n",
+        "ERRMSG  %s near line: %d, errno: %d %s\n%s\n",
+        filename,
         line,
         rc,
         em,
@@ -1155,11 +1171,17 @@ bool equalsignore(char *str1, char *str2) {
 }
 
 
-bool compare(char *f1, char *op, char *f2) {
+bool compare(char *f1, const char *op, char *f2) {
     int r = strcmp(f1, f2);
 
     if(strcmp(op, "==") == 0) {
         if (r == 0)
+            return true;
+        else
+            return false;
+    }
+    if(strcmp(op, "!=") == 0) {
+        if (r != 0)
             return true;
         else
             return false;
@@ -1188,6 +1210,9 @@ bool compare(char *f1, char *op, char *f2) {
         else
             return false;
     }
+
+    // Must have been and invalid conditional value
+    ERRMSG(-1, true, "Invalid conditional const value");
 }
 
 

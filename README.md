@@ -17,7 +17,7 @@ Warning: myc.h also _includes_ most of the common C headers.
 >
 [charat](#charat 'int charat(char *str, char c)') &bull;
 [chomp](#chomp 'char *chomp(char *str)') &bull;
-[compare](#compare 'bool compare(char *s1, char *op, char *s2) ') &bull;
+[compare](#compare 'bool compare(char *s1, const char *op, char *s2) ') &bull;
 [concat](#concat 'char *concat(char *dest, int num, ...)') &bull;
 [contains](#contains 'int contains(char *str, char *subs)') &bull;
 [cstr_cpy](#cstr_cpy 'bool cstr_cpy(cstr s, char *data)') &bull;
@@ -243,16 +243,29 @@ On failure returns -1.
 
 
 <a name="compare"></a>
-### bool compare(char \*s1, char \*op, char \*s2)
+### bool compare(char \*s1, const char \*op, char \*s2)
 >Returns _true_ or _false_ given two strings  
-and a conditional operator __> | < | >= | <= | ==__
+and a conditional operator:
+>
+| symbol| macro   | macro               |
+| :---: | :-----: | :-----------------  |
+| ">"   | GT      | GreaterThan         |
+| "<"   | LT      | LessThan            |
+| ">="  | GTE     | GreaterThanOrEqual  |
+| "<="  | LTE     | LessThanOrEqual     |
+| "=="  | EQ      | Equal               |
+| "!="  | NEQ     | NotEqual            |
+
 
 ```c
     if (compare("Dogs", ">=", "Cats"))
-        puts("Dogs are >= Cats is TRUE");
+        puts("Dogs are at least equal to Cats");
     
-    // it is true!
+    if (compare("Cats", LessThan, "Dogs"))
+        ...
+    if (compare(somestring, NEQ, someotherstring)) { ...
 ```
+Note: only the "symbols == < > <= >= !=" may be used in variables
 
 
 <a name="concat"></a>
