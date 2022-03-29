@@ -111,8 +111,9 @@ int writefile(char*, const char*, bool append);
 
 // DATE/TIME & OTHER FUNCTIONS
 char* date(const char*);
-void timeout(int, void f(int));
+void flogf(FILE*, char*, ...);
 void multifree(int, ...);
+void timeout(int, void f(int));
 
 // SORTING FUNCTIONS
 void isort(int[], int);
@@ -1021,6 +1022,50 @@ void multifree(int num, ...) {
     p = NULL;
   }
   va_end(ap);
+}
+
+
+void flogf(FILE * fs, char *fmt, ...) {
+    va_list ap;
+    char *p, *sval;
+    int ival;
+    double dval;
+    long lval;
+
+    va_start (ap, fmt); /* make ap point to 1st unnamed arg */
+
+    for (p = fmt; *p; p++) {
+        if (*p != '%') {
+            fputc(*p, fs);
+            continue;
+        }
+        switch (*++p) {
+            case 'd':
+                ival= va_arg(ap, int);
+                fprintf(fs, "%d", ival);
+                break;
+            case 'f':
+                dval= va_arg(ap, double);
+                fprintf(fs, "%f", dval);
+                break;
+            case 'l':  // long (%ld)
+                lval= va_arg(ap, long);
+                fprintf(fs, "%ld", lval);
+                break;
+            case 's':
+                for (sval = va_arg(ap, char *); *sval; sval++)
+                    fputc(* sval, fs);
+                break;
+            case '$':  // for dollor format (double)
+                dval= va_arg(ap, double);
+                fprintf(fs, "%.02f", dval);
+                break;
+            default:
+                fputc(*p, fs);
+                break;
+        }
+    }
+    va_end (ap);  /* clean up when done */
 }
 
 

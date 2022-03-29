@@ -17,4 +17,6 @@ void main (int argc, char *argv[]) {
     printf("%-10s \n", s1);
     printf("%10s \n", s1);
 
+    setlocale(LC_NUMERIC, "");
+    printf("%'.2f \n", d1);
 }

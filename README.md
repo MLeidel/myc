@@ -89,6 +89,7 @@ Warning: myc.h also _includes_ most of the common C headers.
 >
 [ARRSIZE](#ARRSIZE 'ARRSIZE(x)') &bull;
 [date](#date 'char *date (char *format)') &bull;
+[flogf](#flogf 'void flogf(FILE *f, char *format, ...)') &bull;
 [timeout](#timeout 'void timeout (int sec, function)') &bull;
 [multifree](#multifree 'void multifree(int num, ...)') &bull;
 [ERRMSG](#ERRMSG 'ERRMSG(a, b, c) (errmsg(a, b, c, LINE))') &bull;
@@ -946,6 +947,45 @@ codes.)
 
 ```c
     puts(date("%B %F %r")); // February 2022-02-05 10:29:17 AM
+```
+
+<a name="flogf"></a>
+### void flogf(FILE \* fs, char \*fmt, ...)
+>A variation on fprintf to be used for logging and debugging.  
+flogf only accepts the following formats:
+>
+| symbol | type |
+| :---: | :--- |
+|f |float / double |
+|d |integer decimal |
+|s | string |
+|l |long |
+|$ |double %.2f |
+
+
+```c
+    int x = 123;
+    long y = 1231231234;
+    double amount = 98765.345;
+
+    flogf(stdout, "%s %d \n", "Value of x:", x);
+
+    flogf(stdout, "long value:%l\n", y);  // %l is long for flogf
+
+    flogf(stderr, "log: %s line: %d -- amount: %$\n", __FILE__, __LINE__, amount);
+
+    flogf(stdout, "%s Begin App!\n", date("%F %r"));
+
+    FILE * log_file = open_for_append("logfile.txt");
+    flogf(log_file, "%s Begin App!\n", date("%F %r"));
+    fclose(log_file);
+
+     /////////// OUTPUT ////////////
+    // Value of x: 123
+    // long value:1231231234
+    // log: flogf.c line: 62 -- amount: 98765.35
+    // 2022-03-29 02:12:24 PM Begin App!
+    //
 ```
 
 <a name="timeout"></a>
