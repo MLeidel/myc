@@ -1,4 +1,4 @@
-// dir.c
+// list_dir.c
 #include "../myc.h"
 
 int main (int argc, char *argv[]) {

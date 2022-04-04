@@ -3,7 +3,7 @@
 
 
 /*
-    cstr_wrp reformats lines of text to all have a new line width
+    Reformats lines of text to all have a new line width
     where lines are separated on word boundaries
 */
 
@@ -11,8 +11,8 @@ char lines[] = "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed d
 
 void main (int argc, char *argv[]) {
 
-    cstr wrapped = cstr_wrp(lines, 30, '\n');
-    puts(wrapped.str);
+    string wrapped = string_wrp(lines, 30, '\n');
+    puts(wrapped.value);
     printf("allocated: %ld\n", wrapped.length);
-    cstr_del(wrapped);
+    string_del(wrapped);
 }

@@ -1,6 +1,12 @@
 #ifndef MYC
 #define MYC
-/* myc.h */
+
+/***
+ *     _  _  _  _  ___     _  _
+ *    ( \/ )( \/ )/ __)   / )( \
+ *    / \/ \ )  /( (__  _ ) __ (
+ *    \_)(_/(__/  \___)(_)\_)(_/
+ */
 
 #include <assert.h>
 #include <stdlib.h>
@@ -22,6 +28,8 @@
 
 
   // DECLARATIONS
+
+char myc_quote_chars = '\"';    // if needed reset this variable
 
 // STRING FUNCTIONS
 bool compare(char*, const char*, char*);
@@ -66,34 +74,35 @@ char* dblstr(char*, double, int, bool);
 char* dblstr_new(double, int, bool);
 
 // STRING ALLOCATION
-typedef struct {
+typedef struct string {
     size_t length;  // allocated length
-    char *str;
-} cstr;
+    char *value;
+} string;
 
-bool cstr_cpy(cstr, char*);
-cstr cstr_def(size_t, char);
-void cstr_del(cstr);
-cstr cstr_new(const char*);
-cstr cstr_rsz(cstr, size_t);
-cstr cstr_wrp(char*, size_t, char);
+bool string_cpy(string, char*);
+void string_del(string);
+string string_def(size_t, char);
+string string_new(const char*);
+string string_rsz(string, size_t);
+string string_wrp(char*, size_t, char);
 
 
-// ARRAY FUNCTIONS
+// LIST FUNCTIONS
 
-    // ARRSIZE(x) THIS IS A MACRO
-
-typedef struct aros {
+typedef struct list {
     int nbr_rows;  // maximum records (columns, fields)
     int len_rows; // maximum length of one record (col, field)
     char** item;  // array of fields (char arrays or strings)
-} aros;
+} list;
 
-aros aros_new(int, int);
-aros aros_dir(const char*, int, bool);
-int aros_parse(aros, char*, char*);
-void aros_display(aros);
-void aros_del(aros);
+list list_def(int, int);
+list list_dir(const char*, int, bool);
+list list_read(char*, bool);
+int list_split(list, char*, char*);
+void list_copy(list, size_t, char*);
+void list_display(list);
+void list_del(list);
+void list_init(list, ...);
 
 // FILE & PATH FUNCTIONS
 bool file_exists (char*);
@@ -135,7 +144,6 @@ char *getenv(const char *name)
 /*
             MACROS, DEFINES, AND UTILITIES
 */
-#define MAX_L 4096  // used a lot for default string lengths
 #define ARRSIZE(x)  (sizeof(x) / sizeof((x)[0]))
 #define ERRMSG(a, b, c) (errmsg(a, b, c, __LINE__, __FILE__))
 
@@ -209,73 +217,73 @@ void ssort(char* arr[], int n, bool ignorecase) {
         STRINGS
 */
 
-// create a new dynamic string (cstr pointer) from a string literal
-cstr cstr_new(const char *str) {
-    cstr s;
+// create a new dynamic string (string pointer) from a string literal
+string string_new(const char *str) {
+    string s;
     int length = strlen(str);
     if (length == 0) {
-        ERRMSG(-1, true, "cstr_def malloc error 0 length");
+        ERRMSG(-1, true, "string_def malloc error 0 length");
     }
-    s.str = malloc(length + 1);
-    if (s.str == NULL) {
-        ERRMSG(errno, true, "cstr_def malloc error");
+    s.value = malloc(length + 1);
+    if (s.value == NULL) {
+        ERRMSG(errno, true, "string_def malloc error");
     }
-    strcpy(s.str, str);
+    strcpy(s.value, str);
     s.length = length;
     return s;
 }
 
-// create a new dynamic string (cstr pointer) of length and fill char
-cstr cstr_def(size_t length, char fill) {
-    cstr s;
+// create a new dynamic string (string pointer) of length and fill char
+string string_def(size_t length, char fill) {
+    string s;
     if (length == 0) {
-        ERRMSG(-1, true, "cstr_new malloc error 0 length");
+        ERRMSG(-1, true, "string_new malloc error 0 length");
     }
-    s.str = malloc(length + 1);
-    if (s.str == NULL) {
-        ERRMSG(errno, true, "cstr_new malloc error");
+    s.value = malloc(length + 1);
+    if (s.value == NULL) {
+        ERRMSG(errno, true, "string_new malloc error");
     }
     s.length = length;
-    memset(s.str, fill, s.length);
+    memset(s.value, fill, s.length);
     return s;
 }
 
-cstr cstr_rsz(cstr p, size_t length) {
-    cstr z = p;
+string string_rsz(string p, size_t length) {
+    string z = p;
     if (length == 0) {
-        ERRMSG(-1, true, "cstr_rsz realloc error 0 length");
+        ERRMSG(-1, true, "string_rsz realloc error 0 length");
     }
-    z.str = realloc(p.str, length);
-    if (z.str == NULL) {
-        ERRMSG(errno, true, "cstr_rsz realloc error");
+    z.value = realloc(p.value, length);
+    if (z.value == NULL) {
+        ERRMSG(errno, true, "string_rsz realloc error");
     }
     z.length = length;
     return z;
 }
 
-bool cstr_cpy(cstr s, char *data) {
+bool string_cpy(string s, char *data) {
     size_t len;
     len = strlen(data);
     if (len > s.length - 1) {
-        fprintf(stderr,"\ncstr_cpy boundary error\n");
+        fprintf(stderr,"\nstring_cpy boundary error\n");
         return false;
     }
-    strcpy(s.str, data);
+    strcpy(s.value, data);
     return true;
 }
 
-void cstr_del(cstr s) {
-    free(s.str);
-    s.str = NULL;
+void string_del(string s) {
+    free(s.value);
+    s.value = NULL;
     s.length = 0;
 }
 
-cstr cstr_wrp(char *in, size_t length, char sep) {
+string string_wrp(char *in, size_t length, char sep) {
     int pos = 0, cinx = 0, linx = 0;
     int textsize = strlen(in);
     int newsize = ((textsize / length) + 1) * 3; // space + newline of 1 or 2 chars
 
-    cstr cout = cstr_def(textsize + newsize, '\0');
+    string cout = string_def(textsize + newsize, '\0');
 
     replacechar(in, sep, ' ', 0); // remove existing newlines
 
@@ -284,10 +292,10 @@ cstr cstr_wrp(char *in, size_t length, char sep) {
         if(++linx > length) {
             while( in[pos] != ' ') { pos--; cinx--; }
             linx = 0;
-            cout.str[cinx++] = sep;
+            cout.value[cinx++] = sep;
             pos++;
         } else {
-            cout.str[cinx++] = in[pos++];
+            cout.value[cinx++] = in[pos++];
         }
     }
     return cout;
@@ -480,46 +488,20 @@ int replacechar(char *a, char b, char c, size_t number) {
     return count;
 }
 
-
-/***
-* Demo of aros
-* Using an enum to identify fields
-*
-* typedef struct aros {
-*   int nbr_rows;  // maximum rows (columns, fields)
-*   int len_rows; // maximum length of one row (col, field)
-*   char ** get; // array of strings (fields)
-* } aros;
-***/
-
-/*  aros: Parses out values from a csv string
-    that may use double quotes for explicit text.
-    Delimiters inside double quoted fields are
-    ignored.
-
-example:
-
-char * line; // some input csv string
-aros list = aros_new(5, 64);
-aros_parse(list, line, ",");  // returns nbr of cols found
-    list.item[0] would be the first field
-aros_del(list);  // free dynamic memory
-
-NOTE: the supplied input csv string is destroyed in the parsing
-NOTE: to extract a single field from a csv string see the field function
+/*================= BEGIN "list" .. etc. ====================*/
+/*
+    typedef struct list {
+        int nbr_rows;  // maximum records (columns, fields)
+        int len_rows; // maximum length of one record (col, field)
+        char ** item; // array of fields (array of strings)
+    } list;
 */
 
-// typedef struct aros {
-//     int nbr_rows;  // maximum records (columns, fields)
-//     int len_rows; // maximum length of one record (col, field)
-//     char ** item; // array of fields (array of strings)
-// } aros;
-
-aros aros_new(int col, int len) {
+list list_def(int col, int len) {
      /* Initialize variables and allocate memory
-        Return pointer to aros struct
+        Return pointer to list struct
      */
-    aros csvf;
+    list csvf;
     csvf.len_rows = len;
     csvf.nbr_rows = col;
     csvf.item = calloc(csvf.nbr_rows, sizeof(char*));  // pointers
@@ -538,7 +520,7 @@ char * qmark(char * str, char delim) {
 
     while(*p != '\0') {
 
-        if (*p == '\"') { // quotes found
+        if (*p == myc_quote_chars) { // quotes found
             if (marking) {
                 marking = false;
                 p++;
@@ -561,7 +543,7 @@ char * qmark(char * str, char delim) {
 int qunmark(char **str, int sz, char delim) {
     /* Un-hides the delimiters found within dbl quotes
        of fields now residing in the fields array/list.
-       Called from aros.
+       Called from list.
     */
     char **p = str;
     char *t;
@@ -580,14 +562,14 @@ int qunmark(char **str, int sz, char delim) {
     return count;
 }
 
-int aros_parse(aros csvf, char *str, char *delim) {
+int list_split(list csvf, char *str, char *delim) {
     /*  parse the csv fields into the array elements
     */
     int finx = 0;
     char * found;
 
     if (strlen(delim) != 1) {
-        ERRMSG(-1, true, "aros_parse delimiter must be length of 1");
+        ERRMSG(-1, true, "list_parse delimiter must be length of 1");
     }
 
     qmark(str, delim[0]);  // hide quoted delimiters
@@ -604,14 +586,14 @@ int aros_parse(aros csvf, char *str, char *delim) {
     return finx;
 }
 
-void aros_display(aros csvf) {
+void list_display(list csvf) {
     int x;
     for(x=0; x < csvf.nbr_rows; x++) {
         printf("%03d - [%s] \n", x, csvf.item[x]);
     }
 }
 
-void aros_del(aros csvf) {
+void list_del(list csvf) {
     /* free each column's data then free the column pointer's
     */
     for(int col=0; col < csvf.nbr_rows; col++) {
@@ -621,7 +603,76 @@ void aros_del(aros csvf) {
     free(csvf.item);
     csvf.item = NULL;
 }
-/*================= END aros .. etc. ====================*/
+
+/*  Very safe: both index and string length are checked
+*/
+void list_copy(list lst, size_t element, char *str) {
+    if(strlen(str) > lst.len_rows)
+        ERRMSG(-1, true, "list_copy item too large for def");
+    if(element > lst.nbr_rows)
+        ERRMSG(-1, true, "list_copy item index overflowing");
+    strcpy(lst.item[element], str);
+}
+
+/*  Caution: will segfault if number of args
+             does not match the number of rows!
+*/
+void list_init(list lst, ...) {
+    va_list ap;
+    string tmp = string_def(lst.len_rows * 3, '\0');
+
+    va_start (ap, lst); /* make ap point to 1st unnamed arg */
+
+    for(int x=0; x<lst.nbr_rows; x++) {
+        strcpy(tmp.value, va_arg(ap, char*));
+        if(strlen(tmp.value) > lst.len_rows)
+            ERRMSG(-1, true, "list_init item too large for def");
+        strcpy(lst.item[x], tmp.value);
+    }
+    va_end (ap);
+    string_del(tmp);
+}
+
+/*  flines reads a text file and finds number
+    of lines and longest line.
+    used in list_read function
+*/
+void flines(int count[2], char * fn) {
+    char line[1000000]; // 1MB
+    int maxline = 0;
+    FILE * f = open_for_read(fn);
+    while(1) {
+        fgets(line, 1000000, f);
+        count[0]++;
+        if(feof(f)) break;
+        if(strlen(line) > maxline) {
+            maxline = strlen(line);
+        }
+    }
+    count[1] = maxline;
+    fclose(f);
+}
+
+/*
+    list_read reads a text file's lines
+    into a list and returns the new list.
+*/
+list list_read(char *filename, bool strip) {
+    int c[2] = {0, 0};  // lines, longest line
+    flines(c, filename);
+    list lines = list_def(c[0], c[1]);
+    FILE * f = open_for_read(filename);
+    for(int x=0; x < lines.nbr_rows; x++) {
+        fgets(lines.item[x], lines.len_rows + 1, f);
+        chomp(lines.item[x]);
+        if (strip)
+            trim(lines.item[x]);
+    }
+    fclose(f);
+    return lines;
+}
+
+/*================= END list .. etc. ====================*/
 
 int qunmark1(char *str, char delim) {
     /*  1d array version of qunmark
@@ -709,6 +760,7 @@ char * field(char *r, char * s, char deli, int coln, bool strip) {
    }  // end while
 }    // end field
 
+
 int isfile(const char* name)
 {
     DIR* directory = opendir(name);
@@ -750,7 +802,7 @@ int pathsize(const char *path, int dtype) {
     return count;
 }
 
-aros aros_dir(const char *path, int dtype, bool sort) {
+list list_dir(const char *path, int dtype, bool sort) {
     /*
      dir = 0 files and directories
      dir = 1 just files
@@ -759,12 +811,12 @@ aros aros_dir(const char *path, int dtype, bool sort) {
     struct dirent *de;
     int n = 0;
 
-    aros plst = aros_new(pathsize(path, dtype), 256);
+    list plst = list_def(pathsize(path, dtype), 256);
     DIR *dr = opendir(path);
     char fpath[256];
 
     if (dr == NULL)  {
-        ERRMSG(errno, true, "invalid path for aros_dir");
+        ERRMSG(errno, true, "invalid path for list_dir");
     }
     while ((de = readdir(dr)) != NULL)
         if (strlen(de->d_name) < plst.len_rows) {
@@ -782,7 +834,7 @@ aros aros_dir(const char *path, int dtype, bool sort) {
                 }
             }
         } else {
-            ERRMSG(-1, true, "path > 256 for aros_dir");
+            ERRMSG(-1, true, "path > 256 for list_dir");
         }
 
     closedir(dr);
@@ -1495,33 +1547,6 @@ char *dblstr_new(double n, int decimal, bool separator) {
     }
     sprintf(buf, fmt, n);
     return buf;
-}
-
-/*
-    wraplines reformats lines of text to all have a new line width
-    where lines are separated on word boundaries
-*/
-cstr wraplines(char *in, size_t length, char sep) {
-    int pos = 0, cinx = 0, linx = 0;
-    int textsize = strlen(in);
-    int newsize = ((textsize / length) + 1) * 3; // space + newline of 1 or 2 chars
-
-    cstr cout = cstr_def(textsize + newsize, '\0');
-
-    replacechar(in, sep, ' ', 0); // remove existing newlines
-
-    while( in[pos] != '\0') {
-
-        if(++linx > length) {
-            while( in[pos] != ' ') { pos--; cinx--; }
-            linx = 0;
-            cout.str[cinx++] = sep;
-            pos++;
-        } else {
-            cout.str[cinx++] = in[pos++];
-        }
-    }
-    return cout;
 }
 
 #endif

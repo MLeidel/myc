@@ -3,7 +3,6 @@ daily changes could break your compiles_**
 
 # Documentation
 # myc.h, mydb.h, mynet.h
-### _making C a little more friendly_
 
 <a name="top"></a>
 This document lays out quick help for these header files:
@@ -13,19 +12,19 @@ This document lays out quick help for these header files:
 
 Warning: myc.h also _includes_ most of the common C headers.
 
-**[ String functions (_myc.h_) ](#mycstring)**
+**[ String functions (_myc.h_) ](#mystringing)**
 >
 [charat](#charat 'int charat(char *str, char c)') &bull;
 [chomp](#chomp 'char *chomp(char *str)') &bull;
 [compare](#compare 'bool compare(char *s1, const char *op, char *s2) ') &bull;
 [concat](#concat 'char *concat(char *dest, int num, ...)') &bull;
 [contains](#contains 'int contains(char *str, char *subs)') &bull;
-[cstr_cpy](#cstr_cpy 'bool cstr_cpy(cstr s, char *data)') &bull;
-[cstr_new](#cstr_new 'cstr cstr_new(const char *str)') &bull;
-[cstr_del](#cstr_del 'void cstr_del(cstr s)') &bull;
-[cstr_def](#cstr_def 'cstr cstr_def(size_t length, char fill)') &bull;
-[cstr_rsz](#cstr_rsz 'cstr cstr_rsz(cstr s, size_t length)') &bull;
-[cstr_wrp](#cstr_wrp 'cstr cstr_wrp(char *in, size_t length, char sep)') &bull;
+[string_cpy](#string_cpy 'bool string_cpy(string s, char *data)') &bull;
+[string_new](#string_new 'string string_new(const char *str)') &bull;
+[string_del](#string_del 'void string_del(string s)') &bull;
+[string_def](#string_def 'string string_def(size_t length, char fill)') &bull;
+[string_rsz](#string_rsz 'string string_rsz(string s, size_t length)') &bull;
+[string_wrp](#string_wrp 'string string_wrp(char *in, size_t length, char sep)') &bull;
 [deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, size_t start, size_t number)') &bull;
 [endswith](#endswith 'bool endswith (char* str, char* subs)') &bull;
 [equals](#equals 'bool equals(char *str1, char *str2)') &bull;
@@ -54,12 +53,16 @@ Warning: myc.h also _includes_ most of the common C headers.
 [urlencode](#urlencode 'char *urlencode (char *buf, char *str)')
 
 
-**[ Array of strings (_myc.h_) ](#aros_new)**
+**[ List - Array of strings (_myc.h_) ](#list_def)**
 >
-[aros_del](#aros_del 'void aros_del(aros a)') &bull;
-[aros_display](#aros_display 'void aros_display (aros a)') &bull;
-[aros_new](#aros_new 'aros aros_new (int nbr_rows, int len_rows)') &bull;
-[aros_parse](#aros_parse 'int aros_parse (aros *a, char *str, char *delim)')
+[list_copy](#list_copy 'void list_copy(list lst, size_t element, char *str)') &bull;
+[list_del](#list_del 'void list_del(list a)') &bull;
+[list_dir](#list_dir 'list list_dir(const char *path, int dtype, bool sort)') &bull;
+[list_display](#list_display 'void list_display (list a)') &bull;
+[list_def](#list_def 'list list_def (int nbr_rows, int len_rows)') &bull;
+[list_init](#list_init 'void list_init(list lst, ...)') &bull;
+[list_read](#list_read 'list list_read(char *filename, bool strip)') &bull;
+[list_split](#list_split 'int list_split (list *a, char *str, char *delim)')
 
 **[ Number to String functions (_myc.h_) ](#myntos)**
 >
@@ -72,7 +75,6 @@ Warning: myc.h also _includes_ most of the common C headers.
 
 **[ File & Path functions (_myc.h_) ](#mycfile)**
 >
-[aros_dir](#aros_dir 'aros aros_dir(const char *path, int dtype, bool sort)') &bull;
 [file_exists](#file_exists 'bool file_exists (char *filename)') &bull;
 [filesize](#filesize 'long filesize(const char *filename)') &bull;
 [isfile](#isfile 'int isfile(const char* name)') &bull;
@@ -210,12 +212,12 @@ string is broken into substrings, each terminating with a '\0', where the '\0' r
 characters contained in string s2. The first call uses the string to be tokenized as s1;
 subsequent calls use NULL as the first argument. A pointer to the beginning of the
 current token is returned; NULL is returned if there are no more tokens.
-consider using _aros..._ in myc.h.  
+consider using _list..._ in myc.h.  
 _Warning: this changes the original string!_
 
 ---------------------------------------------------------------------------------------
 
-<a name="mycstring"></a>
+<a name="mystringing"></a>
 ## STRING functions _myc.h_ [^](#top 'top')
 
 **_I've tried not to duplicate the existing string.h functions.  
@@ -295,77 +297,77 @@ Returns 0 if none found.
     printf("%d\n", contains(line, "e"));  // 4
 ```
 
-<a name="cstr_def"></a>
-### cstr cstr_def(size_t length, char fill)
+<a name="string_def"></a>
+### string string_def(size_t length, char fill)
 >Returns a pointer to a new string allocated  
 to size _length_ and initialized with  
-all _fill_ character. Uses the _cstr_ struct.
+all _fill_ character. Uses the _string_ struct.
 
 ```c
-    typedef struct {
+    typedef struct string {
         size_t length;  // allocated length
-        char *str;
-    } cstr;
+        char *value;
+    } string;
 ```
 
-<a name="cstr_new"></a>
-### cstr cstr_new(const char *str)
+<a name="string_new"></a>
+### string string_new(const char *str)
 >Returns a pointer to a new string allocated  
-to its size. Uses the _cstr_ struct.
+to its size. Uses the _string_ struct.
 
 ```c
-    cstr newstring = cstr_new("Hello World!");
-    printf("%s - %ld\n", newstring.str, newstring.length);
-    cstr_del(newstring);
+    string newstring = string_new("Hello World!");
+    printf("%s - %ld\n", newstring.value, newstring.length);
+    string_del(newstring);
 ```
 
-<a name="cstr_rsz"></a>
-### cstr cstr_rsz(cstr s, size_t length)
+<a name="string_rsz"></a>
+### string string_rsz(string s, size_t length)
 >Returns a pointer to a new string allocated  
 to size _length_ and initialized with  
-all _fill_ character. Uses the _cstr_ struct.
+all _fill_ character. Uses the _string_ struct.
 
 ```c
-    cstr s = cstr_def(10, '\0');
-    cstr_cpy(s, "Hello");
-    puts(s.str);
-    s = cstr_rsz(s, 20);
-    strcat(s.str, " Universe");
-    puts(s.str); // Hello Universe
-    cstr_del(s);
+    string s = string_def(10, '\0');
+    string_cpy(s, "Hello");
+    puts(s.value);
+    s = string_rsz(s, 20);
+    strcat(s.value, " Universe");
+    puts(s.value); // Hello Universe
+    string_del(s);
 ```
 
-<a name="cstr_cpy"></a>
-### bool cstr_cpy(cstr s, char *data)
->Copies a string into a cstr string with  
+<a name="string_cpy"></a>
+### bool string_cpy(string s, char *data)
+>Copies a string into a string string with  
 boundary checking.
 
 ```c
-    cstr my = cstr_def(255, '\0');
-    cstr_cpy(my, "Hello World");
-    puts(my.str);
-    cstr_del(my);
+    string mystr = string_def(255, '\0');
+    string_cpy(mystr);
+    puts(mystr.value);
+    string_del(mystr);
 ```
 
-<a name="cstr_del"></a>
-### void cstr_del(cstr s)
+<a name="string_del"></a>
+### void string_del(string s)
 >Frees memory for a string allocated  
-with cstr_new or cstr_wrp.
+with string_new or string_wrp.
 
-<a name="cstr_wrp"></a>
-### cstr cstr_wrp(char \*in, size_t length, char sep)
+<a name="string_wrp"></a>
+### string string_wrp(char \*in, size_t length, char sep)
 >Reformats lines of text to all have a new line width  
 where lines are separated on word boundaries.  
-Returns a new cstr with memory allocated to hold  
+Returns a new string with memory allocated to hold  
 the new block of text (string.)
 
 ```c
     char lines[] = "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do . . .";
 
-    cstr wrapped = cstr_wrp(lines, 30, '\n');
-    puts(wrapped.str);
+    string wrapped = string_wrp(lines, 30, '\n');
+    puts(wrapped.value);
     printf("allocated: %ld\n", wrapped.length);
-    cstr_del(wrapped);
+    string_del(wrapped);
     
 /*    OUTPUT:
   Lorem ipsum dolor sit amet,
@@ -741,61 +743,126 @@ Requires a values for decimal places. (Dynamic)
     free(rnum);
 ```
 
-<a name="aros_new"></a>
-## Parsing to an array of strings _myc.h_ [^](#top 'top')
+<a name="list_def"></a>
+## Creating a List (array of strings) _myc.h_ [^](#top 'top')
 
 ```c
-  // struct used for aros functions
-  typedef struct aros {
-    int nbr_rows;  // maximum rows (columns, fields)
-    int len_rows; // maximum length of one row (col, field)
+  // struct used for list functions
+  typedef struct list {
+    int nbr_rows;   // maximum rows (columns, fields)
+    int len_rows;  // maximum length of one row (col, field)
     char ** item; // array of strings (fields)
-  } aros;
+  } list;
 ```
 
-### aros aros_new (int _nbr\_rows_, int _len\_rows_)
->Returns a *aros* structure pointer with memory
-allocated to hold an array of strings (fields).  
+### list list_def (int _nbr\_rows_, int _len\_rows_)
+>Returns a *list* structure variable with memory
+allocated to hold an array of strings.  
 
 ```c
-  aros a = aros_new(20, 65);
+  list a = list_def(20, 65);  // 20 items
 ```
-<a name="aros_parse"></a>
-### int aros\_parse (aros \*a, char \*str, char \*delim)
+
+<a name="list_init"></a>
+### void list_init(list lst, ...)
+>After creating a new list use this to  
+initialize each element with a string literal.  
+NOTE: Each list item must be initialized.
+
+```c
+    list my_list = list_def(5, 32);
+
+    list_init( my_list,
+               "first string",
+               "second string",
+               "third string",
+               "fourth string",
+               "fifth string" );
+```
+
+<a name="list_copy"></a>
+### void list_copy(list lst, size_t element, char *str)
+>After creating a new list use this to  
+initialize an element with a string literal.  
+
+```c
+    list my_list = list_def(5, 32);
+
+    list_copy(my_list, 0, "F I R S T  STRING");
+    list_copy(my_list, 4, "L A S T  STRING");
+```
+
+
+<a name="list_split"></a>
+### int list\_split (list \*a, char \*str, char \*delim)
 >Splits a delimited string into an array of strings (fields.)  
 Returns _int_ of actual number parsed.  
-_aros\_init_ must used prior to this function.
+_list\_def_ must used prior to this function.  
+Length of delimiter must be exactly 1.
 
 ```c
-  aros a = aros_new(20, 65);
-  int n = aros_parse(a, line, ",");
+  list a = list_def(20, 65);
+  int n = list_split(a, line_in, ",");
 ```
->Individual fields can now be accessed like:
+>Individual items (fields) can now be accessed like:
 
 ```c
-  a.item[n]  // where n is the row (field) number
+  a.item[n]  // where n is the item (field) number
 ```
 
 >Delimiters are ignored inside double quotes.
 Double quotes are NOT REMOVED from the result fields.
-See _delchar_ function for removing quote characters.
+See _deletechar_ function for removing quote characters.
 When delimiter is " " (space) consecutive spaces
 are treated as one delimiter. The input string is distroyed 
 in the process.
 
-<a name="aros_del"></a>
-### void aros\_del(aros a)
+<a name="list_del"></a>
+### void list\_del(list a)
 >Frees memory allocated by
-aros_new function.
+list_def function.
 
 ```c
-  aros_del(a);
+  list a = list_def(20, 32);
+  // process ...
+  list_del(a);
 ```
 
-<a name="aros_display"></a>
-### void aros\_display (aros a)
+<a name="list_display"></a>
+### void list\_display (list a)
 >Prints out column numbers and values
 to the console.
+
+<a name="list_read"></a>
+### list list_read(char *filename, bool strip)  
+>Reads a text file's lines into a list and  
+returns the new list. Ending line separator  
+is removed. If _strip_ is _true_ then leading  
+and trailing whitespace is removed.
+
+```c
+    list flst = list_read("test.txt", true);
+    list_display(flst);
+    list_del(flst);
+```
+
+<a name="list_dir"></a>
+### list list_dir(const char *path, int dtype, bool sort)
+>Returns a list struct filled with file and/or directory
+names for _path_. If _sort_ is "true" then the names
+will be sorted in ascending order.  
+_dtype_ must be set to:  
+  dir = 0 files and directories  
+  dir = 1 just files  
+  dir = 2 just directories  
+Note: list\_dir makes use of the list struct.
+
+```c
+    list d = list_dir("/home/user/", 1, true);
+    list_display(d);
+    list_del(d);
+
+```
 
 ------------------------------------------------------------------------------------------------------
 
@@ -858,24 +925,6 @@ returns -1 if unsuccessful.
 >Writes _buffer_ to the contents of _filename_ or
 returns -1 if unsuccessful.  
 Appends to file if _append_ is true.
-
-<a name="aros_dir"></a>
-### aros aros_dir(const char *path, int dtype, bool sort)
->Returns a aros struct filled with file and/or directory
-names for _path_. If _sort_ is "true" then the names
-will be sorted in ascending order.  
-_dtype_ must be set to:  
-  dir = 0 files and directories  
-  dir = 1 just files  
-  dir = 2 just directories  
-Note: aros\_dir makes use of the aros struct.
-
-```c
-    aros d = aros_dir("/home/user/", 1, true);
-    aros_display(d);
-    aros_del(d);
-
-```
 
 --------------------------------------------------------------------------------------------------
 

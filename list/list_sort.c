@@ -1,8 +1,8 @@
-// aros_sort.c
+// list_sort.c
 #include "../myc.h"
 
 
-int main (int argc, char *argv[]) {
+void main () {
 
     #define COLS 5
     char ary[] = "Sort this list, kefer, 123.55, poe, Edgar";
@@ -11,26 +11,25 @@ int main (int argc, char *argv[]) {
 
     puts("========list before sorting=========");
 
-    aros list = aros_new(COLS, 32);
+    list my_list = list_def(COLS, 32);
 
-    aros_parse(list, ary, ",");
+    list_split(my_list, ary, ",");
 
-    aros_display(list);
+    list_display(my_list);
 
     puts("========sort and ignore case=========");
 
-    ssort(list.item, COLS, true);
+    ssort(my_list.item, COLS, true);
 
-    aros_display(list);
+    list_display(my_list);
 
     puts("=======sort and case sensitive=======");
 
-    ssort(list.item, COLS, false);
+    ssort(my_list.item, COLS, false);
 
-    aros_display(list);
+    list_display(my_list);
 
 
-    aros_del(list);
+    list_del(my_list);
 
-    return 0;
 }
