@@ -468,7 +468,7 @@ If not found returns -1.
 <a name="insert"></a>
 ### char \*insert(char \*buf, char \*s, char \*ins, size_t index)
 >Inserts a substring into a string at index.  
-Returns the modified string _buff_.
+The new string is copied into the first argument and returned.
 
 ```c
     char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
@@ -507,9 +507,10 @@ If not found returns -1.
 
 <a name="leftof"></a>
 ### char \*leftof (char \*buf, char \*in, char \*targ, int start)
->Returns a pointer to a substring to the left of
+>Returns a pointer to a substring to the left of  
 some delimiting string.  
-A starting offet may be used or set to 0.
+A starting offet may be used or set to 0.  
+Also see _rightof_.
 
 ```c
 char buf[MAX_L];
@@ -659,8 +660,8 @@ Returns int:
 
 <a name="substr"></a>
 ### char \*substr (char \*buf, char \*in, int position, int length)
->Returns a substring within a string located by a start
-position and a length.  
+>Copies a substring within a string, located by a start  
+position and a length, into a buffer, and returns it.  
 Checks boundaries for overflow.
 
 ```c
@@ -707,7 +708,8 @@ Thousands separator optional for all.
 
 <a name="intstr"></a>
 ### char \*intstr(char \*buf, int n, bool separator)
->Returns an integer as a string.
+>Copies an integer into a string buffer and  
+returns pointer to it.
 
 <a name="intstr_new"></a>
 ### char \*intstr_new(int n, bool separator)
@@ -716,7 +718,8 @@ Thousands separator optional for all.
 
 <a name="lngstr"></a>
 ### char \*lngstr(char \*buf, long n, bool separator)
->Returns a long value as a string.
+>Copies a long value into a string buffer  
+and returns pointer to it.
 
 <a name="lngstr_new"></a>
 ### char \*lngstr_new(long n, bool separator)
@@ -725,13 +728,16 @@ Thousands separator optional for all.
 
 <a name="dblstr"></a>
 ### char \*dblstr(char \*buf, double n, int decimal, bool separator)
->Returns a double value as a string.  
-Requires a values for decimal places.
+>Copies a double value into a string buffer and  
+returns a pointer to it.  
+Requires a value for decimal places.  
+Requires _true_ to include thousands separators.
 
 <a name="dblstr_new"></a>
 ### char \*dblstr_new(double n, int decimal, bool separator)
 >Returns a new pointer to a string of a double value.  
-Requires a values for decimal places. (Dynamic)  
+Requires a values for decimal places.  
+Requires _true_ to include thousands separators. (Dynamic)
 
 ```c
     puts(dblstr(snum, 321321321.321 / 3, 2, true));  // automatic memory
@@ -782,8 +788,8 @@ NOTE: Each list item must be initialized.
 
 <a name="list_copy"></a>
 ### void list_copy(list lst, size_t element, char *str)
->After creating a new list use this to  
-initialize an element with a string literal.  
+>After creating a new list use this to initialize  
+or change an element with a string literal.  
 
 ```c
     list my_list = list_def(5, 32);
@@ -795,26 +801,26 @@ initialize an element with a string literal.
 
 <a name="list_split"></a>
 ### int list\_split (list \*a, char \*str, char \*delim)
->Splits a delimited string into an array of strings (fields.)  
+>Splits a delimited string into a list (an array of strings.)  
 Returns _int_ of actual number parsed.  
-_list\_def_ must used prior to this function.  
-Length of delimiter must be exactly 1.
+Length of delimiter must be exactly 1.  
+Define a list previous to this function.  
 
 ```c
   list a = list_def(20, 65);
   int n = list_split(a, line_in, ",");
 ```
->Individual items (fields) can now be accessed like:
+>Individual list items can now be accessed like:
 
 ```c
   a.item[n]  // where n is the item (field) number
 ```
 
->Delimiters are ignored inside double quotes.
-Double quotes are NOT REMOVED from the result fields.
-See _deletechar_ function for removing quote characters.
-When delimiter is " " (space) consecutive spaces
-are treated as one delimiter. The input string is distroyed 
+>Delimiters are ignored inside double quotes.  
+Double quotes are NOT REMOVED from the result fields.  
+See _deletechar_ function for removing quote characters.  
+When delimiter is " " (space) consecutive spaces  
+are treated as one delimiter. The input string is destroyed  
 in the process.
 
 <a name="list_del"></a>
@@ -837,11 +843,11 @@ to the console.
 ### list list_read(char *filename, bool strip)  
 >Reads a text file's lines into a list and  
 returns the new list. Ending line separator  
-is removed. If _strip_ is _true_ then leading  
-and trailing whitespace is removed.
+is removed. To remove all leading and  
+trailing whitespace set _strip_ to _true_.
 
 ```c
-    list flst = list_read("test.txt", true);
+    list flst = list_read("test.txt", false);
     list_display(flst);
     list_del(flst);
 ```
@@ -933,8 +939,8 @@ Appends to file if _append_ is true.
 
 <a name="ARRSIZE"></a>
 ### ARRSIZE(x)
->Macro expands to: `(sizeof(x) / sizeof((x)[0]))`  
->For array size.
+>Macro expands to: _(sizeof(x) / sizeof((x)[0]))_  
+to return the array length (number of elements.)
 
 <a name="isort"></a>
 ### void isort (int values[], int n)
