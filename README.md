@@ -2,7 +2,7 @@
 daily changes could break your compiles_**
 
 # Documentation
-# myc.h, mydb.h, mynet.h
+# myc.h
 
 <a name="top"></a>
 This document lays out quick help for these header files:
@@ -12,7 +12,7 @@ This document lays out quick help for these header files:
 
 Warning: myc.h also _includes_ most of the common C headers.
 
-**[ String functions (_myc.h_) ](#mystringing)**
+**[ String functions ](#mystringing)**
 >
 [charat](#charat 'int charat(char *str, char c)') &bull;
 [chomp](#chomp 'char *chomp(char *str)') &bull;
@@ -53,7 +53,7 @@ Warning: myc.h also _includes_ most of the common C headers.
 [urlencode](#urlencode 'char *urlencode (char *buf, char *str)')
 
 
-**[ List - Array of strings (_myc.h_) ](#list_def)**
+**[ List - _static_ Array of strings ](#list_def)**
 >
 [list_copy](#list_copy 'void list_copy(list lst, size_t element, char *str)') &bull;
 [list_del](#list_del 'void list_del(list a)') &bull;
@@ -64,7 +64,7 @@ Warning: myc.h also _includes_ most of the common C headers.
 [list_read](#list_read 'list list_read(char *filename, bool strip)') &bull;
 [list_split](#list_split 'int list_split (list *a, char *str, char *delim)')
 
-**[ Number to String functions (_myc.h_) ](#myntos)**
+**[ Number to String functions ](#myntos)**
 >
 [intstr](#intstr 'char *intstr(char *buf, int n)') &bull;
 [intstr_new](#intstr_new 'char *intstr_new(int n)') &bull;
@@ -73,10 +73,13 @@ Warning: myc.h also _includes_ most of the common C headers.
 [dblstr](#dblstr 'char *dblstr(char *buf, double n, int decimal)') &bull;
 [dblstr_new](#dblstr_new 'char *dblstr_new(double n, int decimal)')
 
-**[ File & Path functions (_myc.h_) ](#mycfile)**
+**[ File & Path functions ](#mycfile)**
 >
 [file_exists](#file_exists 'bool file_exists (char *filename)') &bull;
 [filesize](#filesize 'long filesize(const char *filename)') &bull;
+[filecopy](#filecopy 'void filecopy(char *src, char *dst)') &bull;
+[filedelete](#filedelete 'void filedelete(char *file)') &bull;
+[filemove](#filemove 'void filemove(char *src, char *dst)') &bull;
 [isfile](#isfile 'int isfile(const char* name)') &bull;
 [getbasename](#getbasename 'char *getbasename(char *fn, bool withext)') &bull;
 [getbasepath](#getbasepath 'char *getbasepath(char *fn, char *buff)') &bull;
@@ -87,7 +90,7 @@ Warning: myc.h also _includes_ most of the common C headers.
 [readfile](#readfile 'int readfile (char *buffer, const char *filename)') &bull;
 [writefile](#writefile 'int writefile (char *buffer, const char *filename, bool append)')
 
-**[ Utility & Miscellaneous (_myc.h_) ](#mycother)**
+**[ Utility & Miscellaneous ](#mycother)**
 >
 [ARRSIZE](#ARRSIZE 'ARRSIZE(x)') &bull;
 [date](#date 'char *date (char *format)') &bull;
@@ -99,18 +102,29 @@ Warning: myc.h also _includes_ most of the common C headers.
 [dsort](#dsort 'void dsort (double values[], int n)') &bull;
 [ssort](#ssort 'void ssort (const char* arr[], int n, bool case)')
 
-**[ Database Sqlite3 functions _mydb.h_ ](#mydb)**
+**[ Database Sqlite3 functions ](#mydb)**
 >
 [mydb_count](#mydb_count 'int mydb_count(char *tablename, char *where)') &bull;
 [mydb_names](#mydb_names 'int mydb_names(char *tablename)') &bull;
 [mydb_open](#mydb_open 'void mydb_open(char * dbname)')
 
-**[ Net/Web functions _mynet.h_ ](#mynet)**
+**[ Net/Web functions ](#mynet)**
 >
 [webbrowser](#webbrowser 'bool webbrowser(const char *url)') &bull;
 [webget](#webget 'bool webget(char *request)') &bull;
 [webpage](#webpage 'bool webpage(char *mybuffer, int sz, char *url)') &bull;
 [webpost](#webpost 'bool webpost(char *url, char *vp_data)')
+
+**[ Gtk Dialogs (zenity) ](#zenity)**
+>
+[zenmsg](#zenmsg 'int zenmsg(char *title, char *msg, char *type)') &bull;
+[zenfile](#zenfile 'void zenfile(char *selected, char *start, bool savemode)') &bull;
+[zenform](#zenform 'void zenform(char *formdata, char *layout)') &bull;
+[zenlist](#zenlist 'void zenlist(char *selected, char *layout)') &bull;
+[zentry](#zentry 'char *zentry(char *entry, char *title, char *text, char *starting)') &bull;
+[zentext](#zentext 'void zentext(char* content, char *title, char *filename, bool edit)') &bull;
+[zenpass](#zenpass 'char *zenpass(char *pass, char* title, bool username)') &bull;
+[zenotify](#zenotify 'void zenotify(char *text, bool icon)')  
 
 ---
 
@@ -750,7 +764,9 @@ Requires _true_ to include thousands separators. (Dynamic)
 ```
 
 <a name="list_def"></a>
-## Creating a List (array of strings) _myc.h_ [^](#top 'top')
+## Creating a List (_static_ array of strings) _myc.h_ [^](#top 'top')
+>These functions operate around a _static_ array of strings, which  
+means no inserts, deletes, or appends.
 
 ```c
   // struct used for list functions
@@ -804,7 +820,7 @@ or change an element with a string literal.
 >Splits a delimited string into a list (an array of strings.)  
 Returns _int_ of actual number parsed.  
 Length of delimiter must be exactly 1.  
-Define a list previous to this function.  
+Define the list prior to using this function.  
 
 ```c
   list a = list_def(20, 65);
@@ -836,7 +852,7 @@ list_def function.
 
 <a name="list_display"></a>
 ### void list\_display (list a)
->Prints out column numbers and values
+>Prints out indexes and values
 to the console.
 
 <a name="list_read"></a>
@@ -883,6 +899,29 @@ otherwise, returns false.
 <a name="filesize"></a>
 ### long filesize(const char \*filename)
 >Returns the byte size of a file.
+
+<a name="filecopy"></a>
+### void filecopy(char \*src, char \*dst)
+>
+
+
+<a name="filedelete"></a>
+### void filedelete(char \*file)
+>
+
+
+<a name="filemove"></a>
+### void filemove(char \*src, char \*dst)
+
+```c
+    if(file_exists(f2)) {
+        if(zenmsg("Exists", "Overwrite Destination file?", "question") == ZENMSG_YES)
+            filemove(f1, f2);
+    } else {
+        filemove(f1, f2);
+    }
+```
+
 
 <a name="isfile"></a>
 ### int isfile(const char* name)
@@ -1101,7 +1140,135 @@ use ERRMSG with three arguments:
 ```
 Use -1 in 1st argument for non-stock error message.
 
--------------------------------------------------------------------------------------------------------
+----------
+
+<a name="zenity"></a>
+## Gtk Dialogs
+>[ website ](https://help.gnome.org/users/zenity/3.32/ 'gnome.org')  
+To use these functions zenity must be installed:
+
+```c
+  apt install zenity
+```
+
+<a name="zenmsg"></a>
+### int zenmsg(char \*title, char \*msg, char \*type)
+>Message dialog of four varieties: _info, question, error, warning_.
+
+```c
+    if (zenmsg("Hey!", "Asking you a question ...", "question")) {
+        zenmsg("title", "you answered NO", "info"); // returned 0
+    } else {
+        zenmsg("TITLE ..", "you answered YES", "info"); // returned 256
+    }
+```
+
+<a name="zenfile"></a>
+### void zenfile(char *selected, char *start, bool savemode)
+>File dialogs for _open_ or _save_.  
+_savemode_ open = __false__, save = __true__  
+Existence of file to be saved is not checked.  
+Selected file fullpath stored into first argument.
+
+```c
+    char data[256];
+    zenfile(data, "/usr/local/bin", false); // open file dialog
+    puts(data);
+
+```
+
+<a name="zenform"></a>
+### void zenform(char *formdata, char *layout)
+>Design and show a form to collect information.  
+Form widgets include: entry, calendar, list, and combo  
+A delimited string of responses is stored into first argument.
+
+```c
+    char data[256];
+    char form_layout[] =
+        "--title='New Member' "
+        "--text='Enter your information' "
+        "--separator=',' "
+        "--add-entry='Your full name' "
+        "--add-password='Password' "
+        "--add-entry='Your Email' "
+        "--add-combo='Fav ice cream' "
+        "--combo-values='strawberry|cherry|vanilla|chocolate' "
+        "--add-calendar='Birthday' "
+        "--add-list='Fav Color' "
+        "--list-values='black|blue|red|orange|green|yellow' ";
+    zenform(data, form_layout);
+    puts(data); // Delimited items from the form response
+```
+
+<a name="zenlist"></a>
+### void zenlist(char *selected, char *layout)
+>Design and show a list with columns.  
+column data is space delimited. 
+
+```c
+    char list_layout[] =
+        "--title='New Friends' "
+        "--text='Enter your information' "
+        "--print-column='1' "  // or 'ALL'
+        "--multiple "       // optional multiple row selection
+        "--separator=',' " // optional delimited results  
+        "--column='Name' "      // column 1
+        "--column='Age' "       // column 2
+        "--column='Fav Color' " // column 3
+        "Jack 70 orange "  // space delimited data ...
+        "Joel 60 blue "
+        "Jill 65 yellow "
+        "Jane 66 purple "
+        "James 50 'dark red' ";
+
+    zenlist(data, list_layout);
+    puts(data); // what was selected
+```
+
+<a name="zentry"></a>
+### char *zentry(char *entry, char *title, char *text, char *default)
+>Dialog with a single entry field.  
+
+```c
+    char data[256];
+    zentry(data, "zentry exam.", "Enter something witty!", "");
+    puts(data); // what was entered
+```
+
+<a name="zentext"></a>
+### void zentext(char* content, char *title, char *filename, bool edit)
+>Dialog to display/edit simple text file.  
+_false_ = read only.  
+
+```c
+    zentext(data, "Notes (edit)", "testinfo.txt", true);
+    // edited content is now in 'data'
+    // write back the the file
+    FILE * f = open_for_write("testinfo.txt");
+    fprintf(f, "%s", data);
+    fclose(f);
+```
+
+<a name="zenpass"></a>
+### char *zenpass(char *pass, char* title, bool username)
+>Dialog to obtain username and password  
+or just password (_false_)
+
+```c
+    zenpass(data, "user / passwd", true);
+```
+
+<a name="zenotify"></a>
+### void zenotify(char *text, bool icon)
+>Displays a system notification.  
+_true_ to include an "info" icon.
+
+```c
+    zenotify("No more examples!", true);
+```
+
+----------
 
 <a name="mydb"></a>
 ## DATABASE Sqlite3 _mydb.h_ [^](#top 'top')

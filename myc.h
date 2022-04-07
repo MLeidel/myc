@@ -117,6 +117,9 @@ int isfile(const char*);
 int pathsize(const char*, int);
 int readfile(char*, const char*);
 int writefile(char*, const char*, bool append);
+void filecopy(char*, char*);
+void filedelete(char*);
+void filemove(char*, char*);
 
 // DATE/TIME & OTHER FUNCTIONS
 char* date(const char*);
@@ -146,6 +149,7 @@ char *getenv(const char *name)
 */
 #define ARRSIZE(x)  (sizeof(x) / sizeof((x)[0]))
 #define ERRMSG(a, b, c) (errmsg(a, b, c, __LINE__, __FILE__))
+#define ZENMSG_YES 0
 
 // compare
 #define GT ">"
@@ -853,7 +857,7 @@ bool file_exists (char *filename) {
 
 FILE * open_for_read(char *fname) {
     FILE *f1;
-    if ((f1 = fopen(fname,"r")) == NULL) {
+    if ((f1 = fopen(fname,"rb")) == NULL) {
         ERRMSG(errno, true, "open_for_read: error from fopen");
     }
     return f1;
@@ -975,6 +979,24 @@ char *getbasepath(char *fn, char *buff) {
     return buff;
 }
 
+void filecopy(char *src, char *dst) {
+    FILE * source = open_for_read(src);
+    FILE * target = open_for_write(dst);
+    char ch;
+    while ((ch = fgetc(source)) != EOF)
+        fputc(ch, target);
+    fclose(target);
+    fclose(source);
+}
+
+void filedelete(char *file) {
+    unlink(file);
+}
+
+void filemove(char *src, char *dst) {
+    filecopy(src, dst);
+    filedelete(src);
+}
 
 char* chomp(char *line) {  // see also rtrim()
     // remove record separators
@@ -1547,6 +1569,163 @@ char *dblstr_new(double n, int decimal, bool separator) {
     }
     sprintf(buf, fmt, n);
     return buf;
+}
+
+/*
+                                  _   _
+             ____   ___   _ __   (_) | |_   _   _
+            |_  /  / _ \ | '_ \  | | | __| | | | |
+             / /  |  __/ | | | | | | | |_  | |_| |
+            /___|  \___| |_| |_| |_|  \__|  \__, |
+                                            |___/
+Simple Gtk Dialogs
+https://help.gnome.org/users/zenity/stable/index.html.en#dialogs
+----------------------------------------------------------------
+zenmsg      message dialog 4 types: "question", "error", "warning", "info"
+zenfile     filedialog 2 types: open (false) and save (true)
+zenform     form dialog: entry, calendar, list, combo
+zenlist     list dialog with columns
+zentry      1 field entry dialog (prompt?)
+zentext     simple multi-line text dialog
+zenpass     password dialog: password (false) or passwd & username (true)
+zenotify    display a system notification message
+
+*/
+
+/* runproc
+    function --------------------------------------------------------
+*/
+void runproc(char *output, char *proc) {
+    FILE *fp;
+
+    fp = popen(proc, "r");
+    if (fp == NULL) {
+        ERRMSG(-1, true, "runproc failure");
+    }
+    fgets(output, 4096, fp);
+    pclose(fp);
+}
+
+/* zenmsg
+    function --------------------------------------------------------
+*/
+int zenmsg(char *title, char *msg, char *type) {
+    char cmd[512];
+    int rc = 0;
+
+    sprintf(cmd, "zenity --%s --title '%s' --text '%s'", type, title, msg);
+    rc = system(cmd);
+    return rc;  // question "No" returns 256, all others return 0
+}
+
+/* zentry
+    function --------------------------------------------------------
+*/
+char *zentry(char *entry, char *title, char *text, char *starting) {
+    char cmd[512];
+
+    strcpy(entry, "None");
+    sprintf(cmd, "zenity --entry --title='%s' --text='%s' --entry-text '%s'",
+            title, text, starting);
+    runproc(entry, cmd);
+    chomp(entry);
+    return entry;
+}
+
+/* zenfile
+    function --------------------------------------------------------
+*/
+void zenfile(char *selected, char *start, bool savemode) {
+    char cmd[512];
+
+    if (savemode) {
+        sprintf(cmd, "zenity --file-selection --save --title=\"Save File\" --filename=%s", start);
+    } else {
+        sprintf(cmd, "zenity --file-selection --title=\"Select a File\" --filename=%s", start);
+    }
+    runproc(selected, cmd);
+    chomp(selected);
+}
+
+/* zenform
+    function --------------------------------------------------------
+*/
+void zenform(char *formdata, char *layout) {
+    char cmd[4096];
+
+    sprintf(cmd, "zenity --forms %s", layout);
+    runproc(formdata, cmd);
+    chomp(formdata);
+}
+
+/* zenlist
+    function --------------------------------------------------------
+*/
+void zenlist(char *selected, char *layout) {
+    char cmd[4096];
+
+    sprintf(cmd, "zenity --list %s", layout);
+    runproc(selected, cmd);
+    chomp(selected);
+}
+
+/* zentext
+    function --------------------------------------------------------
+*/
+void zentext(char* content, char *title, char *filename, bool edit) {
+    FILE *fp;
+    char line[4096] = {'\0'};
+    char cmd[4096] = {'\0'};
+
+    if (edit) {
+        sprintf(cmd, "zenity --text-info --title='%s' --editable --filename='%s'",
+                title, filename);
+        strcpy(content, "\0");
+        fp = popen(cmd, "r");
+        if (fp == NULL)
+            ERRMSG(-1, true, "zentext: popen failed");
+        do {
+            fgets(line, 4096, fp);
+            if (feof(fp)) break;
+            strcat(content, line);
+        } while (1);
+        pclose(fp);
+    } else {
+        sprintf(cmd, "zenity --text-info --title='%s' --filename='%s'",
+                title, filename);
+        system(cmd);
+    }
+}
+
+/* zenpass
+    function --------------------------------------------------------
+*/
+char *zenpass(char *pass, char* title, bool username) {
+    char cmd[512];
+
+    strcpy(pass, "None");
+    if (username) {
+        sprintf(cmd, "zenity --password --username --title='%s'", title);
+    } else {
+        sprintf(cmd, "zenity --password --title='%s'", title);
+    }
+    runproc(pass, cmd);
+    chomp(pass);
+    return pass;
+}
+
+/* zenotify
+    function --------------------------------------------------------
+*/
+void zenotify(char *text, bool icon) {
+    char cmd[512];
+
+    if (icon) {
+        sprintf(cmd, "zenity --notification --window-icon='info' --text='%s'", text);
+    } else {
+        sprintf(cmd, "zenity --notification --text='%s'", text);
+    }
+    system(cmd);
 }
 
 #endif
