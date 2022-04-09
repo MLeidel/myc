@@ -1,12 +1,8 @@
-**_This is still a work in progress/process  
-daily changes could break your compiles_**
-
-# Documentation
-# myc.h
 
 <a name="top"></a>
+# Documentation
 This document lays out quick help for these header files:
-- myc.h - new string and other utility functions
+- myc.h - new string and other utility functions for C
 - mydb.h - an Sqlite3 c template and three new functions
 - mynet.h - a small Internet library with 4 new functions
 
@@ -102,6 +98,18 @@ Warning: myc.h also _includes_ most of the common C headers.
 [dsort](#dsort 'void dsort (double values[], int n)') &bull;
 [ssort](#ssort 'void ssort (const char* arr[], int n, bool case)')
 
+**[ Gtk Dialogs (zenity) ](#zenity)**
+>
+[zenmsg](#zenmsg 'int zenmsg(char *title, char *msg, char *type)') &bull;
+[zenfile](#zenfile 'void zenfile(char *selected, char *start, bool savemode)') &bull;
+[zenform](#zenform 'void zenform(char *formdata, char *layout)') &bull;
+[zenlist](#zenlist 'void zenlist(char *selected, char *layout)') &bull;
+[zentry](#zentry 'char *zentry(char *entry, char *title, char *text, char *starting)') &bull;
+[zentext](#zentext 'void zentext(char* content, char *title, char *filename, bool edit)') &bull;
+[zenpass](#zenpass 'char *zenpass(char *pass, char* title, bool username)') &bull;
+[zenotify](#zenotify 'void zenotify(char *text, bool icon)')  
+
+
 **[ Database Sqlite3 functions ](#mydb)**
 >
 [mydb_count](#mydb_count 'int mydb_count(char *tablename, char *where)') &bull;
@@ -115,16 +123,6 @@ Warning: myc.h also _includes_ most of the common C headers.
 [webpage](#webpage 'bool webpage(char *mybuffer, int sz, char *url)') &bull;
 [webpost](#webpost 'bool webpost(char *url, char *vp_data)')
 
-**[ Gtk Dialogs (zenity) ](#zenity)**
->
-[zenmsg](#zenmsg 'int zenmsg(char *title, char *msg, char *type)') &bull;
-[zenfile](#zenfile 'void zenfile(char *selected, char *start, bool savemode)') &bull;
-[zenform](#zenform 'void zenform(char *formdata, char *layout)') &bull;
-[zenlist](#zenlist 'void zenlist(char *selected, char *layout)') &bull;
-[zentry](#zentry 'char *zentry(char *entry, char *title, char *text, char *starting)') &bull;
-[zentext](#zentext 'void zentext(char* content, char *title, char *filename, bool edit)') &bull;
-[zenpass](#zenpass 'char *zenpass(char *pass, char* title, bool username)') &bull;
-[zenotify](#zenotify 'void zenotify(char *text, bool icon)')  
 
 ---
 
@@ -1143,9 +1141,9 @@ Use -1 in 1st argument for non-stock error message.
 ----------
 
 <a name="zenity"></a>
-## Gtk Dialogs
+## Gtk Dialogs [^](#top 'top')
 >[ website ](https://help.gnome.org/users/zenity/3.32/ 'gnome.org')  
-To use these functions zenity must be installed:
+Zenity is required for these functions.
 
 ```c
   apt install zenity
@@ -1262,10 +1260,34 @@ or just password (_false_)
 <a name="zenotify"></a>
 ### void zenotify(char *text, bool icon)
 >Displays a system notification.  
-_true_ to include an "info" icon.
+_true_ to include an "info" icon.  
+
+"Time Break" program:
 
 ```c
-    zenotify("No more examples!", true);
+char mesg[256] = {'\0'};  // your message from argv[1]
+int sec = 0;  // wait time set from argv[2]
+
+void main (int argc, char *argv[]) {
+
+    if (argc < 3)
+        ERRMSG(-1, true, "Missing Arguments: message seconds");
+
+    sec = atoi(argv[2]);
+    strcpy(mesg, argv[1]);
+
+    while(true) {
+        if (file_exists("timebrk.stop")) {
+            filedelete("timebrk.stop");
+            zenotify("Stopping timebrk", true);
+            exit(EXIT_SUCCESS);
+        } else {
+            zenotify("Starting TimeBrk", true);
+        }
+        sleep(sec);
+        zenmsg("Time Brk", argv[1], "warning");
+    } // while infinite loop
+}
 ```
 
 ----------

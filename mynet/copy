@@ -1,0 +1,2 @@
+cp -f -v mynet.h /usr/include/mynet.h
+cp -f -v mynet.h /home/ml/apps/c/repositories/myc/mynet.h
