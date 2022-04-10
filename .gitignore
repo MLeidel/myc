@@ -56,3 +56,5 @@ dkms.conf
 ./getmd
 work/
 mydb/guns.db
+myc_size
+myc_size.c

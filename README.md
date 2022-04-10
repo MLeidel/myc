@@ -6,7 +6,8 @@ This document lays out quick help for these header files:
 - mydb.h - an Sqlite3 c template and three new functions
 - mynet.h - a small Internet library with 4 new functions
 
-Warning: myc.h also _includes_ most of the common C headers.
+NOTE: myc.h also _includes_ most of the common C headers.  
+myc.h totals about 43k
 
 **[ String functions ](#mystringing)**
 >
@@ -15,6 +16,7 @@ Warning: myc.h also _includes_ most of the common C headers.
 [compare](#compare 'bool compare(char *s1, const char *op, char *s2) ') &bull;
 [concat](#concat 'char *concat(char *dest, int num, ...)') &bull;
 [contains](#contains 'int contains(char *str, char *subs)') &bull;
+[contvars](#contvars 'int contvars(char *str, char *delim)') &bull;
 [string_cpy](#string_cpy 'bool string_cpy(string s, char *data)') &bull;
 [string_new](#string_new 'string string_new(const char *str)') &bull;
 [string_del](#string_del 'void string_del(string s)') &bull;
@@ -308,6 +310,12 @@ Returns 0 if none found.
     printf("%d\n", contains(line, "id"));   // 2
     printf("%d\n", contains(line, "e"));  // 4
 ```
+
+<a name="contvars"></a>
+### int contvars(char \*str, char \*delim)
+>Returns a count of the number of delimited  
+variables or tokens found in a C string.  
+Returns 0 if none found.
 
 <a name="string_def"></a>
 ### string string_def(size_t length, char fill)
