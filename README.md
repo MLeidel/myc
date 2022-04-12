@@ -512,8 +512,7 @@ The new string is copied into the first argument and returned.
 ### char \*insert_new(char \*s, char \*ins, size_t index)
 >Inserts a substring into a string at index.  
 Returns a pointer to the new string allocated in the heap.  
-Note: insert\_new, replace\_new, list\_ and the string\_ functions  
-are the only functions of myc.h that use dyamic memory allocation.
+Note: use the standard c 'free' function to deallocate.
 
 ```c
     char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
@@ -590,7 +589,8 @@ Set starting index and limit replacements or set to 0, no limit.
 ### char \*replace_new (char \*in, char \*target, char \*replacement, size_t start, size_t number)
 >Replaces substrings within a string.  
 Limit replacements or set to 0, no limit.  
-Returns a pointer to the new string allocated in the heap.
+Returns a pointer to the new string allocated in the heap.  
+Note: use the standard c 'free' function to deallocate.
 
 ```c
     char mystr[32] = "Lorem ipsum dolor sit amet";
