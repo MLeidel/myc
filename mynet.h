@@ -171,9 +171,9 @@ bool webpost(char * url, char * vp_data) {
  * Linux only - uses xdg-open
  */
 bool webbrowser(const char * url) {
-  char action[MAX_L];
+  char action[1000];
 
-  memset(action, 0, MAX_L);
+  memset(action, 0, 1000);
   strcpy(action, "xdg-open ");
   strcat(action, url);
   strcat(action, " &");

@@ -15,9 +15,12 @@ void main() {
 
     char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
     puts(text);
-
     char *buf = insert_new(text, " amor", 26);
-    puts(buf);  //Lorem ipsum dolor sit amet amor, consectetur adipiscing elit
-
+    puts(buf);
     free(buf);
+
+    /* OUTPUT
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    Lorem ipsum dolor sit amet amor, consectetur adipiscing elit
+    */
  }

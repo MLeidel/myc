@@ -639,11 +639,11 @@ void list_init(list lst, ...) {
     string_del(tmp);
 }
 
-/*  flines reads a text file and finds number
+/*  textlines reads a text file and finds number
     of lines and longest line.
     used in list_read function and not in myc.md
 */
-void flines(int count[2], char * fn) {
+void textlines(int count[2], char * fn) {
     string line = string_def(1000000, '\0');
     int maxline = 0;
     FILE * f = open_for_read(fn);
@@ -666,7 +666,7 @@ void flines(int count[2], char * fn) {
 */
 list list_read(char *filename, bool strip) {
     int c[2] = {0, 0};  // lines, longest line
-    flines(c, filename);
+    textlines(c, filename);
     list lines = list_def(c[0], c[1]);
     FILE * f = open_for_read(filename);
     for (int x = 0; x < lines.nbr_rows; x++) {

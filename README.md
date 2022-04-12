@@ -86,6 +86,7 @@ myc.h totals about 43k
 [open_for_read](#open_for_read 'FILE * open_for_read (char *fname)') &bull;
 [open_for_write](#open_for_write 'FILE * open_for_write (char *fname)') &bull;
 [readfile](#readfile 'int readfile (char *buffer, const char *filename)') &bull;
+[textlines](#textlines 'void textlines(int count[2], char * fn)') &bull;
 [writefile](#writefile 'int writefile (char *buffer, const char *filename, bool append)')
 
 **[ Utility & Miscellaneous ](#mycother)**
@@ -343,9 +344,8 @@ to its size. Uses the _string_ struct.
 
 <a name="string_rsz"></a>
 ### string string_rsz(string s, size_t length)
->Returns a pointer to a new string allocated  
-to size _length_ and initialized with  
-all _fill_ character. Uses the _string_ struct.
+>Returns a new string variable re-allocated  
+from an existing string.
 
 ```c
     string s = string_def(10, '\0');
@@ -511,7 +511,22 @@ The new string is copied into the first argument and returned.
 <a name="insert_new"></a>
 ### char \*insert_new(char \*s, char \*ins, size_t index)
 >Inserts a substring into a string at index.  
-Returns a pointer to the new string allocated in the heap.
+Returns a pointer to the new string allocated in the heap.  
+Note: insert\_new, replace\_new, list\_ and the string\_ functions  
+are the only functions of myc.h that use dyamic memory allocation.
+
+```c
+    char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+    puts(text);
+    char *buf = insert_new(text, " amor", 26);
+    puts(buf);
+    free(buf);
+
+    /* OUTPUT
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    Lorem ipsum dolor sit amet amor, consectetur adipiscing elit
+    */
+```
 
 <a name="lastcharat"></a>
 ### int lastcharat(char* base, char c)
@@ -866,7 +881,9 @@ to the console.
 >Reads a text file's lines into a list and  
 returns the new list. Ending line separator  
 is removed. To remove all leading and  
-trailing whitespace set _strip_ to _true_.
+trailing whitespace set _strip_ to _true_.  
+Note: uses [textlines](#textlines) to calculate  
+the new list's allocated size.
 
 ```c
     list flst = list_read("test.txt", false);
@@ -971,6 +988,11 @@ NULL if unsuccessful.
 >Loads _buffer_ with the contents of _filename_ or
 returns -1 if unsuccessful.
 
+<a name="textlines"></a>
+### void textlines(int count[2], char \* filename)
+>Returns count[0] number of lines and count[1]  
+length of longest line in a text file.
+
 <a name="writefile"></a>
 ### int writefile (char \*buffer, const char \*filename, bool append)
 >Writes _buffer_ to the contents of _filename_ or
@@ -985,7 +1007,7 @@ Appends to file if _append_ is true.
 <a name="ARRSIZE"></a>
 ### ARRSIZE(x)
 >Macro expands to: _(sizeof(x) / sizeof((x)[0]))_  
-to return the array length (number of elements.)
+to return an array length (number of elements.)
 
 <a name="isort"></a>
 ### void isort (int values[], int n)

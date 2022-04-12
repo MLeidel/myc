@@ -1,5 +1,5 @@
 // flines.c
-#include <myc.h>
+#include "../myc.h"
 
 
 void main (int argc, char *argv[]) {
@@ -11,7 +11,7 @@ void main (int argc, char *argv[]) {
 
     int c[2] = {0,0};
 
-    flines(c, argv[1]);
+    textlines(c, argv[1]);
 
     printf("lines: %d  longest line: %d\n", c[0], c[1]);
 }
