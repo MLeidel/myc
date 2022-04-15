@@ -113,6 +113,9 @@ myc.h totals about 43k
 [zenotify](#zenotify 'void zenotify(char *text, bool icon)')  
 
 
+**[ Sample program using myc.h ](#samplepgm)**
+
+
 **[ Database Sqlite3 functions ](#mydb)**
 >
 [mydb_count](#mydb_count 'int mydb_count(char *tablename, char *where)') &bull;
@@ -837,7 +840,7 @@ or change an element with a string literal.
 
 
 <a name="list_split"></a>
-### int list\_split (list \*a, char \*str, char \*delim)
+### int list\_split (list a, char \*str, char \*delim)
 >Splits a delimited string into a list (an array of strings.)  
 Returns _int_ of actual number parsed.  
 Length of delimiter must be exactly 1.  
@@ -1185,9 +1188,9 @@ Zenity is required for these functions.
 
 ```c
     if (zenmsg("Hey!", "Asking you a question ...", "question")) {
-        zenmsg("title", "you answered NO", "info"); // returned 0
+        zenmsg("title", "you answered NO", "info"); // returned 256
     } else {
-        zenmsg("TITLE ..", "you answered YES", "info"); // returned 256
+        zenmsg("TITLE ..", "you answered YES", "info"); // returned 0
     }
 ```
 
@@ -1317,6 +1320,112 @@ void main (int argc, char *argv[]) {
         sleep(sec);
         zenmsg("Time Brk", argv[1], "warning");
     } // while infinite loop
+}
+```
+
+----------
+
+<a name="samplepgm"></a>
+## Sample Program using myc.h  [^](#top 'top')
+
+>Here is a simple program that sets up a C project.  
+It uses some of the zenity functions as well as  
+several myc functions. Notice in particular  
+how the list\_ functions and enums help with the output  
+from the zenform to make the process clean and easy.
+
+```c
+/* cproj.c
+  This is a simple demo of what a C program
+  looks like when using some of the myc.h
+  features. It uses some of the zenity functions 
+  as well as several myc functions. Notice in particular  
+  how the list\_ functions and enums help with the output  
+  from the zenform to make the process clean and easy.
+*/
+#include <myc.h>
+
+void main (int argc, char *argv[]) {
+
+    char specs[1024] = {'\0'};  // will be used for multiple purposes
+    char path[1024] = {'\0'};
+    char initial[256] = {'\0'};
+    enum names {DIR, EXC, SRC, MODE, API}; // five fields
+
+    char form_layout[] =
+        "--title='New C Project' "
+        "--text='Enter New Project Information' "
+        "--separator=',' "
+        "--add-entry='New Directory' "
+        "--add-entry='Executable' "
+        "--add-entry='Source Name' "
+        "--add-combo='Interface' "
+        "--combo-values='Gtk-3|Console' "
+        "--add-list='Other API' "
+        "--list-values='None|Network|Sqlite3 db|Network + Sqlite3' ";
+    zenform(specs, form_layout);
+
+    list form = list_def(5, 64);
+    list_split(form, specs, ",");
+
+    if (equals(form.item[EXC], "")  ||
+        equals(form.item[SRC], "")  ||
+        equals(form.item[MODE], "") ||
+        equals(form.item[API], "")) {
+        zenmsg("Aborting", "Canceled or One or more fields left blank.", "error");
+        exit(EXIT_FAILURE);
+    }
+
+    // Obtain default path to projects
+    readfile(initial, "initial_directory");
+    zenfile(path, trim(initial), false, true);
+
+    // HAVE ALL INPUTS
+
+    // Make directory and copy over starter source file
+    strcpy(specs, path);
+    concat(specs, 2, "/", form.item[DIR]);
+    mkdir(specs, 0755);
+    concat(specs, 2, "/", form.item[SRC]);
+    filecopy("./src.c", specs);
+
+    /*
+        Create complile script (cmpc)
+        The helper scripts (cmp_con, cmp_gtk)
+        should be placed in the system path.
+        This generated script (cmpc) will provide
+        the correct parameters to one of these two
+        scripts.
+    */
+
+    if ( equals(form.item[MODE], "Console") ) {
+        strcpy(specs, "cmp_con ");
+    } else {
+        strcpy(specs, "cmp_gtk ");
+    }
+
+    concat(specs, 4, form.item[EXC], " ", form.item[SRC], " ");
+
+    if ( equals(form.item[API], "Network"))
+        strcat(specs, "\"-l curl\"");
+    else if  ( equals(form.item[API], "Sqlite3"))
+        strcat(specs, "\"-l sqlite3\"");
+    else if ( equals(form.item[API], "Network + Sqlite3"))
+        strcat(specs, "\"-l sqlite3 -l curl\"");
+
+    strcat(specs, " \n"); // add a linefeed
+
+    // WRITE "cmpc" FILE
+
+    concat(path, 3, "/", form.item[DIR], "/cmpc");
+
+    writefile(specs, path, false);
+
+    // SET EXECUTE PERM ON cmpc
+
+    sprintf(specs, "chmod 755 %s", path);
+    system(specs);
+    zenotify("cproj completed", true);
 }
 ```
 

@@ -34,9 +34,9 @@ void main (int argc, char *argv[]) {
 
     /////////////////////////////> zenfile example:
 
-    zenfile(data, "/usr/local/bin", false);
+    zenfile(data, "/usr/local/bin", false, true);  // open directory
     puts(data);  // fullpath to open file
-    zenfile(data, "/usr/local/bin", true);
+    zenfile(data, "/usr/local/bin", true, false);  // save file
     puts(data); // fullpath to save file
     /*
     NOTE: You must check for overwrite existing

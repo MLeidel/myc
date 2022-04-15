@@ -1652,13 +1652,19 @@ char *zentry(char *entry, char *title, char *text, char *starting) {
 /* zenfile
     function --------------------------------------------------------
 */
-void zenfile(char *selected, char *start, bool savemode) {
+void zenfile(char *selected, char *start, bool savemode, bool dirmode) {
     char cmd[512];
 
     if (savemode) {
-        sprintf(cmd, "zenity --file-selection --save --title=\"Save File\" --filename=%s", start);
+        if (dirmode)
+            sprintf(cmd, "zenity --file-selection --directory --save --title=\"Save File\" --filename=%s", start);
+        else
+            sprintf(cmd, "zenity --file-selection --save --title=\"Save File\" --filename=%s", start);
     } else {
-        sprintf(cmd, "zenity --file-selection --title=\"Select a File\" --filename=%s", start);
+        if (dirmode)
+            sprintf(cmd, "zenity --file-selection --directory --title=\"Select a File\" --filename=%s", start);
+        else
+            sprintf(cmd, "zenity --file-selection --title=\"Select a File\" --filename=%s", start);
     }
     runproc(selected, cmd);
     chomp(selected);
