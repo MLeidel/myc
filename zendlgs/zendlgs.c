@@ -107,16 +107,6 @@ void main (int argc, char *argv[]) {
 
     zentext(data, "Notes (read-only)", "testinfo.txt", false);
 
-
-    /////////////////////////////> zenpass example:
-
-    zenpass(data, "just passwd", false);
-    puts(data);
-
-    zenpass(data, "user / passwd", true);
-    puts(data);
-
-
     /////////////////////////////> zenotify example:
 
     zenotify("No more examples!", true);

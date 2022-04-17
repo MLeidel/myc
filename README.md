@@ -109,8 +109,8 @@ myc.h totals about 43k
 [zenlist](#zenlist 'void zenlist(char *selected, char *layout)') &bull;
 [zentry](#zentry 'char *zentry(char *entry, char *title, char *text, char *starting)') &bull;
 [zentext](#zentext 'void zentext(char* content, char *title, char *filename, bool edit)') &bull;
-[zenpass](#zenpass 'char *zenpass(char *pass, char* title, bool username)') &bull;
-[zenotify](#zenotify 'void zenotify(char *text, bool icon)')  
+[zenotify](#zenotify 'void zenotify(char *text, bool icon)') &bull;
+[zen](#zen 'void zen(char *buf, char *code)')  
 
 
 **[ Sample program using myc.h ](#samplepgm)**
@@ -241,7 +241,7 @@ _Warning: this changes the original string!_
 **_I've tried not to duplicate the existing string.h functions.  
 The goal here is to extend (and simplify) string manipulation in C._**
 
->>...........................................................
+.
 
 <a name="charat"></a>
 ### int charat(char \*str, char c)
@@ -1321,6 +1321,34 @@ void main (int argc, char *argv[]) {
         zenmsg("Time Brk", argv[1], "warning");
     } // while infinite loop
 }
+```
+
+<a name="zen"></a>
+### void zen(char *buf, char *code)
+>This is a generic function for zenity dialogs.  
+Put all of the zenity code except "zenity" in  
+the second argument.
+
+```c
+    // color picker dialog
+    zen(data, "--color-selection --show-palette");
+    puts(data);
+
+    // scale dialog
+    zen(data, "--scale --text='How many jelly-beans are in the jar?' --value=100");
+    puts(data);
+
+    // password entry dialog
+    zen(data, "--password --username");
+    puts(data);
+
+    // calendar dialog
+    concat(src, 2, "--calendar ",
+                   "--text='Click on a date to select it.' "
+                   "--date-format='%F' ");  // strftime formats
+    zen(data, src);
+    puts(data);
+
 ```
 
 ----------

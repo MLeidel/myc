@@ -134,6 +134,16 @@ void isort(int[], int);
 void ssort(char*[], int, bool);
 void dsort(double[], int);
 
+// ZEN DIALOGS
+int zenmsg(char*, char*, char*);
+void runproc(char*, char*);
+void zen(char*, char*);
+void zenfile(char*, char*, bool, bool);
+void zenform(char*, char*);
+void zenlist(char*, char*);
+void zenotify(char*, bool);
+void zentext(char* , char*, char*, bool);
+
 /* END DECLARATIONS
 
 -----------------------------------------
@@ -1604,8 +1614,8 @@ zenform     form dialog: entry, calendar, list, combo
 zenlist     list dialog with columns
 zentry      1 field entry dialog (prompt?)
 zentext     simple multi-line text dialog
-zenpass     password dialog: password (false) or passwd & username (true)
 zenotify    display a system notification message
+zen
 
 */
 
@@ -1720,23 +1730,6 @@ void zentext(char* content, char *title, char *filename, bool edit) {
     }
 }
 
-/* zenpass
-    function --------------------------------------------------------
-*/
-char *zenpass(char *pass, char* title, bool username) {
-    char cmd[512];
-
-    strcpy(pass, "None");
-    if (username) {
-        sprintf(cmd, "zenity --password --username --title='%s'", title);
-    } else {
-        sprintf(cmd, "zenity --password --title='%s'", title);
-    }
-    runproc(pass, cmd);
-    chomp(pass);
-    return pass;
-}
-
 /* zenotify
     function --------------------------------------------------------
 */
@@ -1749,6 +1742,14 @@ void zenotify(char *text, bool icon) {
         sprintf(cmd, "zenity --notification --text='%s'", text);
     }
     system(cmd);
+}
+
+void zen(char *buf, char *code) {
+    char cmd[4096];
+
+    sprintf(cmd, "zenity %s", code);
+    runproc(buf, cmd);
+    chomp(buf);
 }
 
 #endif
