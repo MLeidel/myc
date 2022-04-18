@@ -3,15 +3,6 @@
 #include "../myc.h"
 
 
-void zen(char *buf, char *code) {
-    char cmd[4096];
-
-    sprintf(cmd, "zenity %s", code);
-    runproc(buf, cmd);
-    chomp(buf);
-}
-
-
 void main (int argc, char *argv[]) {
     char data[4096] = {'\0'}; // buffer to hold zen responses
     char src[1024] = {'\0'}; // holds zenity code
@@ -38,9 +29,9 @@ void main (int argc, char *argv[]) {
     puts(data);
 
     // calendar dialog
-    concat(src, 2, "--calendar ",
-                   "--text='Click on a date to select it.' "
-                   "--date-format='%F' ");  // strftime formats
+    concat(src, "--calendar ",
+                "--text='Click on a date to select it.' "
+                "--date-format='%F' ", END);  // strftime formats
     zen(data, src);
     puts(data);
 

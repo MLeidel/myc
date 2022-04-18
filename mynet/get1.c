@@ -10,12 +10,12 @@ void main () {
     char *wrk = malloc(4096);
     char *wr2 = malloc(4096);
 
-    concat(dat, 5, "https://someprocess.php",
+    concat(dat, "https://someprocess.php",
                    "?data=",
                    urlencode(wrk, "1st-key is data"),
                    "&var=",
-                   urlencode(wr2, "2nd-key is 'var'...")
-                   );
+                   urlencode(wr2, "2nd-key is 'var'..."),
+                   END);
 
     if (!webget(dat)) {
       printf("exiting because of webget failure\n");

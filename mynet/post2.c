@@ -10,10 +10,11 @@ void main (int argc, char *argv[]) {
     char *wr2 = malloc(MAX_L);
 
     // prepare querystring
-    concat(dat, 4, "data=",
-                   urlencode(wr1, "content & ampersand!"),
-                   "&var=",
-                   urlencode(wr2, "second variable content!!!!"));
+    concat(dat, "data=",
+                 urlencode(wr1, "content & ampersand!"),
+                 "&var=",
+                 urlencode(wr2, "second variable content!!!!"),
+                 END);
 
     free(wr1);
     free(wr2);

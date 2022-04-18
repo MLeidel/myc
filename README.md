@@ -7,14 +7,14 @@ This document lays out quick help for these header files:
 - mynet.h - a small Internet library with 4 new functions
 
 NOTE: myc.h also _includes_ most of the common C headers.  
-myc.h totals about 43k
+compiled myc.h totals about 43k
 
 **[ String functions ](#mystringing)**
 >
 [charat](#charat 'int charat(char *str, char c)') &bull;
 [chomp](#chomp 'char *chomp(char *str)') &bull;
 [compare](#compare 'bool compare(char *s1, const char *op, char *s2) ') &bull;
-[concat](#concat 'char *concat(char *dest, int num, ...)') &bull;
+[concat](#concat 'char *concat(char *dest, ..., END)') &bull;
 [contains](#contains 'int contains(char *str, char *subs)') &bull;
 [contvars](#contvars 'int contvars(char *str, char *delim)') &bull;
 [string_cpy](#string_cpy 'bool string_cpy(string s, char *data)') &bull;
@@ -290,7 +290,7 @@ Note: only the "symbols == < > <= >= !=" may be used in variables
 
 
 <a name="concat"></a>
-### char \*concat(char \*dest, int num, ...)
+### char \*concat(char \*dest, ..., "END")
 >Concatenate a variable number of strings.
 
 ```c
@@ -298,7 +298,7 @@ Note: only the "symbols == < > <= >= !=" may be used in variables
 
     strcpy(s, "Ms ");
 
-    concat(s, 3, "Mary ", "Elizabeth ", "Smith");
+    concat(s, "Mary ", "Elizabeth ", "Smith", END);
 
     puts(s); // Ms Mary Elizabeth Smith
 ```
@@ -1330,6 +1330,16 @@ Put all of the zenity code except "zenity" in
 the second argument.
 
 ```c
+
+    /*
+        The "zen" function is completely 'free form'.
+        It just supplies the 'zenity ' command and you
+        supply the rest in a string. It purpose is to
+        allow for other zenity dialogs or variations
+        not covered by the other "myc.h zenity" functions.
+        https://help.gnome.org/users/zenity/stable/index.html.en#dialogs
+    */
+
     // color picker dialog
     zen(data, "--color-selection --show-palette");
     puts(data);
@@ -1343,9 +1353,10 @@ the second argument.
     puts(data);
 
     // calendar dialog
-    concat(src, 2, "--calendar ",
-                   "--text='Click on a date to select it.' "
-                   "--date-format='%F' ");  // strftime formats
+    concat(src, "--calendar ",
+                "--text='Click on a date to select it.' ",
+                "--date-format='%F' ",  // strftime formats
+                "end");
     zen(data, src);
     puts(data);
 
@@ -1412,9 +1423,9 @@ void main (int argc, char *argv[]) {
 
     // Make directory and copy over starter source file
     strcpy(specs, path);
-    concat(specs, 2, "/", form.item[DIR]);
+    concat(specs, "/", form.item[DIR], END);
     mkdir(specs, 0755);
-    concat(specs, 2, "/", form.item[SRC]);
+    concat(specs, "/", form.item[SRC], END);
     filecopy("./src.c", specs);
 
     /*
@@ -1445,7 +1456,7 @@ void main (int argc, char *argv[]) {
 
     // WRITE "cmpc" FILE
 
-    concat(path, 3, "/", form.item[DIR], "/cmpc");
+    concat(path, "/", form.item[DIR], "/cmpc", END);
 
     writefile(specs, path, false);
 
@@ -1584,12 +1595,12 @@ _sz_ is buffer size of _mybuffer_.
 >Perform a GET request with _key-value_ querystring.
 
 ```c
-    concat(dat, 5, "https://somewhere.net/test/fromgetcurl.php",
+    concat(dat, "https://somewhere.net/test/fromgetcurl.php",
                    "?data=",
                    urlencode(wrk, "1st-key is data"),
                    "&var=",
-                   urlencode(wr2, "2nd-key is 'var'...")
-                   );
+                   urlencode(wr2, "2nd-key is 'var'..."),
+                   "End");
 
     if (!webget(dat)) {
       printf("exiting because of webget failure\n");
@@ -1609,10 +1620,11 @@ payload *vp_data*.
   char url[] = "https://somewhere.net/test/frompostcurl.php";
  
   // prepare querystring
-  concat(dat, 4, "data=",
-                 urlencode(wr1, "content & ampersand!"),
-                 "&var=",
-                 urlencode(wr2, "second variable content!!!!"));
+  concat(dat, "data=",
+               urlencode(wr1, "content & ampersand!"),
+               "&var=",
+               urlencode(wr2, "second variable content!!!!"),
+               END);
 
   // post to server
   if (!webpost(url, dat)) {

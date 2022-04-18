@@ -9,7 +9,7 @@ void main (int argc, char *argv[]) {
 
     int rc = readfile(buf1, "textfile.txt");
     urlencode(buf2, buf1); // urlencode the content part(s)
-    concat(buf1, 2, "data=", buf2);
+    concat(buf1, "data=", buf2, END);
     free(buf2);
 
     if (!webpost("https://someprocess.php", buf1)) {

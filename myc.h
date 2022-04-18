@@ -38,7 +38,7 @@ bool equals(char*, char*);
 bool equalsignore(char*, char*);
 bool startswith(char*, char*);
 char* chomp(char*);
-char* concat(char*, int, ...);
+char* concat(char*, ...);
 char* deletechar(char*, char*, char*, size_t, size_t);
 char* field(char*, char*, char, int, bool);
 char* insert(char*, char*, char*, size_t);
@@ -162,6 +162,7 @@ char *getenv(const char *name)
 #define ARRSIZE(x)  (sizeof(x) / sizeof((x)[0]))
 #define ERRMSG(a, b, c) (errmsg(a, b, c, __LINE__, __FILE__))
 #define ZENMSG_YES 0
+#define END "end"
 
 // compare
 #define GT ">"
@@ -1026,20 +1027,22 @@ char* chomp(char *line) {  // see also rtrim()
 }
 
 
-char *concat(char *dest, int num, ...) {
-    char *p = dest;
+char *concat(char *dest, ...) {
+    string buf = string_def(4096, '\0');
     va_list ap;
 
-    va_start(ap, num);
+    va_start(ap, dest);
+    strcpy(dest, "\0");
 
-    strcat(p, va_arg(ap, char*));  // first one
-
-    for (int x = 0; x < num - 1; x++) {
-        strcat(p, va_arg(ap, char*));
+    while(1) {
+        strcpy(buf.value, va_arg(ap, char*));
+        if (equalsignore(buf.value, "END")) break;
+        strcat(dest, buf.value);
     }
 
     va_end(ap);
-    return p;
+    string_del(buf);
+    return dest;
 }
 
 

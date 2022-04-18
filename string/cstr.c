@@ -20,7 +20,7 @@ ex ea commodo consequat.");
 
     string_cpy(s2, "\nHello from The Man from U.N.C.L.E.\n");
 
-    concat(s3.value, 2, s1.value, s2.value);
+    concat(s3.value, s1.value, s2.value, END);
 
     puts(s3.value);
 
