@@ -3,7 +3,7 @@
 
 /** fcsvinfo function
 * find the num lines, num cols, longest field and line in a csv file
-* function to obtain csv file info returns a struct csvinfo
+* function to obtain csv file info returns a struct 'csvinfo'
 * csvinfo(filename, delimiter, bool heading)
 ***/
 

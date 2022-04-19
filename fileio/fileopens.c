@@ -1,9 +1,13 @@
 // fileopens.c
 #include "../myc.h"
+#define MAX_L 4096
 
 /***
-
-
+open_for_write
+open_for_append
+open_for_read
+readfile
+writefile
 ***/
 
 

@@ -1618,7 +1618,7 @@ zenlist     list dialog with columns
 zentry      1 field entry dialog (prompt?)
 zentext     simple multi-line text dialog
 zenotify    display a system notification message
-zen
+zen         all-purpose zenity
 
 */
 
@@ -1648,7 +1648,7 @@ int zenmsg(char *title, char *msg, char *type) {
     return rc;  // question "No" returns 256, all others return 0
 }
 
-/* zentry
+/* z-entry
     function --------------------------------------------------------
 */
 char *zentry(char *entry, char *title, char *text, char *starting) {

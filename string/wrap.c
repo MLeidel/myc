@@ -3,8 +3,8 @@
 
 
 /*
-    Reformats lines of text to all have a new line width
-    where lines are separated on word boundaries
+    Reformats lines of text to all have a new determined line length
+    where the new lines are separated on word boundaries
 */
 
 char lines[] = "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
