@@ -37,6 +37,7 @@ bool endswith(char*, char*);
 bool equals(char*, char*);
 bool equalsignore(char*, char*);
 bool startswith(char*, char*);
+
 char* chomp(char*);
 char* concat(char*, ...);
 char* deletechar(char*, char*, char*, size_t, size_t);
@@ -45,17 +46,18 @@ char* insert(char*, char*, char*, size_t);
 char* insert_new(char*, char*, size_t);
 char* lastsub(char*, char*);
 char* lowercase(char*);
-char* leftof(char*, char*, char*, int);
+char* lof(char*, char*, char*, int);
 char* ltrim(char*);
 char* replace(char*, char*, char*, char*, size_t, size_t);
 char* replace_new (char*, char*, char*, size_t, size_t);
-char* rightof(char*, char*, char*, int);
+char* rof(char*, char*, char*, int);
 char* rtrim(char*);
 char* strrev(char*);
 char* substr(char*, char*, int, int);
 char* trim(char*);
 char* uppercase(char*);
 char* urlencode(char*, char*);
+int between(char*, char*, char*, char*, int);
 int charat(char*, char);
 int contains(char*, char*);
 int contvars(char*, char*);
@@ -355,32 +357,15 @@ char *trim(char *s) {
 }
 
 
-char *rightof(char *out, char *in, char *targ, int start) {
-    char *p;
-    char *s;
-
-    s = in + start;
-    p = strstr(s, targ);
-    if (p == NULL)
-        return NULL;
-    p += strlen(targ);
-    strcpy(out, p);
-    return p;  // *in remains unchanged
+char *lof(char *buf, char *input, char *delim, int start) {
+    int inx = indexof(input+start, delim);
+    return substr(buf, input+start, 0, inx);
 }
 
 
-char *leftof(char *out, char *in, char *targ, int start) {
-    char *p;
-    int len = 0;
-
-    in += start;
-    p = strstr(in, targ);
-    if (p == NULL)
-        return NULL;
-    len = p - in;
-    strncpy(out, in, len);
-    out[len] = '\0';
-    return out;  // *in remains unchanged
+char *rof(char *buf, char *input, char *delim, int start) {
+    int inx = indexof(input+start, delim) + strlen(delim);
+    substr(buf, input+start, inx, 0);
 }
 
 
@@ -1241,6 +1226,36 @@ int lastindexof (char* base, char* str) {
     } else {
         return p - base;
     }
+}
+
+
+/*  between()
+    Gets the substring between to substrings
+    Returns index to next position
+*/
+int between(char *buf, char *input, char *str1, char *str2, int offset) {
+    int len1 = 0, len2 = 0;
+    int inx1 = 0, inx2 = 0;
+    char *s = input + offset;
+
+    len1 = strlen(str1);
+    len2 = strlen(str2);
+    inx1 = indexof(s, str1); // first target after offset
+    inx2 = indexof(s+inx1+1, str2); // 2nd target after offset
+    inx2 += inx1+1; // this now the 0 relative offset for str2
+    if (inx1 == -1 || inx2 == -1) {
+        ERRMSG(-1, false, "between - indexof failed");
+        return -1;
+    }
+    if (inx1 >= inx2) {
+        ERRMSG(-1, false, "between - inx1 >= inx2");
+        return -1;
+    }
+
+    inx1 = inx1 + len1; // offset of target substring
+    len1 = inx2 - inx1; // length for target
+    substr(buf, s, inx1, len1); // target substring stored into buf
+    return offset + inx2 + len2; // returns 1st position after str2
 }
 
 

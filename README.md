@@ -11,6 +11,7 @@ compiled myc.h totals about 43k
 
 **[ String functions ](#mystringing)**
 >
+[between](#between 'int between(char *buf, char *input, char *str1, char *str2, int offset)') &bull;
 [charat](#charat 'int charat(char *str, char c)') &bull;
 [chomp](#chomp 'char *chomp(char *str)') &bull;
 [compare](#compare 'bool compare(char *s1, const char *op, char *s2) ') &bull;
@@ -34,13 +35,13 @@ compiled myc.h totals about 43k
 [lastcharat](#lastcharat 'int lastcharat(char* base, char c)') &bull;
 [lastindexof](#lastindexof 'int lastindexof (char* base, char* str)') &bull;
 [lastsub](#lastsub 'char *lastsub (char *str, char *subs)') &bull;
-[leftof](#leftof 'char *leftof (char *buf, char *in, char *targ, int start)') &bull;
+[lof](#leftof 'char *lof(char *buf, char *in, char *delim, int start)') &bull;
 [lowercase](#lowercase 'char *lowercase (char *str)') &bull;
 [ltrim](#ltrim 'char *ltrim (char *str)') &bull;
 [replace](#replace 'char *replace (char *buf, char *in, char *target, char *replacement, int number)') &bull;
 [replace_new](#replace_new 'char *replace_new (char *in, char *target, char *replacement, int number)') &bull;
 [replacechar](#replacechar 'int replacechar(char *a, char b, char c, int number)') &bull;
-[rightof](#rightof 'char *rightof (char *buf, char *in, char *delim, int start)') &bull;
+[rof](#rightof 'char *rof(char *buf, char *in, char *delim, int start)') &bull;
 [rtrim](#rtrim 'char *rtrim (char *str)') &bull;
 [startswith](#startswith 'bool startswith (char* str, char* subs)') &bull;
 [strrev](#strrev 'char *strrev (char *str)') &bull;
@@ -242,6 +243,17 @@ _Warning: this changes the original string!_
 The goal here is to extend (and simplify) string manipulation in C._**
 
 .
+
+<a name="between"></a>
+### int between(char \*buf, char \*input, char \*str1, char \*str2, int offset)
+>Obtains a substring found between to other substrings.  
+Returns an index to the next position beyond the second  
+delimiting string.
+
+```c
+    p = between(subs, page, "<p>", "</p>", 0);
+    // returns the text between the paragraph tags.
+```
 
 <a name="charat"></a>
 ### int charat(char \*str, char c)
@@ -543,11 +555,11 @@ a string.
 If not found returns -1.
 
 <a name="leftof"></a>
-### char \*leftof (char \*buf, char \*in, char \*targ, int start)
+### char \*lof (char \*buf, char \*in, char \*delim, int start)
 >Returns a pointer to a substring to the left of  
 some delimiting string.  
 A starting offet may be used or set to 0.  
-Also see _rightof_.
+Also see [rof](#rightof).
 
 ```c
 char buf[MAX_L];
@@ -555,10 +567,10 @@ char *line = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
 
 void main () {
 
-    leftof(buf, line, "amet, ", 0);  // [Lorem ipsum dolor sit ]
+    lof(buf, line, "amet, ", 0);  // [Lorem ipsum dolor sit ]
     printf("[%s]\n", buf);
 
-    printf("[%s]\n", rightof(buf, line, "amet, ", 0));  
+    printf("[%s]\n", rof(buf, line, "amet, ", 0));  
                                 // [consectetur adipiscing elit]
 }
 ```
@@ -632,11 +644,11 @@ Returns count of replacements made.
 memory allocation size when creating an output buffer for replace.
 
 <a name="rightof"></a>
-### char \*rightof (char \*buf, char \*in, char \*delim, int start)
+### char \*rof (char \*buf, char \*in, char \*delim, int start)
 >Returns a pointer to a substring to the right of
 some delimiting string.  
 Set a starting index or set to 0.  
-See [leftof](#leftof "leftof function").
+See [lof](#leftof "lof function").
 
 <a name="rtrim"></a>
 ### char \*rtrim (char \*str)
