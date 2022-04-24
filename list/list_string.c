@@ -9,12 +9,12 @@ void main () {
     list csvstr = list_def(7, 32);
 
     list_init(csvstr,
-        "Mike Leidel",
+        "Mike Johnson",
         "69,123.22",
-        "112 W Wabash Ave, 53186",
+        "101 Technology Ave, 53186",
         "53217",
         "69.70",
-        "Waukesha",
+        "Pewaukee",
         "$22.81");
 
     puts(list_string(csvstr, buf, ","));
