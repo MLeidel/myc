@@ -32,6 +32,7 @@ compiled myc.h totals about 43k
 [indexof](#indexof 'int indexof (char* base, char* str)') &bull;
 [insert](#insert 'char *insert(char *buf, char *s, char *ins, size_t index)') &bull;
 [insert_new](#insert_new 'char *insert_new(char *s, char *ins, size_t index)') &bull;
+[isnum_us](#isnum_us 'bool isnum_us(char *var)') &bull;
 [lastcharat](#lastcharat 'int lastcharat(char* base, char c)') &bull;
 [lastindexof](#lastindexof 'int lastindexof (char* base, char* str)') &bull;
 [lastsub](#lastsub 'char *lastsub (char *str, char *subs)') &bull;
@@ -61,7 +62,8 @@ compiled myc.h totals about 43k
 [list_def](#list_def 'list list_def (int nbr_rows, int len_rows)') &bull;
 [list_init](#list_init 'void list_init(list lst, ...)') &bull;
 [list_read](#list_read 'list list_read(char *filename, bool strip)') &bull;
-[list_split](#list_split 'int list_split (list *a, char *str, char *delim)')
+[list_split](#list_split 'int list_split (list *a, char *str, char *delim)') &bull;
+[list_string](#list_string 'char *list_string(list lst, char *str, char *delim)')
 
 **[ Number to String functions ](#myntos)**
 >
@@ -543,10 +545,16 @@ Note: use the standard c 'free' function to deallocate.
 ```
 
 <a name="lastcharat"></a>
-### int lastcharat(char* base, char c)
+### int lastcharat(char\* base, char c)
 >Returns the __last index__ of some character
 in a string.  
 If not found returns -1.
+
+<a name="isnum_us"></a>
+### bool isnum_us(char\* str)
+>Return _true_ if the string argument is  
+numeric (whole or decimal) (US only).
+
 
 <a name="lastindexof"></a>
 ### int lastindexof (char\* base, char\* str)
@@ -923,6 +931,12 @@ Note: list\_dir makes use of the list struct.
     list_del(d);
 
 ```
+
+<a name="list_string"></a>
+### char \*list_string(list lst, char \*str, char \*delim)
+>Returns a field delimited string from _list_ items.  
+Alphanumeric fields are enclosed in double quotes.
+
 
 ------------------------------------------------------------------------------------------------------
 

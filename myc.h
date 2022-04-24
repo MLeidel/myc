@@ -36,6 +36,7 @@ bool compare(char*, const char*, char*);
 bool endswith(char*, char*);
 bool equals(char*, char*);
 bool equalsignore(char*, char*);
+bool isnum_us(char*);
 bool startswith(char*, char*);
 
 char* chomp(char*);
@@ -98,14 +99,19 @@ typedef struct list {
     char** item;  // array of fields (char arrays or strings)
 } list;
 
+char* list_string(list, char*, char*);
 list list_def(int, int);
 list list_dir(const char*, int, bool);
 list list_read(char*, bool);
+int list_find(list, char*);
 int list_split(list, char*, char*);
-void list_copy(list, size_t, char*);
+void list_update(list, char*, int);
 void list_display(list);
 void list_del(list);
 void list_init(list, ...);
+void list_insert(list, char*, int);
+void list_remove(list, int);
+void list_rw(list, char*, char);
 
 // FILE & PATH FUNCTIONS
 
@@ -146,17 +152,8 @@ void zenlist(char*, char*);
 void zenotify(char*, bool);
 void zentext(char* , char*, char*, bool);
 
-/* END DECLARATIONS
+// END DECLARATIONS
 
------------------------------------------
---------- Helpfull gcc functions --------
------------------------------------------
-char *realpath(const char *restrict path, char *restrict resolved_path);
-        // realpath(filename, buff) // returns NULL on error
-char *getenv(const char *name)
-        // sprintf(descq_path, "%s/.config/descq", getenv("HOME"));
----------------------------------------------------------------------------
-*/
 
 /*
             MACROS, DEFINES, AND UTILITIES
@@ -179,6 +176,9 @@ char *getenv(const char *name)
 #define Equal "=="
 #define NEQ "!="
 #define NotEqual "!="
+
+//strtype
+enum styp {ALPHA, ALNUM, DIGIT, PRINT, SPACE, UPPER, LOWER, PUNCT};
 
 
 void errmsg(int rc, bool quit, char *msg, int line, char *filename) {
@@ -608,11 +608,11 @@ void list_del(list csvf) {
 
 /*  Very safe: both index and string length are checked
 */
-void list_copy(list lst, size_t element, char *str) {
+void list_update(list lst, char *str, int element) {
     if (strlen(str) > lst.len_rows)
-        ERRMSG(-1, true, "list_copy item too large for def");
+        ERRMSG(-1, true, "list_update item overflows length");
     if (element > lst.nbr_rows)
-        ERRMSG(-1, true, "list_copy item index overflowing");
+        ERRMSG(-1, true, "list_update invalid row index");
     strcpy(lst.item[element], str);
 }
 
@@ -673,6 +673,100 @@ list list_read(char *filename, bool strip) {
     }
     fclose(f);
     return lines;
+}
+
+void list_rw(list lst, char *fn, char mode) {
+    int x = 0;
+    char line[lst.len_rows];
+    if (mode == 'r') {
+        FILE * f = open_for_read(fn);
+        for( x=0; x < lst.nbr_rows; x++) {
+            fgets(line, lst.len_rows, f);
+            list_update(lst, chomp(line), x);
+        }
+        fclose(f);
+    } else if(mode == 'w') {
+        FILE * f = open_for_write(fn);
+        for( x=0; x < lst.nbr_rows; x++) {
+            fprintf(f,"%s\n",lst.item[x]);
+        }
+        fclose(f);
+    } else {
+        ERRMSG(-1, true, "list_io: invalid mode");
+    }
+}
+
+/*
+    pushes a new item value into the list
+    at a designated index ...
+    shifts list items down and drops last item
+    thus changing some of the indexes
+*/
+void list_insert(list lst, char *value, int inx) {
+    if(inx < 0 || inx >= lst.nbr_rows) {
+        ERRMSG(-1, true, "tried to insert into list with an invalid index");
+    }
+    for(int x = lst.nbr_rows - 1; x > inx; x--) {
+        strcpy(lst.item[x], lst.item[x-1]);
+    }
+    list_update(lst, value, inx);
+}
+
+/*
+    removes an item from the list at a
+    designated index ...
+    shifts list items up thus changing
+    some of the indexes
+*/
+void list_remove(list lst, int inx) {
+    int x = 0;
+    if(inx < 0 || inx >= lst.nbr_rows) {
+        ERRMSG(-1, true, "tried to remove from list with an invalid index");
+    }
+    for(x = inx; x < lst.nbr_rows - 1; x++) {
+        strcpy(lst.item[x], lst.item[x+1]);
+    }
+    lst.item[x][0] = '\0';
+}
+
+/*
+    finds an item in the list and
+    returns its index
+*/
+int list_find(list lst, char *str) {
+    int x = 0;
+    for(x = 0; x < lst.nbr_rows; x++) {
+        if(equals(lst.item[x], str))
+            return x;
+    }
+    return -1;
+}
+
+/*
+    combines list items into a field delimited string
+*/
+char *list_string(list lst, char *str, char *delim) {
+    int x = 0;
+    int has_comma, has_space, has_apost, has_quote;
+    char separator[8] = {'\0'};
+    string sbuf = string_def(lst.nbr_rows * lst.len_rows + 1, '\0');
+
+    strcpy(separator, delim);
+    strcpy(str, "\0");
+
+    for (x=0; x < lst.nbr_rows; x++) {
+        if (x == lst.nbr_rows - 1)
+            strcpy(separator, "\0"); // no delim on last item
+        if (isnum_us(lst.item[x])) {
+            concat(str, lst.item[x], separator, END);
+        } else {
+            concat(str, "\"", lst.item[x], "\"", separator, END);
+        }
+        strcat(sbuf.value, str); // building the csv string
+    }
+    strcpy(str, sbuf.value);
+    string_del(sbuf);
+    return str;
 }
 
 /*================= END list .. etc. ====================*/
@@ -1335,6 +1429,32 @@ bool equalsignore(char *str1, char *str2) {
 }
 
 
+/*
+    Tests if a character string is a number
+    ( whole or decimal ) or not. US $ only.
+*/
+bool isnum_us(char *data) {
+    int alpha, decimal, digit, punct;
+    char item[128] = {'\0'};
+    alpha = decimal = digit = punct = 0;
+
+    strcpy(item, data);
+    trim(item);
+    alpha = strtype(item, ALPHA);
+    decimal = contains(item, ".");
+    digit = strtype(item, DIGIT);
+    punct = strtype(item, PUNCT);
+
+    if (alpha == 0 &&
+        (digit > 0 || digit == -1)) {
+        if (punct == decimal) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 bool compare(char *f1, const char *op, char *f2) {
     int r = strcmp(f1, f2);
 
@@ -1443,7 +1563,7 @@ char *insert_new(char *s, char *ins, size_t inx) {
 *    N = number found
 *   -1 = all found
 ***/
-enum styp {ALPHA, ALNUM, DIGIT, PRINT, SPACE, UPPER, LOWER, PUNCT};
+// enum styp {ALPHA, ALNUM, DIGIT, PRINT, SPACE, UPPER, LOWER, PUNCT};
 
 int strtype(char *buf, int istype) {
     size_t len;
