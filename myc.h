@@ -103,15 +103,16 @@ char* list_string(list, char*, char*);
 list list_def(int, int);
 list list_dir(const char*, int, bool);
 list list_read(char*, bool);
+list list_redef(list, int, int);
 int list_find(list, char*);
 int list_split(list, char*, char*);
 void list_update(list, char*, int);
 void list_display(list);
 void list_del(list);
 void list_init(list, ...);
-void list_insert(list, char*, int);
+void list_inject(list, char*, int);
 void list_remove(list, int);
-void list_rw(list, char*, char);
+void list_io(list, char*, char);
 
 // FILE & PATH FUNCTIONS
 
@@ -513,6 +514,20 @@ list list_def(int col, int len) {
     return csvf;
 }
 
+/*
+    Returns a Re-DEFined list with new dimensions.
+    Retains items from first list and removes it.
+*/
+list list_redef(list l1, int new_rows, int new_len) {
+    int x = 0;
+    list lnew = list_def(new_rows, new_len);
+    for(x=0; x < l1.nbr_rows; x++) {
+        list_update(lnew, l1.item[x], x);
+    }
+    list_del(l1);
+    return lnew;
+}
+
 char * qmark(char * str, char delim) {
     /* Hides delimiters within dbl quotes
        for the input string to 'field' function.
@@ -675,7 +690,7 @@ list list_read(char *filename, bool strip) {
     return lines;
 }
 
-void list_rw(list lst, char *fn, char mode) {
+void list_io(list lst, char *fn, char mode) {
     int x = 0;
     char line[lst.len_rows];
     if (mode == 'r') {
@@ -702,9 +717,9 @@ void list_rw(list lst, char *fn, char mode) {
     shifts list items down and drops last item
     thus changing some of the indexes
 */
-void list_insert(list lst, char *value, int inx) {
+void list_inject(list lst, char *value, int inx) {
     if(inx < 0 || inx >= lst.nbr_rows) {
-        ERRMSG(-1, true, "tried to insert into list with an invalid index");
+        ERRMSG(-1, true, "tried to inject into list with an invalid index");
     }
     for(int x = lst.nbr_rows - 1; x > inx; x--) {
         strcpy(lst.item[x], lst.item[x-1]);

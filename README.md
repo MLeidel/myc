@@ -55,15 +55,20 @@ compiled myc.h totals about 43k
 
 **[ List - _static_ Array of strings ](#list_def)**
 >
-[list_copy](#list_copy 'void list_copy(list lst, size_t element, char *str)') &bull;
 [list_del](#list_del 'void list_del(list a)') &bull;
 [list_dir](#list_dir 'list list_dir(const char *path, int dtype, bool sort)') &bull;
 [list_display](#list_display 'void list_display (list a)') &bull;
 [list_def](#list_def 'list list_def (int nbr_rows, int len_rows)') &bull;
+[list_find](#list_find 'int list_find(list lst, char *str)') &bull;
 [list_init](#list_init 'void list_init(list lst, ...)') &bull;
+[list_inject](#list_inject 'list_inject(list lst, char *value, int inx)') &bull;
 [list_read](#list_read 'list list_read(char *filename, bool strip)') &bull;
+[list_redef](#list_redef 'list list_redef(list lst1, int new_rows, int new_len)') &bull;
+[list_remove](#list_remove 'void list_remove(list lst, int inx)') &bull;
+[list_io](#list_io 'void list_io(list lst, char *fn, char mode)') &bull;
 [list_split](#list_split 'int list_split (list *a, char *str, char *delim)') &bull;
-[list_string](#list_string 'char *list_string(list lst, char *str, char *delim)')
+[list_string](#list_string 'char *list_string(list lst, char *str, char *delim)') &bull;
+[list_update](#list_update 'void list_update(list lst, char *str, size_t index)')
 
 **[ Number to String functions ](#myntos)**
 >
@@ -846,18 +851,23 @@ NOTE: Each list item must be initialized.
                "fifth string" );
 ```
 
-<a name="list_copy"></a>
-### void list_copy(list lst, size_t element, char *str)
+<a name="list_find"></a>
+### int list_find(list lst, char \*str)
+>Finds an item in the list and  
+returns its index.
+
+
+<a name="list_update"></a>
+### void list_update(list lst, char *str, int element)
 >After creating a new list use this to initialize  
 or change an element with a string literal.  
 
 ```c
     list my_list = list_def(5, 32);
 
-    list_copy(my_list, 0, "F I R S T  STRING");
-    list_copy(my_list, 4, "L A S T  STRING");
+    list_update(my_list, 0, "F I R S T  STRING");
+    list_update(my_list, 4, "L A S T  STRING");
 ```
-
 
 <a name="list_split"></a>
 ### int list\_split (list a, char \*str, char \*delim)
@@ -899,6 +909,16 @@ list_def function.
 >Prints out indexes and values
 to the console.
 
+<a name="list_inject"></a>
+### void list_inject(list lst, char \*value, int inx)
+>Inserts a new list item at an existing index.  
+Values are shifted down to allow for the new value  
+thus changing the indexs of the shifted items.  
+The last item in the list is dropped off.  
+The dimensions of the list are not changed.  
+see [list_remove](#list_remove)
+
+
 <a name="list_read"></a>
 ### list list_read(char *filename, bool strip)  
 >Reads a text file's lines into a list and  
@@ -913,6 +933,73 @@ the new list's allocated size.
     list_display(flst);
     list_del(flst);
 ```
+
+<a name="list_redef"></a>
+### list list_redef(list lst1, int new_rows, int new_len)
+>Returns a RE-DEFined list with new dimensions.  
+Retains items from _lst1_ and deallocates _lst1_.
+
+```c
+void main (int argc, char *argv[]) {
+    int x = 0;
+    list lst = list_def(5, 32);
+
+    list_init(lst, "Entry zero",
+                   "Entry ONE",
+                   "2 2 2 2 2",
+                   "Three Two One Zero",
+                   "ffoouurr");
+
+    list_display(lst);
+
+    puts("\nadding two more rows ...\n");
+
+    lst = list_redef(lst, 7, 32);
+
+    list_update(lst, "added 1 after redef", 5);
+    list_update(lst, "added 2 after redef", 6);
+
+    list_display(lst);
+
+    list_del(lst);
+}
+
+/* OUTPUT
+000 - [Entry zero]
+001 - [Entry ONE]
+002 - [2 2 2 2 2]
+003 - [Three Two One Zero]
+004 - [ffoouurr]
+
+adding two more rows ...
+
+000 - [Entry zero]
+001 - [Entry ONE]
+002 - [2 2 2 2 2]
+003 - [Three Two One Zero]
+004 - [ffoouurr]
+005 - [added 1 after redef]
+006 - [added 2 after redef]
+*/
+```
+
+<a name="list_remove"></a>
+### void list_remove(list lst, int inx)
+>Removes a list item at an existing index.  
+Values are shifted up to fill the space.  
+thus changing the indexs of the shifted items.  
+The last item in the list becomes empty (blank).  
+The dimensions of the list are not changed.  
+see [list_inject](#list_inject)
+
+
+<a name="list_io"></a>
+### void list_io(list lst, char *filename, char mode)
+>Reads list items from and Saves to a text file.  
+modes:  
+* "r" read  
+* "w" write
+
 
 <a name="list_dir"></a>
 ### list list_dir(const char *path, int dtype, bool sort)
