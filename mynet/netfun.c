@@ -5,26 +5,38 @@
 Demos "webpage" and "webbrowser" functions
 */
 
-void main() {
-
-    char *pagebuf;
-    pagebuf = calloc(100000, sizeof(char*));
-    if (!webpage(pagebuf, 100000, "https://someproc.php")) {
-      printf("exiting because of webpage failure\n");
-      free(pagebuf);
-      exit(1);
+char *get_page_title(char *buf, char *url) {
+    const size_t bufsize = 1000000; // buffer to hold page html content
+    // use 'webpage' to get the pages <title> text
+    string pagebuf = string_def(bufsize, '\0');
+    if (!webpage(pagebuf.value, bufsize, url)) {
+      ERRMSG(-1, true, "get_page_title: webpage failure\n");
     } else {
-      printf("webpage success!\n%s\n", pagebuf);
-      free(pagebuf);
+      // puts(pagebuf.value);
+      int p = between(buf, pagebuf.value, "<title>", "</title>", 0);
+      if(p == -1) {
+        ERRMSG(-1, true, "get_page_title: could not find title tag");
+      }
     }
+    string_del(pagebuf);
+    return buf;
+}
 
 
+void main() {
+    char title[120] = {'\0'};
 
-    if (!webbrowser("https://tekvow.net")) {
-      printf("exiting because of webbrowser mynet.h failure\n");
-      exit(1);
+    puts(get_page_title(title, "https://example.com"));
+
+    if (!webbrowser("https://example.com")) {
+      printf("webbrowser failure\n");
     } else {
       printf("webbrowser success!\n");
     }
 
 }
+/* OUTPUT
+webpage success!
+title: Home | Deerfield RGC
+webbrowser success!
+*/

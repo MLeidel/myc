@@ -20,3 +20,14 @@ void main (int argc, char *argv[]) {
     setlocale(LC_NUMERIC, "");
     printf("%'.2f \n", d1);
 }
+
+/* OUTPUT
+1232.35
+   1232.35
+0001232.35
+234
+0000000234
+Hello
+     Hello
+1,232.35
+*/

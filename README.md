@@ -255,7 +255,7 @@ The goal here is to extend (and simplify) string manipulation in C._**
 ### int between(char \*buf, char \*input, char \*str1, char \*str2, int offset)
 >Obtains a substring found between to other substrings.  
 Returns an index to the next position beyond the second  
-delimiting string.
+delimiting string. Returns -1 on not found or failure.
 
 ```c
     p = between(subs, page, "<p>", "</p>", 0);
@@ -279,7 +279,8 @@ On failure returns -1.
 
 <a name="chomp"></a>
 ### char \*chomp(char \*str)
->Removes record separators from the end of a string.
+>Returns the string with record separators  
+removed from the end of the string.
 
 
 <a name="compare"></a>
@@ -309,8 +310,10 @@ Note: only the "symbols == < > <= >= !=" may be used in variables
 
 
 <a name="concat"></a>
-### char \*concat(char \*dest, ..., "END")
->Concatenate a variable number of strings.
+### char \*concat(char \*dest, ..., END)
+>Concatenate a variable number of strings.  
+END must be used for the last argument.  
+Note: the destination buffer must initialized.
 
 ```c
     char s[MAX_L];
@@ -854,7 +857,8 @@ NOTE: Each list item must be initialized.
 <a name="list_find"></a>
 ### int list_find(list lst, char \*str)
 >Finds an item in the list and  
-returns its index.
+returns its index. Returns -1  
+if not found.
 
 
 <a name="list_update"></a>
