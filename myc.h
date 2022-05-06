@@ -43,16 +43,19 @@ bool startswith(char*, char*);
 char* chomp(char*);
 char* concat(char*, ...);
 char* deletechar(char*, char*, char*, size_t, size_t);
+char* dollar(char*, double, int, int);
 char* field(char*, char*, char, int, bool);
 char* insert(char*, char*, char*, size_t);
 char* insert_new(char*, char*, size_t);
 char* lastsub(char*, char*);
 char* lowercase(char*);
 char* lof(char*, char*, char*, int);
+char* lpad(char*, char*, char*, int);
 char* ltrim(char*);
 char* replace(char*, char*, char*, char*, size_t, size_t);
 char* replace_new (char*, char*, char*, size_t, size_t);
 char* rof(char*, char*, char*, int);
+char* rpad(char*, char*, char*, int);
 char* rtrim(char*);
 char* strrev(char*);
 char* substr(char*, char*, int, int);
@@ -368,6 +371,49 @@ char *lof(char *buf, char *input, char *delim, int start) {
 char *rof(char *buf, char *input, char *delim, int start) {
     int inx = indexof(input+start, delim) + strlen(delim);
     substr(buf, input+start, inx, 0);
+}
+
+
+char *lpad(char *space, char *str, char *filler, int n) {
+    strcpy(space, "\0");
+    for(int x=0; x < n; x++) {
+        strcat(space, filler);
+    }
+    strcat(space, str);
+    return space;
+}
+
+char *rpad(char *space, char *str, char *filler, int n) {
+    strcpy(space, str);
+    for(int x=0; x < n; x++) {
+        strcat(space, filler);
+    }
+    return space;
+}
+
+
+char *dollar(char *space, double amount, int fsize, int type) {
+    char fmt[64] = {'\0'};
+    int siz = 0;
+    strcpy(space, "\0");
+    setlocale(LC_NUMERIC, "");
+    switch(type) {
+        case 0:
+            sprintf(fmt,"%.2f", amount); // no $ no ,
+            break;
+        case 1:
+            sprintf(fmt,"$%.2f", amount); // yes $ no ,
+            break;
+        case 2:
+            sprintf(fmt,"$%'.2f", amount); // yes $ yes ,
+            break;
+        default:
+            sprintf(fmt,"%.2f", amount); // no $ no ,
+    }
+    siz = strlen(fmt);
+    siz = fsize - siz;
+    lpad(space, fmt, " ", siz);
+    return space;
 }
 
 

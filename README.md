@@ -25,6 +25,7 @@ compiled myc.h totals about 43k
 [string_rsz](#string_rsz 'string string_rsz(string s, size_t length)') &bull;
 [string_wrp](#string_wrp 'string string_wrp(char *in, size_t length, char sep)') &bull;
 [deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, size_t start, size_t number)') &bull;
+[dollar](#dollar 'char *dollar(char *space, double amount, int fsize, int type)') &bull;
 [endswith](#endswith 'bool endswith (char* str, char* subs)') &bull;
 [equals](#equals 'bool equals(char *str1, char *str2)') &bull;
 [equalsignore](#equalsignor 'bool equalsignore(char *str1, char *str2)') &bull;
@@ -38,11 +39,13 @@ compiled myc.h totals about 43k
 [lastsub](#lastsub 'char *lastsub (char *str, char *subs)') &bull;
 [lof](#leftof 'char *lof(char *buf, char *in, char *delim, int start)') &bull;
 [lowercase](#lowercase 'char *lowercase (char *str)') &bull;
+[lpad](#lpad 'char *lpad(char *space, char *str, char *filler, int n)') &bull;
 [ltrim](#ltrim 'char *ltrim (char *str)') &bull;
 [replace](#replace 'char *replace (char *buf, char *in, char *target, char *replacement, int number)') &bull;
 [replace_new](#replace_new 'char *replace_new (char *in, char *target, char *replacement, int number)') &bull;
 [replacechar](#replacechar 'int replacechar(char *a, char b, char c, int number)') &bull;
 [rof](#rightof 'char *rof(char *buf, char *in, char *delim, int start)') &bull;
+[rpad](#rpad 'char *rpad(char *space, char *str, char *filler, int n)') &bull;
 [rtrim](#rtrim 'char *rtrim (char *str)') &bull;
 [startswith](#startswith 'bool startswith (char* str, char* subs)') &bull;
 [strrev](#strrev 'char *strrev (char *str)') &bull;
@@ -448,6 +451,17 @@ Limit deletions or 0 means no limit.
   deletechar(data, data, "Edgr, ", 0, 0);
   puts(data);  // llnPmcnth
 ```
+<a name="dollar"></a>
+### char \*dollar(char \*buff, double amount, int fsize, int type)
+>Returns a formatted US currency dollar amount.  
+```
+type: 1 = no $ and no separator  
+type: 2 = yes $ and no separator  
+type: 3 = yes $ and yes separator  
+```
+The formatted amount is returned right justified in the specified field size.
+
+
 
 <a name="endswith"></a>
 ### bool endswith (char \*str, char \*subs)
@@ -601,6 +615,12 @@ void main () {
 >Returns the string with trailing whitespace
 removed.
 
+<a name="lpad"></a>
+### char \*lpad(char \*buff, char \*str, char \*filler, int n)
+>Returns a string with added left padding.
+The padding (_filler_) is another string which is
+repeated _n_ times.
+
 <a name="replace"></a>
 ### char \*replace (char \*buf, char \*in, char \*target, char \*replacement, size_t start, size_t number)
 >Replaces substrings within a string. 
@@ -666,6 +686,12 @@ memory allocation size when creating an output buffer for replace.
 some delimiting string. 
 Set a starting index or set to 0. 
 See [lof](#leftof "lof function").
+
+<a name="rpad"></a>
+### char \*rpad(char \*buff, char \*str, char \*filler, int n)
+>Returns a string with added right padding.
+The padding (_filler_) is another string which is
+repeated _n_ times.
 
 <a name="rtrim"></a>
 ### char \*rtrim (char \*str)
