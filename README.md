@@ -1528,7 +1528,7 @@ from the zenform to make the process clean and easy.
  from the zenform to make the process clean and easy.
 */
 ```
-![cproj program](cproj.png)
+![cproj program](images/cproj.png)
 
 ```c
 #include <myc.h>
@@ -1619,7 +1619,7 @@ void main (int argc, char *argv[]) {
 
 ## Sample Program
 ### Log Out Gui
-![sysquit program](sysquit.png)
+![sysquit program](images/sysquit.png)
 
 ```c
 #include <myc.h>
