@@ -1506,7 +1506,8 @@ the second argument.
 
 ```
 
-----------
+----
+----
 
 <a name="samplepgm"></a>
 ## Sample Program using myc.h [^](#top 'top')
@@ -1526,6 +1527,10 @@ from the zenform to make the process clean and easy.
  how the list\_ functions and enums help with the output 
  from the zenform to make the process clean and easy.
 */
+```
+![cproj program](cproj.png)
+
+```c
 #include <myc.h>
 
 void main (int argc, char *argv[]) {
@@ -1560,7 +1565,7 @@ void main (int argc, char *argv[]) {
   }
 
   // Obtain default path to projects
-  readfile(initial, "initial_directory");
+  readfile(initial, "initial_directory"); // one line file with main proj path
   zenfile(path, trim(initial), false, true);
 
   // HAVE ALL INPUTS
@@ -1612,6 +1617,43 @@ void main (int argc, char *argv[]) {
 }
 ```
 
+## Sample Program
+### Log Out Gui
+![sysquit program](sysquit.png)
+
+```c
+#include <myc.h>
+
+void main () {
+    char data[256] = {'\0'};
+
+    char list_layout[] =
+    "--title='Log Out' "
+    "--text='select one then Ok or Cancel' "
+    "--separator=' ' "
+    "--column='Action' "
+    "Shutdown "
+    "Reboot "
+    "Suspend ";
+
+    zenlist(data, list_layout);
+    puts(data); // what was selected
+
+    if(equals(data, "Shutdown")) {
+        system("shutdown now");
+    }
+    else if(equals(data, "Reboot")) {
+        system("reboot");
+    }
+    else if(equals(data, "Suspend")) {
+        system("systemctl suspend");
+    }
+    else {
+        exit(EXIT_SUCCESS);
+    }
+}
+```
+---
 ----------
 
 <a name="mydb"></a>
