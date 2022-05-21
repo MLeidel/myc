@@ -455,13 +455,14 @@ Limit deletions or 0 means no limit.
 <a name="dollar"></a>
 ### char \*dollar(char \*buff, double amount, int fsize, int type)
 >Returns a formatted US currency dollar amount.  
-```
-type: 1 = no $ and no separator  
-type: 2 = yes $ and no separator  
-type: 3 = yes $ and yes separator  
-```
-The formatted amount is returned right justified in the specified field size.
 
+* type: 1 = no $ and no separator  
+* type: 2 = yes $ and no separator  
+* type: 3 = yes $ and yes separator  
+
+The formatted amount is returned right justified in the specified field size.  
+**Warning: make sure the buffer is large enough to hold the formatted
+dollar amount with any padding**
 
 
 <a name="endswith"></a>
