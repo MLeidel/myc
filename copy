@@ -1,4 +1,0 @@
-cp -v myc.h /home/ml/apps/c/myc.h
-cp -v myc.h /home/ml/apps/c/gtk/Desk-Queue/myc.h
-cp -v myc.h /home/ml/apps/c/gtk/Piccolo/myc.h
-sudo cp -v myc.h /usr/include/myc.h
