@@ -13,7 +13,6 @@ void main (int argc, char *argv[]) {
     printf("[%s]\n",lpad(buff, "hello", " ", 10));
     printf("[%s]\n",rpad(buff, "hiya", " ", 10));
     printf("[%s]\n",lpad(buff, "hello", "<>", 3));
-    printf("[%s]\n",rpad(buff, "hellooooo", "O", 6));
 
     puts("\nUsed in 'dollar' function:\n");
 
@@ -21,6 +20,8 @@ void main (int argc, char *argv[]) {
     printf("[%s]\n", dollar(buff, 31102.56, 15, 1));
     printf("[%s]\n", dollar(buff, 31102.56, 15, 2));
 
+    // segfault
+    printf("[%s]\n",rpad(buff, "hellooooo", "O", 600));
 
 }
 

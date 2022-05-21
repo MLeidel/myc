@@ -373,7 +373,9 @@ char *rof(char *buf, char *input, char *delim, int start) {
     substr(buf, input+start, inx, 0);
 }
 
-
+/* WARNING DANGEROUS: POSSIBLE OVERFLOW
+    expanded string space must be accounted for
+*/
 char *lpad(char *space, char *str, char *filler, int n) {
     strcpy(space, "\0");
     for(int x=0; x < n; x++) {
@@ -382,7 +384,9 @@ char *lpad(char *space, char *str, char *filler, int n) {
     strcat(space, str);
     return space;
 }
-
+/* WARNING DANGEROUS: POSSIBLE OVERFLOW
+    expanded string space must be accounted for
+*/
 char *rpad(char *space, char *str, char *filler, int n) {
     strcpy(space, str);
     for(int x=0; x < n; x++) {
@@ -392,6 +396,9 @@ char *rpad(char *space, char *str, char *filler, int n) {
 }
 
 
+/* WARNING DANGEROUS: POSSIBLE OVERFLOW
+    expanded string space must be accounted for
+*/
 char *dollar(char *space, double amount, int fsize, int type) {
     char fmt[64] = {'\0'};
     int siz = 0;
@@ -440,8 +447,9 @@ int replacesz(char *base, char *target, char *replacement, int nbr) {
 *   b: needle string
 *   c: replacement string
 *   number: number of replacements to make (0 means replace all)
-* NOTE: buf must be big enough to hold new string with replacements.
-* ALSO: see 'replace_new'
+ WARNING DANGEROUS: POSSIBLE OVERFLOW
+ expanded string space must be accounted for
+*   ALSO: see 'replace_new'
 ***/
 char * replace (char *buf, char *a, char *b, char *c, size_t start, size_t number) {
     int count = 0;
@@ -1166,12 +1174,15 @@ char* chomp(char *line) {  // see also rtrim()
 }
 
 
+/* WARNING DANGEROUS: POSSIBLE OVERFLOW
+    expanded string space must be accounted for
+*/
 char *concat(char *dest, ...) {
-    string buf = string_def(4096, '\0');
+    string buf = string_def(10240, '\0');
     va_list ap;
 
     va_start(ap, dest);
-    // NOTE: dest MUST BE INITIALIZED
+    // NOTE: dest MUST BE INITIALIZED to allow room for concatenation
 
     while(1) {
         strcpy(buf.value, va_arg(ap, char*));
@@ -1581,6 +1592,9 @@ char* urlencode(char* dest, char* urltext) {
 }
 
 
+/* WARNING DANGEROUS: POSSIBLE OVERFLOW
+    expanded string space must be accounted for
+*/
 char *insert(char *buf, char *s, char *ins, size_t inx) {
     size_t actual = strlen(s + inx); // length of insertion point to end
     size_t new = strlen(ins); // length of insertion text

@@ -314,9 +314,10 @@ Note: only the "symbols == < > <= >= !=" may be used in variables
 
 <a name="concat"></a>
 ### char \*concat(char \*dest, ..., END)
->Concatenate a variable number of strings. 
-END must be used for the last argument. 
-Note: the destination buffer must initialized.
+>Concatenate a variable number of strings.  
+END must be used for the last argument.  
+__Warning: the destination buffer must initialized large
+enough to hold all the concatenations.__
 
 ```c
   char s[MAX_L];
@@ -527,8 +528,10 @@ If not found returns -1.
 
 <a name="insert"></a>
 ### char \*insert(char \*buf, char \*s, char \*ins, size_t index)
->Inserts a substring into a string at index. 
-The new string is copied into the first argument and returned.
+>Inserts a substring into a string at index.  
+The new string is copied into the first argument and returned.  
+**Warning: the buffer must be large enough to hold the original
+string and the inserted string.**
 
 ```c
   char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
@@ -619,12 +622,15 @@ removed.
 ### char \*lpad(char \*buff, char \*str, char \*filler, int n)
 >Returns a string with added left padding.
 The padding (_filler_) is another string which is
-repeated _n_ times.
+repeated _n_ times. **Warning: the resulting buffer must be
+large enough to hold the original string and the padding.**
 
 <a name="replace"></a>
 ### char \*replace (char \*buf, char \*in, char \*target, char \*replacement, size_t start, size_t number)
 >Replaces substrings within a string. 
 Set starting index and limit replacements or set to 0, no limit.
+**Warning: the resulting buffer must be
+large enough to hold the original string and the replacements.**
 
 ```c
   char mystr[64] = "The long and winding road.";
@@ -691,7 +697,8 @@ See [lof](#leftof "lof function").
 ### char \*rpad(char \*buff, char \*str, char \*filler, int n)
 >Returns a string with added right padding.
 The padding (_filler_) is another string which is
-repeated _n_ times.
+repeated _n_ times.  **Warning: the resulting buffer must be
+large enough to hold the original string and the padding.**
 
 <a name="rtrim"></a>
 ### char \*rtrim (char \*str)
