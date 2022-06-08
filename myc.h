@@ -141,6 +141,8 @@ char* date(const char*);
 void flogf(FILE*, char*, ...);
 void multifree(int, ...);
 void timeout(int, void f(int));
+void randini();
+long randnum(long, long);
 
 // SORTING FUNCTIONS
 void isort(int[], int);
@@ -1247,6 +1249,21 @@ char* date(const char* format) {  // see man strftime
 void timeout(int sec, void f()) {
     signal(SIGALRM, f);
     alarm(sec);
+}
+
+
+void randini() {
+   srand(time(0));
+}
+
+long randnum(long min, long max) {
+   if(min>max)
+   {
+      printf("Min value is greater than max value\n");
+      return 0;
+   } else {
+      return rand() % (max - min +1) + min;
+   }
 }
 
 

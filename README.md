@@ -110,7 +110,11 @@ compiled myc.h totals about 43k
 [ERRMSG](#ERRMSG 'ERRMSG(a, b, c) (errmsg(a, b, c, LINE))') &bull;
 [isort](#isort 'void isort (int values[], int n)') &bull;
 [dsort](#dsort 'void dsort (double values[], int n)') &bull;
-[ssort](#ssort 'void ssort (const char* arr[], int n, bool case)')
+[ssort](#ssort 'void ssort (const char* arr[], int n, bool case)') &bull;
+[randini](#randini 'void randini()') &bull;
+[randnum](#randnum 'long randnum(long min, long max)')
+
+
 
 **[ Gtk Dialogs (zenity) ](#zenity)**
 >
@@ -1322,6 +1326,18 @@ use ERRMSG with three arguments:
 
 ```
 Use -1 in 1st argument for non-stock error message.
+
+
+<a name="randini"></a>
+## void randini()
+>Seeds random number generator.
+Use once before using one or more calls to randnum function.
+
+
+<a name="randnum"></a>
+## long randnum(long min, long max)
+>Returns a randum number between and inclusive
+of some min and max values.
 
 ----------
 
