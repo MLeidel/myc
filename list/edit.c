@@ -33,6 +33,9 @@ void main (int argc, char *argv[]) {
         } else if (equals(argv[1], "update")) {
             list_update(hlist, argv[3], atoi(argv[2]));
             list_io(hlist, "entry_hist.txt", 'w');
+        } else if (equals(argv[1], "find")) {
+            printf("\n%s is index: %d\n\n",
+                    argv[2], list_find(hlist, argv[2]));
         } else {
             ERRMSG(-1, true, "invalid command");
         }
@@ -42,6 +45,7 @@ void main (int argc, char *argv[]) {
         puts("\nuse: edit inject index item-text ");
         puts("or: edit remove item-text");
         puts("or: edit update index item-text");
+        puts("or: edit find item-text");
     }
 
     list_del(hlist);
