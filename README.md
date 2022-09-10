@@ -13,6 +13,7 @@ compiled myc.h totals about 43k
 >
 [between](#between 'int between(char *buf, char *input, char *str1, char *str2, int offset)') &bull;
 [charat](#charat 'int charat(char *str, char c)') &bull;
+[center](#center 'char * center(char *space, char *str, char *filler, int n)') &bull;
 [chomp](#chomp 'char *chomp(char *str)') &bull;
 [compare](#compare 'bool compare(char *s1, const char *op, char *s2) ') &bull;
 [concat](#concat 'char *concat(char *dest, ..., END)') &bull;
@@ -283,6 +284,12 @@ On failure returns -1.
  printf("index of 'm' found at: %i\n", charat(s, 'm')); // index of 'm' found at: 4
 
 ```
+<a name="center"></a>
+### char \* center(char \*space, char \*str, char \*filler, int n)
+>Centers a string within a larger string.  
+The initialized length of "space" must be greater than or equal to "n"  
+which is the final length of "space" including "str".
+
 
 <a name="chomp"></a>
 ### char \*chomp(char \*str)
