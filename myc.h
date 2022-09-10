@@ -40,6 +40,7 @@ bool equalsignore(char*, char*);
 bool isnum_us(char*);
 bool startswith(char*, char*);
 
+char* center(char*, char*, char*, int);
 char* chomp(char*);
 char* concat(char*, ...);
 char* deletechar(char*, char*, char*, size_t, size_t);
@@ -1173,6 +1174,26 @@ char* chomp(char *line) {  // see also rtrim()
         }
     }
     return tmp;
+}
+
+
+/* WARNING DANGEROUS: POSSIBLE OVERFLOW
+    expanded string `space` must be accounted for
+    allow enough characters in space
+    HERE n is the length of the final string (space)
+*/
+char * center(char *space, char *str, char *filler, int n) {
+    int sides = 0;
+    int size = 0;
+    int i = 0;
+
+    size = strlen(str);
+    sides = (n - size) / 2;
+
+    lpad(space, str, filler, sides);
+    rpad(space, space, filler, sides);
+
+    return space;
 }
 
 

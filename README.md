@@ -411,8 +411,8 @@ with string_new or string_wrp.
 
 <a name="string_wrp"></a>
 ### string string_wrp(char \*in, size_t length, char sep)
->Reformats lines of text to all have a new line width 
-where lines are separated on word boundaries. 
+>Reformats lines of text into separate lines of size length. 
+Lines are created on word boundaries. 
 Returns a new string with memory allocated to hold 
 the new block of text (string.)
 
