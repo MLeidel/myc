@@ -88,6 +88,7 @@ typedef struct string {
     char *value;
 } string;
 
+bool string_cat(string, char*);
 bool string_cpy(string, char*);
 void string_del(string);
 string string_def(size_t, char);
@@ -286,6 +287,20 @@ string string_rsz(string p, size_t length) {
     }
     z.length = length;
     return z;
+}
+
+bool string_cat(string s, char *data) {
+    size_t len;
+    size_t slen;
+    len = strlen(data);
+    slen = strlen(s.value);
+
+    if ((len + slen) > s.length - 1) {
+        fprintf(stderr, "\nstring_cat boundary error\n");
+        return false;
+    }
+    strcat(s.value, data);
+    return true;
 }
 
 bool string_cpy(string s, char *data) {

@@ -4,7 +4,7 @@
 
 /*
 Dynamic string allocation made easy.
-The "string" struct is used for these functions:
+The myc "string" struct is used for these functions:
 */
 
 void main() {
@@ -38,19 +38,20 @@ ex ea commodo consequat.");
     string_cpy(s, "Hello");
     puts(s.value);
     s = string_rsz(s, 20);
-    //string_cpy(s, "Hello Universe");
-    strcat(s.value, " Universe");
-    puts(s.value);
-    //string_del(s);
+
+    if (string_cat(s, " Universe")) {
+        puts(s.value);
+    } else {
+        puts("cound not print concatenated string");
+    }
 
 /*
     create a new dyamic string
 */
 
     string newstring = string_new("Hello World!");
-    printf("%s - %ld\n", newstring.value, newstring.length);
+    printf("\n%s - %ld\n", newstring.value, newstring.length);
 
-    puts(s.value);
 
     string_del(s);
     string_del(newstring);

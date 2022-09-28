@@ -19,6 +19,7 @@ compiled myc.h totals about 43k
 [concat](#concat 'char *concat(char *dest, ..., END)') &bull;
 [contains](#contains 'int contains(char *str, char *subs)') &bull;
 [contvars](#contvars 'int contvars(char *str, char *delim)') &bull;
+[string_cat](#string_cat 'bool string_cat(string s, char *data)') &bull;
 [string_cpy](#string_cpy 'bool string_cpy(string s, char *data)') &bull;
 [string_new](#string_new 'string string_new(const char *str)') &bull;
 [string_del](#string_del 'void string_del(string s)') &bull;
@@ -398,10 +399,15 @@ from an existing string.
   string_del(s);
 ```
 
+<a name="string_cat"></a>
+### bool string_cat(string s, char *data)
+>Concatenates _data_ to a predefined "string" string  
+with boundary checking.
+
 <a name="string_cpy"></a>
 ### bool string_cpy(string s, char *data)
 >Copies a string into a predefined  
-heap string with boundary checking.  
+"string" string with boundary checking.  
 Alternative to strncpy.
 
 ```c
