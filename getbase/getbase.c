@@ -46,4 +46,9 @@ void main (int argc, char *argv[]) {
 
     getfullpath("testfile.txt", buff);
     puts(getbasename(buff, false));
+
+    puts("_-_-_-_-_- basepath of 'this' file _-_-_-_-_- ");
+
+    puts(getbasepath(__FILE__, buff));
+
 }

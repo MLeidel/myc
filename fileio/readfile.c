@@ -3,7 +3,7 @@
 
 int main () {
 
-    char data[50000];
+    char * data[50000] = {'\0'};
 
     if (file_exists("urls.txt")) {
         readfile(data, "urls.txt");

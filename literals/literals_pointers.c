@@ -43,7 +43,7 @@ The compiler allocates proper storage for the string,
 including the null character at the end,
 and it assigns it to the array string. Nifty keen.
 
-You can also declare a string in this manner:
+You can also declare a string in this manner (not as good):
 
     char *string = "I am some sort of interesting string.\n";
 

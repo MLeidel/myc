@@ -27,7 +27,6 @@
 #include <time.h>
 #include <unistd.h>
 
-
 // DECLARATIONS
 
 char myc_quote_chars = '\"';    // if needed reset this variable
@@ -151,6 +150,10 @@ void isort(int[], int);
 void ssort(char*[], int, bool);
 void dsort(double[], int);
 
+// CLIPBOARD
+int cbcopy(char*);
+char* cbpaste(char*);
+
 // ZEN DIALOGS
 int zenmsg(char*, char*, char*);
 void runproc(char*, char*);
@@ -240,6 +243,33 @@ void ssort(char* arr[], int n, bool ignorecase) {
     else
         qsort(arr, n, sizeof(const char*), myssortcmp);
 }
+
+/*
+    clipboard
+    uses xclip
+*/
+
+int cbcopy(char *text) {
+    /* copies text to the system clipboard
+    usint xclip command */
+    char cmd[10240]; // 10K
+    int rc = 0;
+
+    sprintf(cmd, "echo \"%s\" | xclip -selection clipboard", text);
+    rc = system(cmd);
+    return rc;
+}
+
+char *cbpaste(char *text) {
+    /* pastes clipboard into text */
+    char cmd[64]; // 10K
+
+    strncpy(cmd, "xclip -o", 10);
+    runproc(text, cmd);
+    chomp(text);
+    return text;
+}
+
 
 /*
         STRINGS

@@ -105,6 +105,8 @@ compiled myc.h totals about 43k
 **[ Utility & Miscellaneous ](#mycother)**
 >
 [ARRSIZE](#ARRSIZE 'ARRSIZE(x)') &bull;
+[cbcopy](#cbcopy 'int cbcopy(char*)') &bull;
+[cbpaste](#cbpaste 'char* cbpaste(char*)') &bull;
 [date](#date 'char *date (char *format)') &bull;
 [flogf](#flogf 'void flogf(FILE *f, char *format, ...)') &bull;
 [timeout](#timeout 'void timeout (int sec, function)') &bull;
@@ -1181,6 +1183,16 @@ Appends to file if _append_ is true.
 ### ARRSIZE(x)
 >Macro expands to: _(sizeof(x) / sizeof((x)[0]))_ 
 to return an array length (number of elements.)
+
+<a name="cbcopy"></a>
+### int cbcopy(char \*text)
+>Copies text to the X system clipboard  
+NOTE: "xclip" must be installed on the Linux system.
+
+<a name="cbpaste"></a>
+### char\* cbpaste(char \*text)
+>Pastes text from the X system clipboard  
+NOTE: "xclip" must be installed on the Linux system.
 
 <a name="isort"></a>
 ### void isort (int values[], int n)

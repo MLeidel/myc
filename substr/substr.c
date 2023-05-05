@@ -35,7 +35,8 @@ Sublime Text
 Sublime
 Hello Sublime
 Hello Sublime Text
-myc-panic:
+ERRMSG  ../myc.h near line: 1508, errno: -1 application defined
 substr inputs out of bounds
+Program Exited
 
 */
