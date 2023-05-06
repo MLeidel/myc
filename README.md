@@ -107,6 +107,7 @@ compiled myc.h totals about 43k
 [ARRSIZE](#ARRSIZE 'ARRSIZE(x)') &bull;
 [cbcopy](#cbcopy 'int cbcopy(char*)') &bull;
 [cbpaste](#cbpaste 'char* cbpaste(char*)') &bull;
+[colors](#colors 'color codes for terminal') &bull;
 [date](#date 'char *date (char *format)') &bull;
 [flogf](#flogf 'void flogf(FILE *f, char *format, ...)') &bull;
 [timeout](#timeout 'void timeout (int sec, function)') &bull;
@@ -1193,6 +1194,32 @@ NOTE: "xclip" must be installed on the Linux system.
 ### char\* cbpaste(char \*text)
 >Pastes text from the X system clipboard  
 NOTE: "xclip" must be installed on the Linux system.
+
+<a name="colors"></a>
+### colors for terminal output
+**clr_fg._color_** colors forground  
+**clr_bg._color_** colors background  
+
+>___colors___
+```c
+dft (default)
+black
+dark_red
+dark_green
+dark_yellow
+dark_blue
+dark_magenta
+dark_cyan
+light_gray
+dark_gray
+red
+green
+yellow
+blue
+magenta
+cyan
+white
+```
 
 <a name="isort"></a>
 ### void isort (int values[], int n)

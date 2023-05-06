@@ -189,8 +189,63 @@ void zentext(char* , char*, char*, bool);
 #define NEQ "!="
 #define NotEqual "!="
 
-//strtype
+// strtype
 enum styp {ALPHA, ALNUM, DIGIT, PRINT, SPACE, UPPER, LOWER, PUNCT};
+
+// colors for console printing
+struct Colors {
+    char dft[10];
+    char black[10];
+    char dark_red[10];
+    char dark_green[10];
+    char dark_yellow[10];
+    char dark_blue[10];
+    char dark_magenta[10];
+    char dark_cyan[10];
+    char light_gray[10];
+    char dark_gray[10];
+    char red[10];
+    char green[10];
+    char yellow[10];
+    char blue[10];
+    char magenta[10];
+    char cyan[10];
+    char white[10];
+};
+struct Colors clr_fg = {"\033[39m",
+                        "\033[30m",
+                        "\033[31m",
+                        "\033[32m",
+                        "\033[33m",
+                        "\033[34m",
+                        "\033[35m",
+                        "\033[36m",
+                        "\033[37m",
+                        "\033[90m",
+                        "\033[91m",
+                        "\033[92m",
+                        "\033[93m",
+                        "\033[94m",
+                        "\033[95m",
+                        "\033[96m",
+                        "\033[97m"};
+struct Colors clr_bg = {"\033[49m",
+                        "\033[40m",
+                        "\033[41m",
+                        "\033[42m",
+                        "\033[43m",
+                        "\033[44m",
+                        "\033[45m",
+                        "\033[46m",
+                        "\033[47m",
+                        "\033[100m",
+                        "\033[101m",
+                        "\033[102m",
+                        "\033[103m",
+                        "\033[104m",
+                        "\033[105m",
+                        "\033[106m",
+                        "\033[107m"};
 
 
 void errmsg(int rc, bool quit, char *msg, int line, char *filename) {
