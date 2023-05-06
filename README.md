@@ -6,6 +6,8 @@ This document lays out quick help for these header files:
 - mydb.h - an Sqlite3 c template and three new functions
 - mynet.h - a small Internet library with 4 new functions
 
+>>Making c more useable.
+
 NOTE: myc.h also _includes_ most of the common C headers.  
 compiled myc.h is about 52k
 
