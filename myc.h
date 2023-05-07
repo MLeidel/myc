@@ -57,6 +57,7 @@ char* replace_new (char*, char*, char*, size_t, size_t);
 char* rof(char*, char*, char*, int);
 char* rpad(char*, char*, char*, int);
 char* rtrim(char*);
+char* strcon(char*, char**, char*, int, int);
 char* strrev(char*);
 char* substr(char*, char*, int, int);
 char* trim(char*);
@@ -457,6 +458,25 @@ char *rtrim(char *s) {
     while (isspace(*--back));
     *(back + 1) = '\0';
     return s;
+}
+
+
+char *strcon(   char *string,
+                char *arr[],
+                char *delim,
+                int arr_size,
+                int start) {
+    /* Combine and Return an array-of-strings into
+    one long string delimiting each string element by "delim"
+    see myc/string/strcon.c and myc/list/list_strcon.c */
+
+    for(int i = start; i < arr_size; i++) {
+        if (i == arr_size - 1)
+            strcat(string, arr[i]);
+        else
+            concat(string, arr[i], delim, END);
+    }
+    return string;
 }
 
 
@@ -936,6 +956,7 @@ char *list_string(list lst, char *str, char *delim) {
             concat(str, "\"", lst.item[x], "\"", separator, END);
         }
         strcat(sbuf.value, str); // building the csv string
+        strcpy(str, "\0");  // clear for next item with delim
     }
     strcpy(str, sbuf.value);
     string_del(sbuf);

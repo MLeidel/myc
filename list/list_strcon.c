@@ -1,7 +1,9 @@
-// list_string.c
+// list_strcon.c
 // #include <myc.h>
 #include "../myc.h"
 
+/* compare contrast strcon with list_string
+*/
 
 void main () {
     char buf[350] = {'\0'};
@@ -19,8 +21,19 @@ void main () {
 
     puts(list_string(csvstr, buf, ","));
 
-    list_del(csvstr);
 
+    /* Now use the array of strings from csvstr
+        with strcon function */
+
+    memset(buf, '\0', 350);
+    strcon(buf, csvstr.item, "|", csvstr.nbr_rows, 0);
+    puts(buf);
+
+    list_del(csvstr);  // clean up list_def
+
+
+    /* test isnum_us method
+    */
     printf("123.22 -> %d\n", isnum_us("123.22"));
     printf("$123.22 -> %d\n", isnum_us("$123.22"));
     printf("12322 -> %d\n", isnum_us("12322"));

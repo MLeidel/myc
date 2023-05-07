@@ -52,6 +52,7 @@ compiled myc.h is about 52k
 [rpad](#rpad 'char *rpad(char *space, char *str, char *filler, int n)') &bull;
 [rtrim](#rtrim 'char *rtrim (char *str)') &bull;
 [startswith](#startswith 'bool startswith (char* str, char* subs)') &bull;
+[strcon](#strcon 'char *strcon(char *string, char *arr[], char *delim, int arr_size, int start)') &bull;
 [strrev](#strrev 'char *strrev (char *str)') &bull;
 [strtype](#strtype 'int strtype (char *s, int istype)') &bull;
 [substr](#substr 'char *substr (char *buf, char *in, int position, int length)') &bull;
@@ -733,6 +734,30 @@ removed.
 ### bool startswith (char\* str, char\* subs)
 >Returns true if a string starts with some substring,
 otherwise returns false.
+
+<a name="strcon"></a>
+### char \*strcon(char \*string, char \*arr[], char \*delim, int arr_size, int start)
+>concatenate strings from an array of strings  
+ programmer is responsible for all bounds checking
+```c
+ strcon(char*,  // return buffer
+        char**,     // array of strings
+        char*,      // delimiter
+        int,        // rows in the array
+        int);       // starting row number
+```
+
+Example:  
+
+```c
+char onestr[4096] = {'\0'}; // for the new SINGLE string
+
+char *people[] = {"Mike", "Mark", "Caren", "Coline", "Katy"};
+
+int sz = ARRSIZE(people);
+strcon(onestr, people, "^^", sz, 0);
+puts(onestr); // output: Mike^^Mark^^Caren^^Coline^^Katy
+```
 
 <a name="strrev"></a>
 ### char \*strrev (char \*str)
