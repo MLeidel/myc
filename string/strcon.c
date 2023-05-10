@@ -27,7 +27,7 @@ void main (int argc, char *argv[]) {
         printf("argc = %d\n", argc);
         memset(onestr, '\0', 4096);
         int sz = argc;
-        strcon(onestr, argv, " ", sz, 1);
+        strcon(onestr, argv, " ", argc, 1);
         puts(onestr);
     }
 }

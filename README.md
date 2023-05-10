@@ -75,7 +75,7 @@ compiled myc.h is about 52k
 [list_remove](#list_remove 'void list_remove(list lst, int inx)') &bull;
 [list_io](#list_io 'void list_io(list lst, char *fn, char mode)') &bull;
 [list_split](#list_split 'int list_split (list *a, char *str, char *delim)') &bull;
-[list_string](#list_string 'char *list_string(list lst, char *str, char *delim)') &bull;
+[list_string](#list_string 'char *list_string(list lst, char *str, char *delim, bool quote)') &bull;
 [list_update](#list_update 'void list_update(list lst, char *str, size_t index)')
 
 **[ Number to String functions ](#myntos)**
@@ -1002,7 +1002,7 @@ to the console.
 Values are shifted down to allow for the new value 
 thus changing the indexs of the shifted items. 
 The last item in the list is dropped off. 
-The dimensions of the list are not changed. 
+__The dimensions of the list are not changed.__  
 see [list_remove](#list_remove)
 
 
@@ -1072,11 +1072,11 @@ adding two more rows ...
 
 <a name="list_remove"></a>
 ### void list_remove(list lst, int inx)
->Removes a list item at an existing index. 
+>Removes a list item at an index.  
 Values are shifted up to fill the space. 
-thus changing the indexs of the shifted items. 
-The last item in the list becomes empty (blank). 
-The dimensions of the list are not changed. 
+thus changing the indexes of the shifted items. 
+The last item in the list becomes empty "\0". 
+__The dimensions of the list are not changed.__  
 see [list_inject](#list_inject)
 
 
@@ -1107,10 +1107,10 @@ Note: list\_dir makes use of the list struct.
 ```
 
 <a name="list_string"></a>
-### char \*list_string(list lst, char \*str, char \*delim)
->Returns a field delimited string from _list_ items. 
-Alphanumeric fields are enclosed in double quotes.
-
+### char \*list_string(list lst, char \*str, char \*delim, bool quote)
+>Returns a field delimited string of _list_ items.  
+Alphanumeric fields are enclosed in double quotes when _quote_ is true.  
+Also zero length trailing rows are bypassed in the return string.
 
 ------------------------------------------------------------------------------------------------------
 

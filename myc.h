@@ -105,7 +105,7 @@ typedef struct list {
     char** item;  // array of fields (char arrays or strings)
 } list;
 
-char* list_string(list, char*, char*);
+char* list_string(list, char*, char*, bool);
 list list_def(int, int);
 list list_dir(const char*, int, bool);
 list list_read(char*, bool);
@@ -909,7 +909,9 @@ void list_inject(list lst, char *value, int inx) {
     removes an item from the list at a
     designated index ...
     shifts list items up thus changing
-    some of the indexes
+    some of the indexes and creating
+    zero length strings in the last row(s)
+    BUT: list dimensions ARE NOT CHANGED.
 */
 void list_remove(list lst, int inx) {
     int x = 0;
@@ -935,10 +937,12 @@ int list_find(list lst, char *str) {
     return -1;
 }
 
-/*
-    combines list items into a field delimited string
+/*  List to String
+    combines list items into a field delimited string;
+    May 2023 - added bool quote parameter and removal
+    of possible empty trailing list items.
 */
-char *list_string(list lst, char *str, char *delim) {
+char *list_string(list lst, char *str, char *delim, bool quote) {
     int x = 0;
     int has_comma, has_space, has_apost, has_quote;
     char separator[8] = {'\0'};
@@ -947,16 +951,26 @@ char *list_string(list lst, char *str, char *delim) {
     strcpy(separator, delim);
     strcpy(str, "\0");
 
-    for (x=0; x < lst.nbr_rows; x++) {
-        if (x == lst.nbr_rows - 1)
+    // eliminate trailing empty rows
+    int new_rows = lst.nbr_rows;
+    x = lst.nbr_rows - 1;
+    while (strlen(lst.item[x]) == 0) {
+        new_rows--;
+        x--;
+    }
+    // now use "new_rows" instead of lst.nbr_rows
+    // to calculate the return conatenated string
+
+    for (x=0; x < new_rows; x++) {
+        if (x == new_rows - 1)
             strcpy(separator, "\0"); // no delim on last item
-        if (isnum_us(lst.item[x])) {
+        if (isnum_us(lst.item[x]) || !quote) {
             concat(str, lst.item[x], separator, END);
         } else {
             concat(str, "\"", lst.item[x], "\"", separator, END);
         }
         strcat(sbuf.value, str); // building the csv string
-        strcpy(str, "\0");  // clear for next item with delim
+        strcpy(str, "\0");  // clear for next item+delim
     }
     strcpy(str, sbuf.value);
     string_del(sbuf);

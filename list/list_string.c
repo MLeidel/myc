@@ -3,6 +3,7 @@
 #include "../myc.h"
 
 
+/////////////////////////////////////////////////////////
 void main () {
     char buf[350] = {'\0'};
 
@@ -17,10 +18,17 @@ void main () {
         "Pewaukee",
         "$22.81");
 
-    puts(list_string(csvstr, buf, ","));
+    // optional remove items from the list
+    //list_remove(csvstr, 4);  // 69.70 is deleted from list
+    //list_remove(csvstr, 4);  // Pewaukee is deleted from list
+
+    puts(list_string(csvstr, buf, "|", true));
+    puts(list_string(csvstr, buf, "|", false));
+    puts(list_string(csvstr, buf, ",", true));
 
     list_del(csvstr);
 
+    puts("\n");
     printf("123.22 -> %d\n", isnum_us("123.22"));
     printf("$123.22 -> %d\n", isnum_us("$123.22"));
     printf("12322 -> %d\n", isnum_us("12322"));

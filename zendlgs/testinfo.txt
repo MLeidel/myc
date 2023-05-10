@@ -1,5 +1,0 @@
-testinfo.txt
-zen
-zen.c
-zendlgs
-zendlgs.c
