@@ -1,7 +1,7 @@
 
 <a name="top"></a>
 # my*.h Documentation
-###Higher level C functions.  
+### Higher level C functions.  
 
 This document lays out quick help for these header files:
 - myc.h - new string and other utility functions for C
