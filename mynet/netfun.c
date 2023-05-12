@@ -1,5 +1,5 @@
 #include <myc.h>
-#include "mynet.h"
+#include <mynet.h>
 
 /*
 Demos "webpage" and "webbrowser" functions
@@ -36,7 +36,6 @@ void main() {
 
 }
 /* OUTPUT
-webpage success!
-title: Home | Deerfield RGC
+Example Domain
 webbrowser success!
 */
