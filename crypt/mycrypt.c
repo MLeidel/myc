@@ -25,10 +25,10 @@ void main() {
     string pstring = string_def(512, '\0');
     string xstring = string_def(512, '\0');
 
-    string_cpy(pstring, "Hello What's happening?");
+    string_cpy(pstring, "12345000 My name is Francisco Max. |=** I am 100 years young!");
     puts(pstring.value);
-    puts(encrypt(xstring.value, pstring.value, "secret%key"));
-    puts(decrypt(pstring.value, xstring.value, "secret%key"));
+    puts(encrypt(xstring.value, pstring.value, "#9tzsecret102938%key"));
+    puts(decrypt(pstring.value, xstring.value, "#9tzsecret102938%key"));
 
 
     // Now try something longer
@@ -38,10 +38,10 @@ void main() {
         puts("readfile fail for sample.txt");
         exit(EXIT_FAILURE);
     } else {
-        puts(encrypt(xstring.value, pstring.value, "secret%key"));
+        puts(encrypt(xstring.value, pstring.value, "#9tzsecret102938%key"));
     }
 
-    puts(decrypt(pstring.value, xstring.value, "secret%key"));
+    puts(decrypt(pstring.value, xstring.value, "#9tzsecret102938%key"));
 
     string_del(pstring);
     string_del(xstring);
