@@ -2,6 +2,7 @@
 <a name="top"></a>
 # my*.h Documentation
 ### Higher level C functions.  
+#### Making C easier to use.
 
 This document lays out quick help for these header files:
 - myc.h - new string and other utility functions for C
@@ -29,9 +30,11 @@ compiled myc.h is about 52k
 [string_def](#string_def 'string string_def(size_t length, char fill)') &bull;
 [string_rsz](#string_rsz 'string string_rsz(string s, size_t length)') &bull;
 [string_wrp](#string_wrp 'string string_wrp(char *in, size_t length, char sep)') &bull;
+[decrypt](#decrypt 'char *decrypt(char *plain, char *etext, char *key)') &bull;
 [deletechar](#deletechar 'char *deletechar(char* out, char* in, char target, size_t start, size_t number)') &bull;
 [dollar](#dollar 'char *dollar(char *space, double amount, int fsize, int type)') &bull;
 [endswith](#endswith 'bool endswith (char* str, char* subs)') &bull;
+[encrypt](#encrypt 'char *encrypt(char *etext, char *plain, char *key)') &bull;
 [equals](#equals 'bool equals(char *str1, char *str2)') &bull;
 [equalsignore](#equalsignor 'bool equalsignore(char *str1, char *str2)') &bull;
 [field](#field 'char *field(char *fld, char *str, char delimiter, int column, bool strip)') &bull;
@@ -457,11 +460,16 @@ the new block of text (string.)
  allocated: 255
 */
 ```
+<a name="decrypt"></a>
+### char \*decrypt(char \*plain, char \*etext, char \*key)
+>Decrypts a pre-defined buffer into another plain text buffer.  
+Returns the plain text buffer.  
+Use a plain text key of less than 50 characters.
 
 <a name="deletechar"></a>
 ### char \*deletechar(char \*buf, char \*in, char \*target, size_t start, size_t number)
->Removes all target characters from a string. 
-Set starting index. 
+>Removes all target characters from a string.  
+Set starting index.  
 Limit deletions or 0 means no limit. 
 
 ```c
@@ -489,6 +497,11 @@ The formatted amount is returned right justified in the specified field size.
 **Warning: make sure the buffer is large enough to hold the formatted
 dollar amount with any padding**
 
+<a name="encrypt"></a>
+### char \*encrypt(char \*etext, char \*plain, char \*key)
+>Encrypts a pre-defined plain text buffer into another buffer.  
+Returns the encrypted buffer.  
+Use a plain text key of less than 50 characters.
 
 <a name="endswith"></a>
 ### bool endswith (char \*str, char \*subs)
@@ -901,8 +914,8 @@ Requires _true_ to include thousands separators. (Dynamic)
 
 <a name="list_def"></a>
 ## Creating a List (_static_ array of strings) _myc.h_ [^](#top 'top')
->These functions operate around a _static_ array of strings, which 
-means no inserts, deletes, or appends.
+>These functions operate around a _static_ array of strings that  
+use a predefined struct.
 
 ```c
  // struct used for list functions
@@ -1248,6 +1261,10 @@ magenta
 cyan
 white
 ```
+```c
+  printf("%s%s\n", clr_fg.cyan, "This will be cyan...");
+```
+
 
 <a name="isort"></a>
 ### void isort (int values[], int n)

@@ -10,8 +10,13 @@
 * bool webpost(char * url, char * vp_data)
 * bool webbrowser(const char * url)
 *
+* NOTE:
+* requires -
+*   sudo apt-get install libcurl4-openssl-dev
+*
 * NOTE: includes myc.h and curl.h
-* compiling: gcc $1.c -l curl -o $1
+*   compiling: gcc $1.c -l curl -o $1
+*
 ***/
 
 #include <myc.h>

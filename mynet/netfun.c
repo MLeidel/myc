@@ -1,5 +1,5 @@
 #include <myc.h>
-#include <mynet.h>
+#include "mynet.h"
 
 /*
 Demos "webpage" and "webbrowser" functions
