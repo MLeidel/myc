@@ -462,9 +462,35 @@ the new block of text (string.)
 ```
 <a name="decrypt"></a>
 ### char \*decrypt(char \*plain, char \*etext, char \*key)
->Decrypts a pre-defined buffer into another plain text buffer.  
+>Decrypts a buffer (from encrypt() function) into another plain text buffer.  
 Returns the plain text buffer.  
 Use a plain text key of less than 50 characters.
+
+```c
+    size_t fsize = filesize(fi);  // get size of input file
+    string s1 = string_def(fsize, '\0');  // create work buffer input
+    string s2 = string_def(fsize, '\0');  // create work buffer output
+
+    if (readfile(s1.value, fi) == -1) {
+        puts("read input file failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (action == 'e') {
+        printf("encrypting %s...\n", fi);
+        encrypt(s2.value, s1.value, key);
+
+    } else if (action == 'd') {
+       printf("decrypting %s...\n", fi);
+       decrypt(s2.value, s1.value, key);
+    }
+
+    printf("%s size=%ld\n", fi, fsize);
+    writefile (s2.value, outfile, false);
+
+    string_del(s1);
+    string_del(s2);
+```
 
 <a name="deletechar"></a>
 ### char \*deletechar(char \*buf, char \*in, char \*target, size_t start, size_t number)
