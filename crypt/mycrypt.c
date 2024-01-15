@@ -7,7 +7,7 @@
     character has a different shift
     value which is determined by a secret
     key consisting of a string of characters.
-    The ascii value of each character
+    Part of the ascii value of each character
     in the key string is used to shift
     a character in the plain text string.
     Only the second digit of the ascii
@@ -27,8 +27,8 @@ void main() {
 
     string_cpy(pstring, "12345000 My name is Francisco Max. |=** I am 100 years young!");
     puts(pstring.value);
-    puts(encrypt(xstring.value, pstring.value, "#9tzsecret102938%key"));
-    puts(decrypt(pstring.value, xstring.value, "#9tzsecret102938%key"));
+    puts(encrypt(xstring.value, pstring.value, "wellcarePHARMACY"));
+    puts(decrypt(pstring.value, xstring.value, "wellcarePHARMACY"));
 
 
     // Now try something longer

@@ -3,29 +3,34 @@
 #include <stdlib.h>
 #include <string.h>
 
-char ckey[50];
-
-int getKeyShift(int inx) {
+int getKeyShift(int inx, char *ckey) {
     char skey[16];
+    // char ckey[50];
     char ck1;
     int ck1n = 0;
     sprintf(skey, "%d", ckey[inx]);  // make string of the int key code
     ck1 = skey[1];  // take 2nd digit of the (numeric) string
     ck1n = ck1 - '0';  // convert and return as int
-    if (ck1n == '0') ck1n = 3;  // many zeros with no shift value
-    return ck1n; 
+    if (ck1n == 0) ck1n = 3;  // many zeros with no shift value
+    return ck1n;
 }
 
-char *encrypt(char *etext, char *plain) {
+char *encrypt(char *etext, char *plain, char *key) {
     char ch;
-    int kix = 0;
-    int klen = strlen(ckey);
-    int ix = 0;
-    char cval;
-    int plen = strlen(plain);
+    uint kix = 0;
+    uint klen = strlen(key) - 1;  // valid index bounds
+    uint ix = 0;
+    char cval = 'A';
+    uint plen = strlen(plain);
     for(ix=0; ix < plen; ix++) {
         ch = plain[ix];
-        cval = ch + getKeyShift(kix);
+        cval = ch + getKeyShift(kix, key);
+        while (cval == '\0') {
+            printf("Found NULL at: %d kix=%d cval=%d klen=%d\n", ix, kix, cval, klen);
+            kix++;
+            if (kix > klen) kix = 0;
+            cval = ch + getKeyShift(kix, key);
+        }
         etext[ix] = cval;
         kix++;
         if (kix > klen) kix = 0;
@@ -34,16 +39,22 @@ char *encrypt(char *etext, char *plain) {
     return etext;
 }
 
-char *decrypt(char *plain, char *etext) {
+char *decrypt(char *plain, char *etext, char *key) {
     char ch;
-    int kix = 0;
-    int klen = strlen(ckey);
-    int ix = 0;
+    uint kix = 0;
+    uint klen = strlen(key) - 1;
+    uint ix = 0;
     char cval;
-    int elen = strlen(etext);
+    uint elen = strlen(etext);
     for(ix=0; ix < elen; ix++) {
         ch = etext[ix];
-        cval = ch - getKeyShift(kix);
+        cval = ch - getKeyShift(kix, key);
+        while (cval == '\0') {
+            printf("Found NULL at: %d kix=%d cval=%d klen=%d\n", ix, kix, cval, klen);
+            kix++;
+            if (kix > klen) kix = 0;
+            cval = ch - getKeyShift(kix, key);
+        }
         plain[ix] = cval;
         kix++;
         if (kix > klen) kix = 0;
@@ -55,13 +66,25 @@ char *decrypt(char *plain, char *etext) {
 
 void main() {
 
-    char px[500] = {"\0"};
-    char ex[500] = {"\0"};
+    char px[500000] = {"\0"};
+    char ex[500000] = {"\0"};
 
-    strcpy(ckey, "secretKEY124578");
-    strcpy(px, "50 My name is Francisco Max. | I am 100 years young!");
+    char str[1000] = \
+    "50 My name is Francisco Max. | I am 100 years young!\n"
+    "50 My name is Francisco Max. | I am 100 years young!\n"
+    "500 My name is Francisco Max. | I am 100 years young!\n"
+    "50 My name is Francisco Max. | I am 100 years young!\n"
+    "500 My name is Francisco Max. | I am 100 years young!\n"
+    "50 My name is Francisco Max. | I am 100 years young!\n"
+    "500 My name is Francisco Max. | I am 100 years young!\n"
+    "50 My name is Francisco Max. | I am 100 years young!\n"
+    "500 My name is Francisco Max. | I am 100 years young!\n"
+    "50 My name is Francisco Max. | I am 100 years young!\n"
+    "500 My name is Francisco Max. | I am 100 years young!\n";
+
+    strcpy(px, str);
     puts(px);
-    puts(encrypt(ex, px));
+    puts(encrypt(ex, px, "SecretKey"));
     // memset(px, '\0', 64);
-    puts(decrypt(px, ex));
+    puts(decrypt(px, ex, "SecretKey"));
 }
