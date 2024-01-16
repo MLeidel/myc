@@ -465,7 +465,8 @@ the new block of text (string.)
 ### char \*decrypt(char \*plain, char \*etext, char \*key)
 >Decrypts a buffer (from encrypt() function) into another plain text buffer.  
 Returns the plain text buffer.  
-Use a plain text key of less than 50 characters.
+Use a plain text key of less than 50 characters.  
+see [encrypt](#encrypt 'encrypt')
 
 ```c
     size_t fsize = filesize(fi);  // get size of input file
@@ -526,9 +527,11 @@ dollar amount with any padding**
 
 <a name="encrypt"></a>
 ### char \*encrypt(char \*etext, char \*plain, char \*key)
->Encrypts a pre-defined plain text buffer into another buffer.  
+>Uses a substitution cipher similar to the Vigenère cipher.  
+Encrypts a pre-defined plain text buffer into another buffer.  
 Returns the encrypted buffer.  
-Use a plain text key of less than 50 characters.
+Use a plain text key of less than 50 characters.  
+see [decrypt](#decrypt 'decrypt')
 
 <a name="endswith"></a>
 ### bool endswith (char \*str, char \*subs)
