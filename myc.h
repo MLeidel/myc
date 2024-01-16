@@ -126,6 +126,7 @@ void list_io(list, char*, char);
 // FILE & PATH FUNCTIONS
 
 bool file_exists (char*);
+bool isbinary(char*);
 FILE * open_for_append(char*);
 FILE * open_for_read(char*);
 FILE * open_for_write(char*);
@@ -683,6 +684,8 @@ int replacechar(char *a, char b, char c, size_t number) {
    shift value which is added to the plain text character value.
    After each character of the key has been applied it simply repeats
    until all of the plain text has been coded.
+
+   NOTE: These functions only work on Plain Text Files, Not binary files.
 */
 
 int getKeyShift(int inx, char *ckey) {
@@ -1218,6 +1221,25 @@ bool file_exists (char *filename) {
     return (stat (filename, &buffer) == 0);
 }
 
+bool isbinary(char *filename) {
+    FILE *file = fopen(filename, "r");
+    int ch;
+
+    if (file == NULL) {
+        printf("Error opening file: %s\n", filename);
+        exit(EXIT_FAILURE);
+    }
+
+    while ((ch = fgetc(file)) != EOF) {
+        if (ch == NULL) {
+            fclose(file);
+            return true;
+        }
+    }
+
+    fclose(file);
+    return false;
+}
 
 FILE * open_for_read(char *fname) {
     FILE *f1;

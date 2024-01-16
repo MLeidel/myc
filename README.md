@@ -93,6 +93,7 @@ compiled myc.h is about 52k
 
 **[ File & Path functions ](#mycfile)**
 >
+[isbinary](#isbinary 'bool isbinary(char *filename)') &bull;
 [file_exists](#file_exists 'bool file_exists (char *filename)') &bull;
 [filesize](#filesize 'long filesize(const char *filename)') &bull;
 [filecopy](#filecopy 'void filecopy(char *src, char *dst)') &bull;
@@ -1156,6 +1157,11 @@ Also zero length trailing rows are bypassed in the return string.
 
 <a name="mycfile"></a>
 ## FILE & PATH functions _myc.h_ [^](#top 'top')
+
+<a name="isbinary"></a>
+### bool isbinary(char \*filename)
+>Return true if filename is a binary file  
+otherwise, return false.
 
 <a name="file_exists"></a>
 ### bool file\_exists (char \*filename)
