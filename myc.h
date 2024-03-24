@@ -134,6 +134,7 @@ long filesize(const char*);
 char* getbasename(char*, bool);
 char* getbasepath(char*, char*);
 char* getfullpath(char*, char*);
+char* getini(char*, char*, char*);
 int isfile(const char*);
 int pathsize(const char*, int);
 int readfile(char*, const char*);
@@ -1361,6 +1362,34 @@ char *getbasepath(char *fn, char *buff) {
     }
     return buff;
 }
+
+char *getini(char *value, char *inifile, char *ininame) {
+    /*
+        Returns a named value from an ini file
+    */
+    int lines[2];
+    int inx=0;
+    int p=0;
+
+    list flst = list_read(inifile, true);
+
+    for(inx=0; inx < flst.nbr_rows; inx++) {
+        if (startswith(flst.item[inx], ininame)) {
+            p = indexof(flst.item[inx], "=");
+            substr(value, flst.item[inx], p+1, 0);
+            strncpy(value, trim(value), strlen(value));
+            list_del(flst);
+            return value;
+        }
+    }
+    if (inx >= flst.nbr_rows) {
+        printf("\nDid not find ini file key name %s\n", ininame);
+        list_display(flst);
+        list_del(flst);
+        exit(1);
+    }
+}
+
 
 void filecopy(char *src, char *dst) {
     FILE * source = open_for_read(src);

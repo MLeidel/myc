@@ -103,6 +103,7 @@ compiled myc.h is about 52k
 [getbasename](#getbasename 'char *getbasename(char *fn, bool withext)') &bull;
 [getbasepath](#getbasepath 'char *getbasepath(char *fn, char *buff)') &bull;
 [getfullpath](#getfullpath 'char *getfullpath(char *fn, char *buff)') &bull;
+[getini](#getini 'char *getini(char*, char*, char*)') &bull;
 [open_for_append](#open_for_append 'FILE * open_for_append (char *fname)') &bull;
 [open_for_read](#open_for_read 'FILE * open_for_read (char *fname)') &bull;
 [open_for_write](#open_for_write 'FILE * open_for_write (char *fname)') &bull;
@@ -1220,6 +1221,11 @@ _see getfullpath_
 >Returns the fullpath of a file. 
 _see getbasepath_
 
+<a name="getini"></a>
+### char \* getini(char \*value, char \*file, char \*name)
+>Returns the _value_ of a key _name_ found in an ini _file_.
+
+
 <a name="open_for_append"></a>
 ### FILE \* open_for_append (char \*fname)
 >Returns a FILE handle to _fname_ or
@@ -1263,12 +1269,14 @@ to return an array length (number of elements.)
 
 <a name="cbcopy"></a>
 ### int cbcopy(char \*text)
->Copies text to the X system clipboard  
+>Copies from text to the X system clipboard  
+Return code of 0 means successful.  
 NOTE: "xclip" must be installed on the Linux system.
 
 <a name="cbpaste"></a>
 ### char\* cbpaste(char \*text)
->Pastes text from the X system clipboard  
+>Pastes into text from the X system clipboard  
+returns text.  
 NOTE: "xclip" must be installed on the Linux system.
 
 <a name="colors"></a>
