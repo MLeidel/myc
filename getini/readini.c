@@ -2,7 +2,7 @@
     Read ini file value
 
     use: readini ini_file_full_path value_to_return
-    test file is "/home/ml/.config/curv.ini"
+    test file is "~/.config/curv.ini"
 
 curv.ini:
 
